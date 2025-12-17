@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+
+@layer base {
+    a {
+        @apply hover:text-green-500 transition-colors duration-200;
+    }
+}
