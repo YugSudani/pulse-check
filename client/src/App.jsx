@@ -6,6 +6,7 @@ import Login from './components/Login'
 import Register from './components/Signup'
 import CreateNewMonitor from './components/CreateNewMonitor'
 import DashboardLayout from './components/DashboardLayout'
+import ViewMonitor from './components/ViewMonitor'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create-new-monitor" element={<CreateNewMonitor />} />
+          <Route path="/monitor/:id" element={<ViewMonitor />} />
         </Route>
       </Routes>
     </>

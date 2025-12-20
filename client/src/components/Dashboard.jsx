@@ -6,25 +6,6 @@ export default function Dashboard() {
 
     const navigate = useNavigate();
 
-    const [userData, setUserData] = useState(null);
-
-    const GetUserData = async () => {
-        try {
-            const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/user/getMe`,
-                { withCredentials: true }
-            );
-            console.log(response.data);
-            if (response.data.message === 'User not found') {
-                navigate("/login", { replace: true });
-            } else {
-                setUserData(response.data)
-            }
-        } catch (error) {
-            navigate("/login", { replace: true });
-        }
-    }
-
     const [monitors, setMonitors] = useState([]);
 
     const getMonitors = async () => {
@@ -35,20 +16,47 @@ export default function Dashboard() {
             );
             console.log("data : " + response.data.monitors);
             if (response.data.message === 'Failed to get monitors') {
+                // navigate("/login", { replace: true });
                 alert("Failed to get monitors");
             } else {
                 setMonitors(response.data.monitors);
             }
         } catch (error) {
+            // navigate("/login", { replace: true });
             alert("Failed to get monitors");
         }
     }
 
     useEffect(() => {
-        GetUserData();
         getMonitors();
     }, [])
 
+
+    const deleteMonitor = async (id) => {
+        try {
+            const response = await axios.delete(
+                `${import.meta.env.VITE_API_URL}/monitor/deleteMonitor/${id}`,
+                { withCredentials: true }
+            );
+            console.log("data : " + response.data.allMonitor);
+            if (response.data.message === 'Failed to delete monitor') {
+                alert("Failed to delete monitor");
+            } else {
+                setMonitors(response.data.allMonitor);
+            }
+        } catch (error) {
+            alert("Failed to delete monitor");
+        }
+    }
+
+    const [activeMenuId, setActiveMenuId] = useState(null);
+    const toggleDeleteBox = (id) => {
+        if (activeMenuId === id) {
+            setActiveMenuId(null);
+        } else {
+            setActiveMenuId(id);
+        }
+    }
 
     return (
         <>
@@ -80,18 +88,58 @@ export default function Dashboard() {
                 </div>
 
                 {/* Main Placeholder Table */}
-                <div className="bg-[#121A28] border border-gray-800 rounded-xl h-64 md:h-72 mb-8">
+                <div className="h-64 md:h-130 flex flex-col gap-4 overflow-y-auto   [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     {monitors?.map((monitor) => (
-                        <div key={monitor._id} className="p-4">
+                        <div key={monitor._id} onClick={() => navigate(`/monitor/${monitor._id}`)} className="bg-[#121A28] p-4 rounded-2xl py-5 relative cursor-pointer">
+                            <div>Active : {monitor.isActive ? "Yes" : "No"}</div>
                             <h2 className="font-semibold">{monitor.name}</h2>
-                            <p className="text-gray-400">{monitor.url}</p>
+                            <div className="flex  justify-between items-center">
+                                <p className="text-gray-400 flex-[7]">End Point : {monitor.url}</p>
+                                <p className="px-2 flex-[2] text-gray-400">Interval : {monitor.interval / 1000 / 60 > 0.99 ? monitor.interval / 1000 / 60 + " min" : monitor.interval / 1000 + " sec"}</p>
+                                <div onClick={(e) => { e.stopPropagation(); toggleDeleteBox(monitor._id) }} className=" flex-[1] h-10 w-10 flex items-center justify-center right-0 -translate-y-1/2">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="25"
+                                        height="25"
+                                        viewBox="0 0 20 20"
+                                        fill="white"
+                                        className="cursor-pointer "
+                                    >
+                                        <path
+                                            d="M15.498 8.50159C16.3254 8.50159 16.9959 9.17228 16.9961 9.99963C16.9961 10.8271 16.3256 11.4987 15.498 11.4987C14.6705 11.4987 14 10.8271 14 9.99963C14.0002 9.17228 14.6706 8.50159 15.498 8.50159Z"
+                                            fill="white"
+                                        />
+                                        <path
+                                            d="M4.49805 8.50159C5.32544 8.50159 5.99689 9.17228 5.99707 9.99963C5.99707 10.8271 5.32555 11.4987 4.49805 11.4987C3.67069 11.4985 3 10.827 3 9.99963C3.00018 9.17239 3.6708 8.50176 4.49805 8.50159Z"
+                                            fill="white"
+                                        />
+                                        <path
+                                            d="M9.99997 8.50159C10.8273 8.50176 11.4979 9.17239 11.4981 9.99963C11.4981 10.827 10.8274 11.4985 9.99997 11.4987C9.1725 11.4987 8.50098 10.8271 8.50098 9.99963C8.50116 9.17228 9.17261 8.50159 9.99997 8.50159Z"
+                                            fill="white"
+                                        />
+                                    </svg>
+                                </div>
+                                {activeMenuId === monitor._id && (
+                                    <div className="absolute right-15 top-20 w-auto h-auto z-10">
+                                        <div className="bg-[#121A28] border border-gray-700 p-2 rounded-xl flex flex-col gap-2 shadow-xl">
+                                            <button onClick={() => EditMonitor()} className=" bg-transparent hover:bg-gray-800 px-4 py-1 rounded-lg text-left text-sm ">Edit monitor</button>
+                                            <button onClick={(e) => { e.stopPropagation(); deleteMonitor(monitor._id) }} className="bg-[#b83710] hover:bg-[#962d0d] text-center py-1 rounded-lg text-center">Delete</button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     ))}
+                    {monitors?.length === 0 && (
+                        <div className="p-4 rounded-2xl border-gray-800 text-center">
+                            <p className="text-gray-400">No monitors found</p>
+                        </div>
+                    )}
                 </div>
             </main>
 
             {/* ================ RIGHT STATUS COLUMN ================ */}
-            <aside className="hidden lg:block w-80 p-6 bg-[#0D121C] border-l border-gray-800">
+            <aside className="hidden lg:block w-80 p-6 md:p-8 bg-[#0D121C] border-l border-gray-800">
 
                 {/* Current Status Card */}
                 <div className="bg-[#121A28] p-6 rounded-xl border border-gray-800 mb-6">

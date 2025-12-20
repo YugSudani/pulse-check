@@ -30,6 +30,6 @@ const logSchema = new mongoose.Schema(
     }
 )
 
-const logsModel = new mongoose.model("logsModel" , logSchema);
+const logsModel = new mongoose.model("logsModel", logSchema);
 
 module.exports = logsModel;

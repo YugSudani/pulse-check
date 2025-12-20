@@ -19,19 +19,19 @@ const monitorSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
-        
+
         interval: {
             type: Number, // in seconds
             required: true,
         },
 
-        isActive: {
+        isActive: {  // start pause
             type: Boolean,
             default: true,
         },
 
         lastStatus: {
-            type: String, // e.g. "up", "down", "timeout"
+            type: String, // e.g. "UP", "DOWN", "TIME-OUT"
             default: null,
         },
 
@@ -39,6 +39,7 @@ const monitorSchema = new mongoose.Schema(
             type: Date,
             default: null,
         },
+
         totalChecks: {
             type: Number,
             default: 0
@@ -47,13 +48,18 @@ const monitorSchema = new mongoose.Schema(
         totalDown: {
             type: Number,
             default: 0
-        }
+        },
+
+        lastCheckedAt: {
+            type: Date,
+            default: null,
+        },
     },
     {
         timestamps: true,
     }
 );
 
-const monitorModel = mongoose.model("monitorModel" , monitorSchema);
+const monitorModel = mongoose.model("monitorModel", monitorSchema);
 
 module.exports = monitorModel;
