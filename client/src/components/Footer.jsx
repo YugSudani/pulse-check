@@ -25,7 +25,7 @@ export default function Footer() {
                     <div>
                         <div className="flex items-center gap-2 mb-3 font-semibold text-lg">
                             <span className="text-green-500 text-xl">⬤</span>
-                            UptimeRobot
+                            PulseCheck
                         </div>
 
                         <p className="text-gray-300 text-sm mb-4">
@@ -34,7 +34,7 @@ export default function Footer() {
 
                         <p className="text-gray-400 text-sm leading-relaxed mb-6">
                             Join more than 2,700,000+ happy users!
-                            UptimeRobot is one of the most popular
+                            PulseCheck is one of the most popular
                             website monitoring services in the world.
                         </p>
 

@@ -81,6 +81,16 @@ router.delete("/deleteMonitor/:id", async (req, res) => {
     }
 })
 
+router.get("getLogData/:id", async (req,res)=>{
+    const monitorId = req.params.id;
+    try {
+        const logs = await logsModel.find({ monitorId });
+        res.status(200).json({ success: true, logs });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, msg: "Failed to get logs" });
+    }
+})
 
 
 

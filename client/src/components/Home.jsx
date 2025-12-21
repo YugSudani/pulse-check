@@ -11,7 +11,7 @@ export default function Home() {
             <nav className="flex justify-between items-center mb-24">
                 <div className="flex items-center gap-2 text-xl font-semibold">
                     <span className="text-green-500">⬤</span>
-                    <Link to="/">UptimeRobot</Link>
+                    <Link to="/">PulseCheck</Link>
                 </div>
 
                 <div className="hidden md:flex items-center gap-10 text-gray-200 font-medium text-xl">
@@ -37,7 +37,7 @@ export default function Home() {
                 <div>
                     <h1 className="text-5xl font-bold leading-tight">
                         The world&apos;s leading <br />
-                        <span className="text-green-500">uptime monitoring</span> service.
+                        <span className="text-green-500">Server monitoring</span> service.
                     </h1>
 
                     <div className="mt-10 space-y-4 text-lg text-gray-300">
@@ -104,7 +104,7 @@ export default function Home() {
                         </div>
 
                         <div className="mt-6">
-                            <p className="text-gray-400 text-sm">Uptime stats</p>
+                            <p className="text-gray-400 text-sm">Pulse stats</p>
 
                             <div className="flex gap-6 mt-2 text-sm">
                                 <div>

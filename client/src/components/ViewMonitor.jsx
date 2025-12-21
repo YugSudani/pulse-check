@@ -24,8 +24,12 @@ export default function ViewMonitor() {
                 console.error('Error fetching monitor data:', error);
             }
         };
-        fetchMonitor();
-    }, []);
+
+        fetchMonitor(); // Initial fetch
+        const interval = setInterval(fetchMonitor, 15000); // Poll every 15s
+
+        return () => clearInterval(interval); // ✅ Cleanup on unmount
+    }, [id]);
 
     const handlePause = async (monitorId) => {
         try {
@@ -39,8 +43,37 @@ export default function ViewMonitor() {
         }
     }
 
+    // Live updating time ago
+    const [timeAgo, setTimeAgo] = useState('');
+
+    useEffect(() => {
+        const updateTimeAgo = () => {
+            if (!monitor?.lastCheckedAt) {
+                setTimeAgo('Never checked');
+                return;
+            }
+
+            const date = new Date(monitor.lastCheckedAt);
+            const diff = Math.floor((Date.now() - date) / 1000);
+
+            const time =
+                diff < 60 ? `${diff}s` :
+                    diff < 3600 ? `${Math.floor(diff / 60)}m` :
+                        diff < 86400 ? `${Math.floor(diff / 3600)}h` :
+                            `${Math.floor(diff / 86400)}d`;
+
+            setTimeAgo(time);
+        };
+
+        updateTimeAgo(); // Initial update
+        const interval = setInterval(updateTimeAgo, 1000); // Update every second
+
+        return () => clearInterval(interval); // Cleanup
+    }, [monitor]);
+
+
     return (
-        <div className="overflow-y-auto h-[100vh] w-full bg-[#101724] text-white p-8 md:p-12 flex gap-6">
+        <div className="overflow-y-auto h-[100vh] bg-[#101724] text-white p-8 md:p-12 flex gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
             {/* ================= MAIN CONTENT ================= */}
             <div className="flex-1 space-y-5">
@@ -49,7 +82,7 @@ export default function ViewMonitor() {
                 <div className="">
                     <Link
                         to="/dashboard"
-                        className="inline-flex items-center gap-4 bg-[#131e30] px-4 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333]"
+                        className="inline-flex items-center gap-4 bg-[#131e30] px-8 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333]"
                     >
                         ← Monitoring
                     </Link>
@@ -80,8 +113,7 @@ export default function ViewMonitor() {
 
                     <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
                         <p className="text-gray-400 text-sm mb-1">Current status</p>
-                        <p>Total checks : {monitor?.totalChecks}</p>
-                        <p className="text-green-400 font-bold text-lg">{monitor?.lastStatus ? monitor?.lastStatus : " - - "}</p>
+                        <p className="font-bold text-xl leading-12 tracking-wider">{monitor?.lastStatus ? <p className={`text-${monitor?.lastStatus === "UP" ? "green-400" : "red-400"}`}>{monitor?.lastStatus}</p> : <p> - - </p>}</p>
                         <p className="text-gray-400 text-xs mt-1">
                             Currently up for 12d 19h 57m
                         </p>
@@ -89,10 +121,11 @@ export default function ViewMonitor() {
 
                     <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
                         <p className="text-gray-400 text-sm mb-1">Last check</p>
-                        <p className="font-semibold">{monitor?.lastCheckedAt ? monitor?.lastCheckedAt : "Never checked"} Ago</p>
+                        <p className="font-semibold">{timeAgo} ago</p>
                         <p className="text-gray-400 text-md mt-1">
                             Checked every {monitor?.interval / 1000 / 60}min
                         </p>
+                        <p className="text-green-300 text-md mt-1 ">Net Pulse Count : {monitor?.totalChecks}</p>
                     </div>
 
                     <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
@@ -156,7 +189,7 @@ export default function ViewMonitor() {
 
                 {/* ================= LATEST INCIDENTS ================= */}
                 <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex justify-between items-center mb-4 ">
                         <h2 className="font-semibold">Latest incidents.</h2>
                         <button className="text-sm bg-[#1A2333] px-3 py-1 rounded-lg">
                             Export logs
