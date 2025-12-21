@@ -40,7 +40,7 @@ export default function ViewMonitor() {
     }
 
     return (
-        <div className="min-h-screen w-full bg-[#0B0F17] text-white p-8 md:p-12 flex gap-6">
+        <div className="overflow-y-auto h-[100vh] w-full bg-[#0B0F17] text-white p-8 md:p-12 flex gap-6">
 
             {/* ================= MAIN CONTENT ================= */}
             <div className="flex-1 space-y-5">

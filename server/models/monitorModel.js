@@ -60,6 +60,8 @@ const monitorSchema = new mongoose.Schema(
     }
 );
 
+monitorSchema.index({ isActive: 1, lastCheckedAt: 1 });
+
 const monitorModel = mongoose.model("monitorModel", monitorSchema);
 
 module.exports = monitorModel;

@@ -29,7 +29,7 @@ export default function Login() {
             );
 
             // SUCCESS (200)
-            alert(response.data.message);
+            // alert(response.data.message);
             navigate("/dashboard");
 
         } catch (error) {

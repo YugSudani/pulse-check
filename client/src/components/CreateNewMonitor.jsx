@@ -44,7 +44,7 @@ export default function CreateNewMonitor() {
 
 
     return (
-        <div className="flex-1 p-3  md:p-10">
+        <div className="overflow-y-auto h-[100vh] flex-1 p-3  md:p-10">
             {/* Back button */}
             <Link
                 to="/dashboard"
