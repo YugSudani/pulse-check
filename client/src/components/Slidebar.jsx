@@ -8,7 +8,7 @@ export default function Slidebar() {
         <>
             {/* ================ MOBILE SIDEBAR TOGGLE ================ */}
             <button
-                className="md:hidden fixed top-4 left-4 z-50 bg-[#121A28] px-3 py-2 rounded-lg"
+                className="md:hidden fixed top-4 left-4 z-50 bg-[linear-gradient(0deg,_rgba(59,215,113,0.05)_0%,_rgb(20,32,45)_75%)] px-3 py-2 rounded-lg"
                 onClick={() => setOpenSidebar(!openSidebar)}
             >
                 ☰
@@ -18,7 +18,7 @@ export default function Slidebar() {
             <aside
                 className={`
                     fixed md:static top-0 left-0 z-40
-                    h-full w-64 bg-[#0D121C] border-r border-gray-800 p-6
+                    h-[100vh] w-64 bg-[linear-gradient(0deg,_rgba(59,215,113,0.05)_0%,_rgb(20,32,45)_75%)] border-r border-gray-800 p-6
                     flex flex-col justify-between
                     transform transition-transform duration-300
                     ${openSidebar ? "translate-x-0" : "-translate-x-full md:translate-x-0"}

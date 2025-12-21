@@ -50,10 +50,6 @@ const monitorSchema = new mongoose.Schema(
             default: 0
         },
 
-        lastCheckedAt: {
-            type: Date,
-            default: null,
-        },
     },
     {
         timestamps: true,

@@ -22,7 +22,7 @@ export default function Dashboard() {
                 setMonitors(response.data.monitors);
             }
         } catch (error) {
-            // navigate("/login", { replace: true });
+            navigate("/login", { replace: true });
             alert("Failed to get monitors");
         }
     }
@@ -61,7 +61,7 @@ export default function Dashboard() {
     return (
         <>
             {/* ================ MAIN CONTENT ================ */}
-            <main className="flex-1 p-6 md:p-8 mt-14 md:mt-0">
+            <main className="flex-1 p-6 md:p-8 mt-14 md:mt-0 ">
 
                 {/* Header */}
                 <h1 className="text-3xl font-bold mb-6">
@@ -70,17 +70,17 @@ export default function Dashboard() {
 
                 {/* Controls Row */}
                 <div className="flex flex-wrap gap-4 mb-6">
-                    <div className="bg-[#121A28] px-4 py-2 rounded-lg text-gray-300">0 / 0</div>
-                    <div className="bg-[#121A28] px-4 py-2 rounded-lg text-gray-300">Show groups</div>
+                    <div className="bg-[#131e30] px-4 py-2 rounded-lg text-gray-300">0 / 0</div>
+                    <div className="bg-[#131e30] px-4 py-2 rounded-lg text-gray-300">Show groups</div>
 
                     <input
                         type="text"
                         placeholder="Search by name or URL"
-                        className="bg-[#121A28] px-4 py-2 rounded-lg text-gray-200 w-full md:w-64 outline-none border border-gray-700"
+                        className="bg-[#131e30] px-4 py-2 rounded-lg text-gray-200 w-full md:w-64 outline-none border border-gray-700"
                     />
 
-                    <button className="bg-[#121A28] px-4 py-2 rounded-lg">Filter</button>
-                    <button className="bg-[#121A28] px-4 py-2 rounded-lg">Down first ▾</button>
+                    <button className="bg-[#131e30] px-4 py-2 rounded-lg">Filter</button>
+                    <button className="bg-[#131e30] px-4 py-2 rounded-lg">Down first ▾</button>
 
                     <Link to="/create-new-monitor" className="md:ml-auto bg-[#1E3A8A] px-4 py-2 rounded-lg font-semibold w-full md:w-auto">
                         + New ▾
@@ -90,7 +90,7 @@ export default function Dashboard() {
                 {/* Main Placeholder Table */}
                 <div className="h-64 md:h-130 flex flex-col gap-4 overflow-y-auto   [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     {monitors?.map((monitor) => (
-                        <div key={monitor._id} onClick={() => navigate(`/monitor/${monitor._id}`)} className="bg-[#121A28] p-4 rounded-2xl py-5 relative cursor-pointer">
+                        <div key={monitor._id} onClick={() => navigate(`/monitor/${monitor._id}`)} className="bg-[#131e30] p-4 rounded-2xl py-5 relative cursor-pointer">
                             <div>Active : {monitor.isActive ? "Yes" : "No"}</div>
                             <h2 className="font-semibold">{monitor.name}</h2>
                             <div className="flex  justify-between items-center">
@@ -120,7 +120,7 @@ export default function Dashboard() {
                                     </svg>
                                 </div>
                                 {activeMenuId === monitor._id && (
-                                    <div className="absolute right-15 top-20 w-auto h-auto z-10">
+                                    <div className="absolute right-1 top-20 w-auto h-auto z-10">
                                         <div className="bg-[#121A28] border border-gray-700 p-2 rounded-xl flex flex-col gap-2 shadow-xl">
                                             <button onClick={() => EditMonitor()} className=" bg-transparent hover:bg-gray-800 px-4 py-1 rounded-lg text-left text-sm ">Edit monitor</button>
                                             <button onClick={(e) => { e.stopPropagation(); deleteMonitor(monitor._id) }} className="bg-[#b83710] hover:bg-[#962d0d] text-center py-1 rounded-lg text-center">Delete</button>
@@ -142,7 +142,7 @@ export default function Dashboard() {
             <aside className="hidden lg:block w-80 p-6 md:p-8 bg-[#0D121C] border-l border-gray-800">
 
                 {/* Current Status Card */}
-                <div className="bg-[#121A28] p-6 rounded-xl border border-gray-800 mb-6">
+                <div className="bg-[#131e30] p-6 rounded-xl border border-gray-800 mb-6">
                     <h2 className="font-semibold mb-4">Current status.</h2>
 
                     <div className="flex justify-center mb-4">
@@ -172,7 +172,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Last 24 Hours Card */}
-                <div className="bg-[#121A28] p-6 rounded-xl border border-gray-800">
+                <div className="bg-[#131e30] p-6 rounded-xl border border-gray-800">
                     <h2 className="font-semibold mb-4">Last 24 hours.</h2>
 
                     <p className="text-red-400 font-bold text-xl">63.151%</p>

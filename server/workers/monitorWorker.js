@@ -28,7 +28,7 @@ const getActive_Eligible_Monitors = async () => {
                 $expr: {
                     $gte: [
                         { $subtract: [new Date(), "$lastCheckedAt"] },
-                        "$interval"
+                        { $subtract: ["$interval", 25000] } // subtract 25sec
                     ]
                 }
             }
@@ -36,6 +36,8 @@ const getActive_Eligible_Monitors = async () => {
     });
 };
 
+//   time  - lastCheckedAt     > interval ? ping : do nothing
+// 1:22:31 - 1:22:00 = 31 seconds > 30sec ? ping : do nothing
 
 // do ping calculate reponse time update monitor stats and manage logs
 let isRunning = false;
@@ -56,17 +58,18 @@ const monitorWorker = async () => {
             const startTime = Date.now();
 
             try {
-                const response = await axios.head(monitor.url, { timeout: 3000 });
+                const response = await axios.head(monitor.url, { timeout: 2000 });
+                console.log(new Date().toLocaleTimeString());
                 responseTime = Date.now() - startTime;
                 statusCode = response.status;
-                console.log("time : " + responseTime + "code : " + statusCode);
+                console.log("time : " + responseTime + " | code : " + statusCode);
 
                 status =
                     statusCode >= 200 && statusCode < 400
                         ? "UP"
                         : "DOWN";
 
-                console.log(monitor.url, "->", status);
+                console.log(monitor.url, " -> ", status);
 
             } catch (err) {
                 responseTime = Date.now() - startTime;
@@ -75,7 +78,7 @@ const monitorWorker = async () => {
                 else if (err.code === "ENOTFOUND") status = "DNS-ERROR";
                 else status = "NETWORK-ERROR";
 
-                console.log(monitor.url, "->", status);
+                console.log(monitor.url, " -> ", status);
             }
 
             // Update monitor
@@ -108,11 +111,10 @@ const monitorWorker = async () => {
     } catch (error) {
         console.error("Monitor worker error:", error);
     } finally {
-        // ✅ ALWAYS release lock
         isRunning = false;
     }
 };
 
-setInterval(monitorWorker, 1000);
+setInterval(monitorWorker, 30000);
 
 module.exports = monitorWorker;

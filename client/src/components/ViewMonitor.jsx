@@ -40,7 +40,7 @@ export default function ViewMonitor() {
     }
 
     return (
-        <div className="overflow-y-auto h-[100vh] w-full bg-[#0B0F17] text-white p-8 md:p-12 flex gap-6">
+        <div className="overflow-y-auto h-[100vh] w-full bg-[#101724] text-white p-8 md:p-12 flex gap-6">
 
             {/* ================= MAIN CONTENT ================= */}
             <div className="flex-1 space-y-5">
@@ -49,7 +49,7 @@ export default function ViewMonitor() {
                 <div className="">
                     <Link
                         to="/dashboard"
-                        className="inline-flex items-center gap-4 bg-[#121A28] px-4 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333]"
+                        className="inline-flex items-center gap-4 bg-[#131e30] px-4 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333]"
                     >
                         ← Monitoring
                     </Link>
@@ -68,9 +68,9 @@ export default function ViewMonitor() {
                             </p>
                         </div>
                         <div className="p-2 flex items-center  justify-between gap-6">
-                            <button className="bg-[#121A28] px-4 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333]">Edit</button>
-                            <button className="bg-[#121A28] px-4 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333]" onClick={() => handlePause(monitor._id)}>{monitorStatusBtn ? "Pause" : "Resume"}</button>
-                            <button className="bg-[#121A28] px-4 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333]">Test Notification</button>
+                            <button className="bg-[#131e30] px-4 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333]">Edit</button>
+                            <button className="bg-[#131e30] px-4 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333]" onClick={() => handlePause(monitor._id)}>{monitorStatusBtn ? "Pause" : "Resume"}</button>
+                            <button className="bg-[#131e30] px-4 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333]">Test Notification</button>
                         </div>
                     </div>
                 </div>
@@ -78,24 +78,24 @@ export default function ViewMonitor() {
                 {/* ================= STATUS CARDS ================= */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                    <div className="bg-[#121A28] border border-gray-800 rounded-xl p-4">
+                    <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
                         <p className="text-gray-400 text-sm mb-1">Current status</p>
                         <p>Total checks : {monitor?.totalChecks}</p>
-                        <p className="text-green-400 font-bold text-lg">{monitor?.lastStatus}Up</p>
+                        <p className="text-green-400 font-bold text-lg">{monitor?.lastStatus ? monitor?.lastStatus : " - - "}</p>
                         <p className="text-gray-400 text-xs mt-1">
                             Currently up for 12d 19h 57m
                         </p>
                     </div>
 
-                    <div className="bg-[#121A28] border border-gray-800 rounded-xl p-4">
+                    <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
                         <p className="text-gray-400 text-sm mb-1">Last check</p>
-                        <p className="font-semibold">{monitor?.lastCheckedAt} ago</p>
+                        <p className="font-semibold">{monitor?.lastCheckedAt ? monitor?.lastCheckedAt : "Never checked"} Ago</p>
                         <p className="text-gray-400 text-md mt-1">
                             Checked every {monitor?.interval / 1000 / 60}min
                         </p>
                     </div>
 
-                    <div className="bg-[#121A28] border border-gray-800 rounded-xl p-4">
+                    <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
                         <p className="text-gray-400 text-sm mb-1">Last 24 hours</p>
                         <p className="font-semibold">100%</p>
                         <p className="text-gray-400 text-xs mt-1">
@@ -106,7 +106,7 @@ export default function ViewMonitor() {
                 </div>
 
                 {/* ================= UPTIME SUMMARY ================= */}
-                <div className="bg-[#121A28] border border-gray-800 rounded-xl p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
 
                     <div>
                         <p className="text-gray-400 text-sm">Last 7 days</p>
@@ -129,7 +129,7 @@ export default function ViewMonitor() {
                 </div>
 
                 {/* ================= RESPONSE TIME ================= */}
-                <div className="bg-[#121A28] border border-gray-800 rounded-xl p-4">
+                <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="font-semibold">Response time.</h2>
                         <span className="text-sm text-gray-400">Last hour</span>
@@ -155,7 +155,7 @@ export default function ViewMonitor() {
                 </div>
 
                 {/* ================= LATEST INCIDENTS ================= */}
-                <div className="bg-[#121A28] border border-gray-800 rounded-xl p-4">
+                <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="font-semibold">Latest incidents.</h2>
                         <button className="text-sm bg-[#1A2333] px-3 py-1 rounded-lg">
@@ -208,7 +208,7 @@ export default function ViewMonitor() {
             {/* ================= RIGHT SIDEBAR ================= */}
             <aside className="hidden lg:block w-80 mt-20 space-y-5">
 
-                <div className="bg-[#121A28] border border-gray-800 rounded-xl p-4">
+                <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
                     <h3 className="font-semibold mb-3">Domain & SSL.</h3>
                     <p className="text-gray-400 text-sm mb-2">
                         Domain valid until
@@ -221,7 +221,7 @@ export default function ViewMonitor() {
                     <p className="font-semibold">Unlock</p>
                 </div>
 
-                <div className="bg-[#121A28] border border-gray-800 rounded-xl p-4">
+                <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
                     <h3 className="font-semibold mb-3">Next maintenance.</h3>
                     <p className="text-gray-400 text-sm mb-3">
                         No maintenance planned.
@@ -231,7 +231,7 @@ export default function ViewMonitor() {
                     </button>
                 </div>
 
-                <div className="bg-[#121A28] border border-gray-800 rounded-xl p-4">
+                <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
                     <h3 className="font-semibold mb-3">Regions.</h3>
                     <p className="text-gray-400 text-sm">North America</p>
                 </div>
