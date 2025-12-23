@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const monitorModel = require('../models/monitorModel');
-
+const logModel = require('../models/logModel');
 
 
 router.post('/createMonitor', async (req, res) => {
@@ -81,17 +81,39 @@ router.delete("/deleteMonitor/:id", async (req, res) => {
     }
 })
 
-router.get("getLogData/:id", async (req,res)=>{
-    const monitorId = req.params.id;
-    try {
-        const logs = await logsModel.find({ monitorId });
-        res.status(200).json({ success: true, logs });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, msg: "Failed to get logs" });
-    }
-})
+router.get(
+    "/:monitorId/response-history",
+    async (req, res) => {
+        const { monitorId } = req.params;
+        const range = req.query.range || "1h";
 
+        const now = new Date();
+        const ranges = {
+            "1h": 60 * 60 * 1000,
+            "6h": 6 * 60 * 60 * 1000,
+            "24h": 24 * 60 * 60 * 1000,
+        };
+
+        const from = new Date(now - ranges[range]);
+
+        const logs = await logModel
+            .find({
+                monitorId,
+                checkedAt: { $gte: from },
+            })
+            .sort({ checkedAt: 1 })
+            .select("checkedAt responseTime -_id")
+            .lean();
+
+        res.json({
+            success: true,
+            data: logs.map(l => ({
+                t: l.checkedAt,
+                rt: l.responseTime,
+            })),
+        });
+    }
+);
 
 
 

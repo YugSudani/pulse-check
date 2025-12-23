@@ -123,7 +123,7 @@ export default function ViewMonitor() {
                         <p className="text-gray-400 text-sm mb-1">Last check</p>
                         <p className="font-semibold">{timeAgo} ago</p>
                         <p className="text-gray-400 text-md mt-1">
-                            Checked every {monitor?.interval / 1000 / 60}min
+                            Checked every {monitor?.interval / 1000 / 60 > 0.99 ? monitor?.interval / 1000 / 60 + " min" : monitor?.interval / 1000 + " sec"}
                         </p>
                         <p className="text-green-300 text-md mt-1 ">Net Pulse Count : {monitor?.totalChecks}</p>
                     </div>

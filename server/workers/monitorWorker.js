@@ -58,7 +58,7 @@ const monitorWorker = async () => {
             const startTime = Date.now();
 
             try {
-                const response = await axios.head(monitor.url, { timeout: 2000 });
+                const response = await axios.head(monitor.url, { timeout: 3000 });
                 console.log(new Date().toLocaleTimeString());
                 responseTime = Date.now() - startTime;
                 statusCode = response.status;
