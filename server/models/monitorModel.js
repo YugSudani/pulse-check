@@ -45,6 +45,11 @@ const monitorSchema = new mongoose.Schema(
             default: 0
         },
 
+        currentUpDownTimeStart: {
+            type: Date,
+            default: null, // null means never been up, or currently down
+        },
+
         totalDown: {
             type: Number,
             default: 0

@@ -107,6 +107,18 @@ const monitorWorker = async () => {
             });
 
             console.log("Log created for", monitor.name);
+
+            if (status !== monitor.lastStatus) {
+                console.log("currentUpDownTimeStart changed");
+                await monitorModel.findOneAndUpdate(
+                    { _id: monitor._id },
+                    {
+                        $set: {
+                            currentUpDownTimeStart: new Date(),
+                        }
+                    }
+                );
+            }
         }
     } catch (error) {
         console.error("Monitor worker error:", error);

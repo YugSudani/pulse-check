@@ -89,10 +89,15 @@ router.get(
 
         const now = new Date();
         const ranges = {
-            "1h": 60 * 60 * 1000,
+            "5m": 5 * 60 * 1000,
+            "15m": 15 * 60 * 1000,
+            "30m": 30 * 60 * 1000,
+            "2h": 2 * 60 * 60 * 1000,
             "6h": 6 * 60 * 60 * 1000,
+            "12h": 12 * 60 * 60 * 1000,
             "24h": 24 * 60 * 60 * 1000,
         };
+
 
         const from = new Date(now - ranges[range]);
 
@@ -105,12 +110,27 @@ router.get(
             .select("checkedAt responseTime -_id")
             .lean();
 
+        // Calculate statistics
+        let stats = {
+            min: null,
+            max: null,
+            avg: null
+        };
+
+        if (logs.length > 0) {
+            const responseTimes = logs.map(l => l.responseTime);
+            stats.min = Math.min(...responseTimes);
+            stats.max = Math.max(...responseTimes);
+            stats.avg = Math.round(responseTimes.reduce((sum, rt) => sum + rt, 0) / responseTimes.length);
+        }
+
         res.json({
             success: true,
             data: logs.map(l => ({
-                t: l.checkedAt,
+                t: new Date(l.checkedAt).toISOString(), // Ensure ISO string format
                 rt: l.responseTime,
             })),
+            stats: stats
         });
     }
 );
