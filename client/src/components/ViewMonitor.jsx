@@ -12,6 +12,7 @@ export default function ViewMonitor() {
     const [logData, setLogData] = useState([]);
     const [stats, setStats] = useState({ min: null, max: null, avg: null });
     const [range, setRange] = useState('15m');
+    const [upDownTime, setUpDownTime] = useState(null);
 
     const fetchLogData = async (range) => {
         try {
@@ -19,7 +20,7 @@ export default function ViewMonitor() {
                 { withCredentials: true }
             );
             const data = response.data;
-            console.log(data);
+            // console.log(data);
             setLogData(data.data);
             setStats(data.stats || { min: null, max: null, avg: null });
         } catch (error) {
@@ -28,38 +29,36 @@ export default function ViewMonitor() {
         }
     }
 
-    const updateUpDownTime = () => {
-        const past = new Date("2025-12-23T08:53:10.463Z");
-        const now = new Date();
-        const diffMs = now - past;
-        console.log(diffMs/1000); // milliseconds
+    const fetchMonitor = async () => {
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/monitor/${id}`,
+            { withCredentials: true }
+        );
+        const data = response.data;
+        // console.log(data.monitor);
+        setMonitor(data.monitor);
+        setMonitorStatusBtn(data.monitor.isActive);
+    } catch (error) {
+        alert('failed to load monitor data');
+        console.error('Error fetching monitor data:', error);
     }
+};
 
-    useEffect(() => {
-        const fetchMonitor = async () => {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/monitor/${id}`,
-                { withCredentials: true }
-            );
-            const data = response.data;
-            console.log(data.monitor);
-            setMonitor(data.monitor);
-            setMonitorStatusBtn(data.monitor.isActive);
-            updateUpDownTime()
-        } catch (error) {
-            alert('failed to load monitor data');
-            console.error('Error fetching monitor data:', error);
-        }
-    };
-    fetchMonitor(); // Initial fetch
-    const interval = setInterval(fetchMonitor, 15000); // Poll every 15s
+useEffect(() => {
+    fetchMonitor();
+
+    const interval = setInterval(fetchMonitor, 15000);
+    return () => clearInterval(interval);
+}, [id]);
+
+useEffect(() => {
+    if (!monitor?.isActive) return;
+
     fetchLogData(range);
-    const interval2 = setInterval(() => fetchLogData(range), 15000); // Poll every 15s
-    return () => {
-        clearInterval(interval);
-        clearInterval(interval2);
-    }; // Cleanup on unmount
-}, [id, range]);
+    const interval2 = setInterval(() => fetchLogData(range), 15000);
+    return () => clearInterval(interval2);
+}, [monitor?.isActive, range]);
+
 
 const handlePause = async (monitorId) => {
     try {
@@ -73,6 +72,18 @@ const handlePause = async (monitorId) => {
     }
 }
 
+ const updateUpDownTime = () => {
+        const past = new Date(monitor?.currentUpDownTimeStart);
+        const now = new Date();
+        const diffMs = now - past;
+        const diffHoursTime =
+            diffMs / 1000 / 60 / 60 > 0.99
+                ? (diffMs / 1000 / 60 / 60).toFixed(2) + " hours"
+                : diffMs / 1000 / 60 > 0.99
+                ? (diffMs / 1000 / 60).toFixed(0) + " min"
+                : Math.floor(diffMs / 1000) + " sec";
+        setUpDownTime(diffHoursTime.trim());
+    }
 // Live updating time ago
 const [timeAgo, setTimeAgo] = useState('');
 
@@ -94,6 +105,8 @@ useEffect(() => {
 
         setTimeAgo(time);
     };
+
+    updateUpDownTime()
 
     updateTimeAgo(); // Initial update
     const interval = setInterval(updateTimeAgo, 1000); // Update every second
@@ -145,7 +158,7 @@ return (
                     <p className="text-gray-400 text-sm mb-1">Current status</p>
                     <p className="font-bold text-xl leading-12 tracking-wider">{monitor?.lastStatus ? <p className={`text-${monitor?.lastStatus === "UP" ? "green-400" : "red-400"}`}>{monitor?.lastStatus}</p> : <p> - - </p>}</p>
                     <p className="text-gray-400 text-xs mt-1">
-                        Currently up for {monitor?.currentUpDownTimeStart ? new Date() - monitor?.currentUpDownTimeStart : "-"}
+                        Currently {monitor?.lastStatus === "UP" ? "up" : "down"} for {upDownTime}
                     </p>
                 </div>
 

@@ -26,6 +26,8 @@ const logSchema = new mongoose.Schema(
         checkedAt: {
             type: Date,
             default: Date.now,
+            index: true,
+            expires: 60 * 60 * 24, // 👈 24 hours in seconds
         },
     }
 )

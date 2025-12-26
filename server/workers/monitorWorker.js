@@ -81,13 +81,17 @@ const monitorWorker = async () => {
                 console.log(monitor.url, " -> ", status);
             }
 
-            // Update monitor
+            // Check if status changed BEFORE updating
+            const statusChanged = status !== monitor.lastStatus;
+            
+            // Update monitor with currentUpDownTimeStart reset if status changed
             await monitorModel.findOneAndUpdate(
                 { _id: monitor._id },
                 {
                     $set: {
                         lastStatus: status,
                         lastCheckedAt: new Date(),
+                        ...(statusChanged ? { currentUpDownTimeStart: new Date() } : {}),
                     },
                     $inc: {
                         totalChecks: 1,
@@ -107,17 +111,9 @@ const monitorWorker = async () => {
             });
 
             console.log("Log created for", monitor.name);
-
-            if (status !== monitor.lastStatus) {
-                console.log("currentUpDownTimeStart changed");
-                await monitorModel.findOneAndUpdate(
-                    { _id: monitor._id },
-                    {
-                        $set: {
-                            currentUpDownTimeStart: new Date(),
-                        }
-                    }
-                );
+            
+            if (statusChanged) {
+                console.log("Status changed - currentUpDownTimeStart reset");
             }
         }
     } catch (error) {

@@ -136,29 +136,4 @@ router.get(
 );
 
 
-
-
-
-
-
-
-
-router.post("/pingIt", async (req, res) => {
-    console.log("PING API called");
-    const { url, interval } = req.body;
-
-    setInterval(async () => {
-        try {
-            const response = await axios(url, {
-                method: "head"
-            });
-            console.log(response.status);
-        } catch (error) {
-            res.json({ "result": "monitoring failed" });
-        }
-    }, interval);
-    res.json({ "result": "monitoring started" });
-});
-
-
 module.exports = router;
