@@ -73,6 +73,7 @@ const handlePause = async (monitorId) => {
 }
 
  const updateUpDownTime = () => {
+    if (!monitor?.currentUpDownTimeStart) return;
         const past = new Date(monitor?.currentUpDownTimeStart);
         const now = new Date();
         const diffMs = now - past;
@@ -90,7 +91,6 @@ const [timeAgo, setTimeAgo] = useState('');
 useEffect(() => {
     const updateTimeAgo = () => {
         if (!monitor?.lastCheckedAt) {
-            ('Never checked');
             return;
         }
 
@@ -158,13 +158,13 @@ return (
                     <p className="text-gray-400 text-sm mb-1">Current status</p>
                     <p className="font-bold text-xl leading-12 tracking-wider">{monitor?.lastStatus ? <p className={`text-${monitor?.lastStatus === "UP" ? "green-400" : "red-400"}`}>{monitor?.lastStatus}</p> : <p> - - </p>}</p>
                     <p className="text-gray-400 text-xs mt-1">
-                        Currently {monitor?.lastStatus === "UP" ? "up" : "down"} for {upDownTime}
+                        Currently {monitor?.lastStatus === "UP" ? "up" :  monitor?.lastStatus === "DOWN" ? "down" : "- -"} for {upDownTime?upDownTime:'- -'}
                     </p>
                 </div>
 
                 <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
                     <p className="text-gray-400 text-sm mb-1">Last check</p>
-                    <p className="font-semibold">{timeAgo} ago</p>
+                    <p className="font-semibold">{timeAgo? timeAgo + ' ago' : 'Never checked'}</p>
                     <p className="text-gray-400 text-md mt-1">
                         Checked every {monitor?.interval / 1000 / 60 > 0.99 ? monitor?.interval / 1000 / 60 + " min" : monitor?.interval / 1000 + " sec"}
                     </p>

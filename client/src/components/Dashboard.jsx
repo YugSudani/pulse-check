@@ -15,8 +15,7 @@ export default function Dashboard() {
                 { withCredentials: true }
             );
             console.log("data : " + response.data.monitors);
-            if (response.data.message === 'Failed to get monitors') {
-                // navigate("/login", { replace: true });
+            if (!response.data.success) {
                 alert("Failed to get monitors");
             } else {
                 setMonitors(response.data.monitors);
@@ -32,22 +31,25 @@ export default function Dashboard() {
     }, [])
 
 
-    const deleteMonitor = async (id) => {
-        try {
-            const response = await axios.delete(
-                `${import.meta.env.VITE_API_URL}/monitor/deleteMonitor/${id}`,
-                { withCredentials: true }
-            );
-            console.log("data : " + response.data.allMonitor);
-            if (response.data.message === 'Failed to delete monitor') {
-                alert("Failed to delete monitor");
-            } else {
-                setMonitors(response.data.allMonitor);
-            }
-        } catch (error) {
-            alert("Failed to delete monitor");
+   const deleteMonitor = async (id) => {
+    try {
+        const { data } = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/monitor/deleteMonitor/${id}`,
+        { withCredentials: true }
+        );
+
+        if (!data.success) {
+        alert(data.msg || "Failed to delete monitor");
+        return;
         }
+
+        setMonitors(data.allMonitor);
+    } catch (error) {
+        console.error(error);
+        alert("Failed to delete monitor");
     }
+    };
+
 
     const [activeMenuId, setActiveMenuId] = useState(null);
     const toggleDeleteBox = (id) => {

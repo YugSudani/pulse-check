@@ -22,10 +22,11 @@ connectDB(mongo_uri);
 
 const userRouter = require('./routes/userRouter');
 const monitorRouter = require("./routes/monitorRouter");
-
+const incidentRouter = require("./routes/incidentRouter");
 
 app.use('/user', userRouter);
 app.use('/monitor', auth, monitorRouter);
+app.use('/incident' , auth, incidentRouter)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

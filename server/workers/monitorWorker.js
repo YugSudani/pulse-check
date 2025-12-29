@@ -4,7 +4,7 @@ const axios = require("axios");
 const mongoose = require("mongoose");
 const monitorModel = require("../models/monitorModel");
 const logsModel = require("../models/logModel");
-
+const incidentModel = require("../models/incidentModel");
 
 const connectDB = async () => {
     try {
@@ -80,10 +80,53 @@ const monitorWorker = async () => {
 
                 console.log(monitor.url, " -> ", status);
             }
+            
+            
+            // create incident
+            if(status !== monitor.lastStatus && status !== "UP"){
+                await incidentModel.create({
+                    userID: monitor.userId,
+                    monitorId: monitor._id,
+                    monitorUrl: monitor.url,
+                    incidentType: status,
+                    incidentStartTime: new Date(),
+                });
+                console.log("Incident created for", monitor.url , " FOR : " + status);
+            }
+            
+            // update incident
+            if(monitor.lastStatus !== "UP" && status === "UP"){      // consider all as down accept up
+                const incident = await incidentModel.findOneAndUpdate(
+                    { 
+                        monitorId: monitor._id,
+                        incidentEndTime: null  // find the open incident
+                    },
+                    {
+                        $set: {
+                            incidentEndTime: new Date(),
+                        },
+                    },
+                    { 
+                        sort: { incidentStartTime: -1 },  // get the most recent one
+                        new: true 
+                    }
+                );
+                
+                if (incident) {
+                    // Calculate duration in milliseconds
+                    const duration = new Date() - new Date(incident.incidentStartTime);
+                    await incidentModel.findByIdAndUpdate(incident._id, {
+                        $set: { incidentDuration: duration }
+                    });
+                    console.log("Incident updated for", monitor.url , " FOR : " + status);
+                } else {
+                    console.log("No open incident found for", monitor.url);
+                }
+            }
+
 
             // Check if status changed BEFORE updating
             const statusChanged = status !== monitor.lastStatus;
-            
             // Update monitor with currentUpDownTimeStart reset if status changed
             await monitorModel.findOneAndUpdate(
                 { _id: monitor._id },
@@ -101,7 +144,7 @@ const monitorWorker = async () => {
                 { new: true }
             );
 
-            // Log ONLY on status change
+            // create log
             await logsModel.create({
                 monitorId: monitor._id,
                 statusCode,

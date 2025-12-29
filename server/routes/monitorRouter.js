@@ -64,22 +64,38 @@ router.patch("/pause/:id", async (req, res) => {
 })
 
 router.delete("/deleteMonitor/:id", async (req, res) => {
-    const monitorId = req.params.id;
-    const user = req.user;
-    console.log(monitorId);
-    try {
-        const monitor = await monitorModel.findById(monitorId);
-        if (!monitor) {
-            return res.status(404).json({ success: false, msg: "Monitor not found" });
-        }
-        await monitor.deleteOne({ _id: monitorId });
-        const allMonitor = await monitorModel.find({ userId: user._id });
-        res.status(200).json({ success: true, allMonitor });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, msg: "Failed to delete monitor" });
+  const { id: monitorId } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const monitor = await monitorModel.findOneAndDelete({
+      _id: monitorId,
+      userId,
+    });
+
+    if (!monitor) {
+      return res.status(404).json({
+        success: false,
+        msg: "Monitor not found or unauthorized",
+      });
     }
-})
+
+    await Promise.all([
+      logModel.deleteMany({ monitorId }),
+      incidentModel.deleteMany({ monitorId }),
+    ]);
+
+    const allMonitor = await monitorModel.find({ userId });
+
+    res.status(200).json({ success: true, allMonitor });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      msg: "Failed to delete monitor",
+    });
+  }
+});
 
 router.get(
     "/:monitorId/response-history",
