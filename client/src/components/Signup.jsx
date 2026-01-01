@@ -1,6 +1,6 @@
-import axios from "axios";
+import api from "../lib/api";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
 
@@ -59,11 +59,11 @@ export default function Signup() {
         console.log("Signup data:", form);
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/signup`, form);
+            const response = await api.post(`/user/signup`, form);
             if (!response.data.success) {
                 alert("failed to register");
             } else {
-                navigate("/login");
+                navigate("/login", { replace: true });
             }
         } catch (error) {
             alert("Server error");
@@ -149,9 +149,9 @@ export default function Signup() {
                 {/* Bottom text */}
                 <p className="text-center text-gray-400 mt-6 text-sm">
                     Already have an account?{" "}
-                    <Link to="/login" className="text-green-500 cursor-pointer hover:underline">
+                    <button onClick={() => navigate("/login", { replace: true })} className="text-green-500 cursor-pointer hover:underline">
                         Login
-                    </Link>
+                    </button>
                 </p>
 
             </div>

@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../lib/api";
 
 export default function CreateNewMonitor() {
 
     const navigate = useNavigate();
 
+    const { id } = useParams();
     const [url, setUrl] = useState("https://");
     const [name, setName] = useState("New Monitor");
 
@@ -20,11 +21,28 @@ export default function CreateNewMonitor() {
         { value: 86400 * 1000, label: "24 hours" }      // 86400000
     ];
 
+    const getMonitor = async () => {
+        try {
+            const response = await api.get(
+                `/monitor/${id}`,
+                { withCredentials: true }
+            );
+            console.log(response.data);
+            setUrl(response.data.monitor.url);
+            setName(response.data.monitor.name);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(()=>{
+        getMonitor();
+    },[])
 
     const [intervalIndex, setIntervalIndex] = useState(2); // default to 5 minutes (index 2)
     const interval = intervalOptions[intervalIndex].value;
 
-    const CreateMonitor = async () => {
+    const handleEditMonitor = async () => {
         try {
             const response = await api.post(
                 "/monitor/createMonitor",
@@ -35,7 +53,6 @@ export default function CreateNewMonitor() {
                 },
                 { withCredentials: true }
             );
-            console.log(response.data);
             navigate("/dashboard", { replace: true });
         } catch (error) {
             console.log(error);
@@ -53,24 +70,10 @@ export default function CreateNewMonitor() {
             </button>
 
             <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
-                Add single monitor<span className="text-green-500">.</span>
+                Edit Monitor<span className="text-green-500">.</span>
             </h1>
 
             <div className="bg-[#0D121C] border border-gray-800 rounded-xl p-4 sm:p-6 md:p-10 space-y-6 sm:space-y-10">
-
-                {/* ================= MONITOR TYPE ================= */}
-                <section>
-                    <h2 className="text-lg sm:text-xl font-semibold mb-3">Monitor type</h2>
-
-                    <div className="bg-[#121A28] border border-gray-700 p-4 rounded-lg flex justify-between items-center">
-                        <div>
-                            <p className="font-semibold text-sm sm:text-base">HTTP / website monitoring</p>
-                            <p className="text-gray-400 text-xs sm:text-sm mt-1">
-                                Use HTTP(S) monitor to monitor your website, API endpoint, or anything running on HTTP.
-                            </p>
-                        </div>
-                    </div>
-                </section>
 
                 <hr className="border-gray-800" />
 
@@ -89,20 +92,7 @@ export default function CreateNewMonitor() {
                 {/* ================= GROUP + TAGS ================= */}
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
 
-                    {/* Group */}
-                    <div>
-                        <h2 className="text-lg sm:text-xl font-semibold mb-3">Group</h2>
-
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 mb-2">
-                            🔒 Groups are available only on Paid plans.
-                            <span className="text-green-500 cursor-pointer hover:underline">Upgrade now</span>
-                        </div>
-
-                        <select className="w-full px-4 py-3 bg-[#121A28] border border-gray-800 rounded-lg text-gray-400 text-sm sm:text-base">
-                            <option>Monitors (default)</option>
-                        </select>
-                    </div>
-
+                  
                     {/* Tags */}
                     <div>
                         <h2 className="text-lg sm:text-xl font-semibold mb-3">Give Name to your monitor</h2>
@@ -214,8 +204,8 @@ export default function CreateNewMonitor() {
 
                 {/* ================= SUBMIT BUTTON ================= */}
                 <div className="pt-6">
-                    <button onClick={CreateMonitor} className="w-full bg-green-500 text-black font-semibold py-3 rounded-lg hover:bg-green-400 transition">
-                        Create Monitor
+                    <button onClick={handleEditMonitor} className="w-full bg-green-500 text-black font-semibold py-3 rounded-lg hover:bg-green-400 transition">
+                        Update Monitor
                     </button>
                 </div>
 

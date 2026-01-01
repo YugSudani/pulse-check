@@ -5,3 +5,11 @@
         @apply hover:text-green-500 transition-colors duration-200;
     }
 }
+
+/* ================= SEARCH RESULT ANIMATION ================= */
+
+.search-highlight {
+  background: rgba(16, 185, 129, 0.219);
+  border-radius: 4px;
+  padding: 5px 12px;
+}
