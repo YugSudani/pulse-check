@@ -12,6 +12,10 @@ const schema = new mongoose.Schema({
     pwd: {
         type: String,
         required: true
+    },
+    lastEmailSentAt: {
+        type: Date,
+        default: null
     }
 })
 

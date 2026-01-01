@@ -44,8 +44,8 @@ export default function Dashboard() {
         // alert(data.msg || "Failed to delete monitor");
         return;
         }
-
-        setMonitors(data.allMonitor);
+        console.log("reaching here>>>>")
+        setMonitors(data.monitors);
     } catch (error) {
         console.error(error);
         // alert("Failed to delete monitor");
@@ -184,9 +184,9 @@ export default function Dashboard() {
                                 </div>
                                 {activeMenuId === monitor._id && (
                                     <div className="absolute right-6 top-31 sm:top-24 w-auto h-auto z-10">
-                                        <div className="bg-[#121A28] border border-gray-700 p-2 rounded-xl flex flex-col gap-2 shadow-xl min-w-[140px]">
-                                            <div className="bg-transparent px-4 py-2 rounded-lg text-center ">Menu</div>
-                                            <button onClick={(e) => { e.stopPropagation(); deleteMonitor(monitor._id) }} className="bg-[#b83710] hover:bg-[#962d0d] text-center py-2 rounded-lg transition cursor-pointer">Delete</button>
+                                        <div className="bg-[#121A28] border border-gray-700 p-3 rounded-xl flex flex-col gap-2 shadow-xl min-w-[140px]">
+                                            <button onClick={(e) => { e.stopPropagation(); navigate(`/edit-monitor/${monitor._id}`) }} className="bg-[#172742] px-4 py-2 w-17 md:w-30  rounded-lg text-xs sm:text-sm hover:bg-[#1A2333] cursor-pointer transition whitespace-nowrap">Edit Monitor</button>
+                                            <button onClick={(e) => { e.stopPropagation(); deleteMonitor(monitor._id) }} className="bg-[#b83710] hover:bg-[#962d0d] text-center py-1 rounded-lg transition cursor-pointer">Delete</button>
                                         </div>
                                     </div>
                                 )}

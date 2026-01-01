@@ -3,14 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../lib/api";
 
 export default function CreateNewMonitor() {
-
     const navigate = useNavigate();
-
-    const { id } = useParams();
-    const [url, setUrl] = useState("https://");
-    const [name, setName] = useState("New Monitor");
-
-    // Predefined interval options in seconds
     const intervalOptions = [
         { value: 30 * 1000, label: "30 seconds" },      // 30000
         { value: 60 * 1000, label: "1 minute" },        // 60000
@@ -20,6 +13,16 @@ export default function CreateNewMonitor() {
         { value: 43200 * 1000, label: "12 hours" },     // 43200000
         { value: 86400 * 1000, label: "24 hours" }      // 86400000
     ];
+    
+    const [intervalIndex, setIntervalIndex] = useState(2); // default to 5 minutes (index 2)
+    
+    const { id } = useParams();
+    const [newMonitor, setNewMonitor] = useState({
+        name: "",
+        url: "",
+        });
+
+    // Predefined interval options in seconds
 
     const getMonitor = async () => {
         try {
@@ -28,8 +31,12 @@ export default function CreateNewMonitor() {
                 { withCredentials: true }
             );
             console.log(response.data);
-            setUrl(response.data.monitor.url);
-            setName(response.data.monitor.name);
+            setNewMonitor(response.data.monitor);
+
+             const idx = intervalOptions.findIndex(
+                opt => opt.value === response.data.monitor.interval
+            );
+            setIntervalIndex(idx === -1 ? 2 : idx);
         } catch (error) {
             console.log(error);
         }
@@ -39,24 +46,26 @@ export default function CreateNewMonitor() {
         getMonitor();
     },[])
 
-    const [intervalIndex, setIntervalIndex] = useState(2); // default to 5 minutes (index 2)
-    const interval = intervalOptions[intervalIndex].value;
 
     const handleEditMonitor = async () => {
+        const payload = {
+            ...newMonitor,
+            interval: intervalOptions[intervalIndex].value,
+        };
+        console.log(payload); 
+
         try {
-            const response = await api.post(
-                "/monitor/createMonitor",
-                {
-                    name,
-                    url,
-                    interval
-                },
+            const response = await api.put(
+                `/monitor/editeMonitor/${id}`,
+                payload,
                 { withCredentials: true }
             );
+            console.log(response.data);
             navigate("/dashboard", { replace: true });
         } catch (error) {
             console.log(error);
         }
+        
     }
 
 
@@ -83,8 +92,8 @@ export default function CreateNewMonitor() {
 
                     <input
                         type="text"
-                        value={url}
-                        onChange={(e) => setUrl(e.target.value)}
+                        value={newMonitor.url}
+                        onChange={(e) => setNewMonitor({ ...newMonitor, url: e.target.value })}
                         className="w-full px-4 py-3 bg-[#121A28] border border-gray-700 rounded-lg outline-none text-gray-200 text-sm sm:text-base"
                     />
                 </section>
@@ -104,8 +113,8 @@ export default function CreateNewMonitor() {
                         <input
                             type="text"
                             placeholder="Click to give name..."
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={newMonitor.name}
+                            onChange={(e) => setNewMonitor({ ...newMonitor, name: e.target.value })}
                             className="w-full px-4 py-3 bg-[#121A28] border border-gray-700 rounded-lg text-gray-200 outline-none text-sm sm:text-base"
                         />
                     </div>
@@ -170,7 +179,7 @@ export default function CreateNewMonitor() {
                     <input
                         type="range"
                         min="0"
-                        max="6"
+                        max={intervalOptions?.length - 1}
                         step="1"
                         value={intervalIndex}
                         onChange={(e) => setIntervalIndex(Number(e.target.value))}
