@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { useAuth } from "../context/AuthContext";
@@ -7,6 +7,17 @@ export default function Slidebar() {
   const [openSidebar, setOpenSidebar] = useState(false);
   const navigate = useNavigate();
   const { checkAuth } = useAuth();
+
+  const [userName, setUserName] = useState("");
+
+  const fetchUser = async () => {
+    const { data } = await api.get("/user/getMe");
+    setUserName(data.name);    
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   return (
     <>
@@ -122,9 +133,9 @@ export default function Slidebar() {
         <div className="mt-10">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm">
-              YS
+              {userName?.split(" ")[0]?.charAt(0)?.toUpperCase()+userName?.split(" ")[1]?.charAt(0)?.toUpperCase()}
             </div>
-            <p className="font-semibold text-sm sm:text-base">Yug Sudani</p>
+            <p className="font-semibold text-sm sm:text-base">{userName}'s Workspace</p>
           </div>
           <div className="pb-3">
             <button

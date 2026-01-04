@@ -16,7 +16,7 @@ export default function Dashboard() {
                 `/monitor/getAllMonitors`,
                 { withCredentials: true }
             );
-            console.log("data : " + response.data.monitors);
+            // console.log("data : " + response.data.monitors);
             if (!response.data.success) {
                 // alert("Failed to get monitors");
             } else {

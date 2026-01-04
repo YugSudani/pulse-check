@@ -65,8 +65,9 @@ router.get("/getMe", async (req, res) => {
         .status(401)
         .json({ message: "User not found", success: false });
     }
+console.log(user);
 
-    return res.status(200).json({ message: "user found true", success: true });
+    return res.status(200).json({ message: "user found true", success: true , name:user.name });
   } catch (error) {
     return res.status(401).json({ message: "User not found", success: false });
   }
