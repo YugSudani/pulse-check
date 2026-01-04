@@ -33,7 +33,7 @@ export default function Incidents() {
             className="bg-[#131e30] px-4 py-2 rounded-lg text-sm outline-none border border-gray-800 w-full sm:w-60"
           />
 
-          <select name="" id="" value={category} onChange={(e) => setCategory(e.target.value)} className="bg-[#131e30] px-4 py-2 rounded-lg text-sm outline-none border border-gray-800 w-full sm:w-auto">
+          <select name="" id="" value={category} onChange={(e) => setCategory(e.target.value)} className="bg-[#131e30] px-4 py-2 rounded-lg text-sm outline-none border border-gray-800 w-full sm:w-auto cursor-pointer ">
             <option value="all" selected>All</option>
             <option value="DNS-ERROR">DNS-ERROR</option>
             <option value="TIME-OUT">TIME-OUT</option>

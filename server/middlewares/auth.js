@@ -9,6 +9,10 @@ const auth = (req, res, next) => {
     }
 
     const user = getUser(token); // jwt.verify happens here
+    if (!user || !user._id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     req.user = user;
 
     next();

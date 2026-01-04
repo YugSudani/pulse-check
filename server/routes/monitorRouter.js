@@ -156,7 +156,7 @@ router.put("/editeMonitor/:monitorId", async (req, res) => {
   const monitorId = req.params.monitorId;
   const { name, url, interval } = req.body;
 
-  console.log(monitorId);
+  // console.log(monitorId);
   try {
     const monitor = await monitorModel.findById(monitorId);
     if (!monitor) {

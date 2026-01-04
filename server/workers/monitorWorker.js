@@ -94,11 +94,16 @@ const monitorWorker = async () => {
       });
 
       //send alert mail
-      if (monitor.lastStatus === "UP" && status !== "UP") {
-        sendAlertEmail_2("DOWN", monitor); //DOWN alert
+      if (
+        (monitor.lastStatus === "UP" || monitor.lastStatus === null) &&
+        status !== "UP"
+      ) {
+        // sendAlertEmail_2("DOWN", monitor, status); //DOWN alert
       }
-      if (monitor.lastStatus !== "UP" && monitor.lastStatus !== null && status === "UP") {
-        sendAlertEmail_2("RECOVERED", monitor); // RECOVERY alert
+      if (
+        monitor.lastStatus !== "UP" && monitor.lastStatus !== null && status === "UP"
+      ) {
+        // sendAlertEmail_2("RECOVERED", monitor, status); // RECOVERY alert
       }
     }
   } catch (error) {

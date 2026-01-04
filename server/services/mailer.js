@@ -13,12 +13,12 @@ const sendAlertEmail = async ({
       process.env.EMAILJS_SERVICE_ID,
       process.env.EMAILJS_TEMPLATE_ALERT,
       {
-        to_email: toEmail,
-        user_name: userName,
-        monitor_name: monitorName,
-        monitor_url: monitorUrl,
-        status,
-        reason,
+        toEmail: toEmail,
+        userName: userName,
+        monitorName: monitorName,
+        monitorUrl: monitorUrl,
+        status: status,
+        reason: reason,
         time: new Date().toLocaleString(),
       },
       {
@@ -27,7 +27,7 @@ const sendAlertEmail = async ({
       }
     );
 
-    console.log("📧 Alert email sent:", monitorName, status);
+    console.log("Alert email sent:", monitorName, status);
   } catch (err) {
     console.error("❌ EmailJS error:", err);
   }
