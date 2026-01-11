@@ -15,9 +15,11 @@
     "nodemon": "^3.1.11",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-onesignal": "^3.4.6",
     "react-router-dom": "^7.10.1",
     "recharts": "^3.6.0",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "vite-plugin-static-copy": "^3.1.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
