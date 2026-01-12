@@ -16,6 +16,10 @@ const schema = new mongoose.Schema({
     lastEmailSentAt: {
         type: Date,
         default: null
+    },
+    playerId: {
+        type: String,
+        default: null
     }
 })
 
