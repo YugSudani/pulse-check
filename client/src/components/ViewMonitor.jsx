@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import api from "../lib/api";
 import ResponseTimeChart from "./ResponseTimeChart";
 import { useNavigate } from "react-router-dom";
-import exportLogs from "./helpers/logs_csv_generator";
+import exportLogs from "./helpers/Logs_csv_generator";
 
 export default function ViewMonitor() {
   const navigate = useNavigate();
@@ -492,3 +492,4 @@ export default function ViewMonitor() {
     </div>
   );
 }
+
