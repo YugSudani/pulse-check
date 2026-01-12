@@ -8,6 +8,7 @@ const sendAlertEmail_2 = require("../helpers/sendMail");
 const connectDB = require("../helpers/connectWorkerDB");
 const getActive_Eligible_Monitors = require("../helpers/fetchMonitor");
 const pingIt = require("../helpers/ping-it");
+const sendAlertNotification = require("../helpers/sendPushNotification/sendAlertNotification");
 
 //db connection
 connectDB();
@@ -99,11 +100,13 @@ const monitorWorker = async () => {
         status !== "UP"
       ) {
         // sendAlertEmail_2("DOWN", monitor, status); //DOWN alert
+        await sendAlertNotification("DOWN",monitor);
       }
       if (
         monitor.lastStatus !== "UP" && monitor.lastStatus !== null && status === "UP"
       ) {
         // sendAlertEmail_2("RECOVERED", monitor, status); // RECOVERY alert
+        await sendAlertNotification("RECOVERED",monitor);
       }
     }
   } catch (error) {

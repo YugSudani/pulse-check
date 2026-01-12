@@ -37,11 +37,25 @@ router.post("/login", async (req, res) => {
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
+    
     res.status(200).json({ message: "Login successful" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/saveOneSignalPlayerId", async (req, res) => {
+  try {
+    const { playerId } = req.body;
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ message: "User not found", success: false });
+    }
+    await userModel.updateOne({ _id: user._id }, { playerId });
+    res.status(200).json({ message: "Player ID saved successfully", success: true });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", success: false });
   }
 });
 
