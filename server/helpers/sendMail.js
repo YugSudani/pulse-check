@@ -1,5 +1,5 @@
 const userModel = require("../models/userModel");
-const sendAlertEmail = require("../services/mailer");
+const { sendAlertEmail, sendOTPEmail } = require("../services/mailer");
 
 const sendAlertEmail_2 = async (status, monitor, currentStatus) => {
   const user = await userModel.findById(monitor.userId);
@@ -15,4 +15,12 @@ const sendAlertEmail_2 = async (status, monitor, currentStatus) => {
   // console.log(`${status} alert sent for : ${monitor.name}`);
 };
 
-module.exports = sendAlertEmail_2;
+const sendOTPEmail_2 = async (email,name,otp) => {
+  await sendOTPEmail({
+    toEmail: email,
+    userName: name,
+    otp: otp,
+  });
+};
+
+module.exports = { sendAlertEmail_2, sendOTPEmail_2 };
