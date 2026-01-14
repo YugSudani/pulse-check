@@ -37,7 +37,7 @@ module.exports.sendAlertNotification = async function sendAlertNotification(reas
           {
             id: "view",
             text: "View Details",
-            url: `https://yugyadav.com/servers/${monitor._id}`,
+            url: `https://geoponic-verlie-impressionistically.ngrok-free.dev/monitor/${monitor._id}`,
           },
         ],
       },
@@ -49,7 +49,7 @@ module.exports.sendAlertNotification = async function sendAlertNotification(reas
       }
     );
 
-    console.log("Notification sent successfully:", response.data);
+    //console.log("Notification sent successfully:", response.data);
     return response.data;
   } catch (error) {
     console.error(

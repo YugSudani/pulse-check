@@ -12,7 +12,7 @@ export default function Slidebar() {
 
   const fetchUser = async () => {
     const { data } = await api.get("/user/getMe");
-    setUserName(data.name);    
+    setUserName(data.name);
   };
 
   useEffect(() => {
@@ -133,11 +133,13 @@ export default function Slidebar() {
         <div className="mt-10">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm">
-              {userName?.split(" ")[0]?.charAt(0)?.toUpperCase()+userName?.split(" ")[1]?.charAt(0)?.toUpperCase()}
+              {userName?.split(" ")[0]?.charAt(0)?.toUpperCase()}
             </div>
-            <p className="font-semibold text-sm sm:text-base">{userName}'s Workspace</p>
+            <p className="font-semibold text-sm sm:text-base">
+              {userName}'s Workspace
+            </p>
           </div>
-          <div className="pb-3">
+          <div className="mb-2 flex justify-center">
             <button
               onClick={async () => {
                 setOpenSidebar(false);

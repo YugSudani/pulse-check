@@ -8,7 +8,7 @@ const sendAlertEmail_2 = require("../helpers/sendMail");
 const connectDB = require("../helpers/connectWorkerDB");
 const getActive_Eligible_Monitors = require("../helpers/fetchMonitor");
 const pingIt = require("../helpers/ping-it");
-const sendAlertNotification = require("../helpers/sendPushNotification/sendAlertNotification");
+const { sendAlertNotification } = require("../helpers/sendPushNotification");
 
 //db connection
 connectDB();
@@ -24,7 +24,7 @@ const monitorWorker = async () => {
   try {
     //fetch monitor only which are eligible to be ping
     const monitors = await getActive_Eligible_Monitors();
-    console.log("Eligible monitors:", monitors.length);
+    //console.log("Eligible monitors:", monitors.length);
 
     for (const monitor of monitors) {
       //ping End-point and give data

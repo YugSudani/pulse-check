@@ -85,9 +85,9 @@ router.delete("/deleteMonitor/:id", async (req, res) => {
       incidentModel.deleteMany({ monitorId }),
     ]);
 
-    result.forEach((item) => {
-      console.log(item);
-    });
+    // result.forEach((item) => {
+    //   console.log(item);
+    // });
     const allMonitor = await monitorModel.find({ userId });
 
     res.status(200).json({ success: true, monitors: allMonitor });

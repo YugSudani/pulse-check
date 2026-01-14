@@ -12,5 +12,5 @@ export default function PublicRouter() {
         )
     }
 
-    return !isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
+    return !isAuthenticated ? <Outlet /> : <Navigate to="/dashboard" replace />;
 }

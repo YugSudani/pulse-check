@@ -10,7 +10,7 @@ export default function Incidents() {
       const response = await api.get("/incident/getAll",
         {withCredentials: true}
       )
-      console.log(response.data.incidents);
+      // console.log(response.data.incidents);
       setIncidents(response.data.incidents);
   }
 
