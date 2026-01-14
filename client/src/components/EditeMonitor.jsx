@@ -30,7 +30,7 @@ export default function CreateNewMonitor() {
                 `/monitor/${id}`,
                 { withCredentials: true }
             );
-            console.log(response.data);
+            // console.log(response.data);
             setNewMonitor(response.data.monitor);
 
              const idx = intervalOptions.findIndex(
@@ -52,7 +52,7 @@ export default function CreateNewMonitor() {
             ...newMonitor,
             interval: intervalOptions[intervalIndex].value,
         };
-        console.log(payload); 
+        // console.log(payload); 
 
         try {
             const response = await api.put(
@@ -60,7 +60,7 @@ export default function CreateNewMonitor() {
                 payload,
                 { withCredentials: true }
             );
-            console.log(response.data);
+            // console.log(response.data);
             navigate("/dashboard", { replace: true });
         } catch (error) {
             console.log(error);

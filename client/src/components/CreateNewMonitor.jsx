@@ -6,7 +6,7 @@ export default function CreateNewMonitor() {
 
     const navigate = useNavigate();
 
-    const [url, setUrl] = useState("https://");
+    const [url, setUrl] = useState(null);
     const [name, setName] = useState("New Monitor");
 
     // Predefined interval options in seconds
@@ -35,7 +35,7 @@ export default function CreateNewMonitor() {
                 },
                 { withCredentials: true }
             );
-            console.log(response.data);
+            // console.log(response.data);
             navigate("/dashboard", { replace: true });
         } catch (error) {
             console.log(error);
@@ -81,6 +81,8 @@ export default function CreateNewMonitor() {
                     <input
                         type="text"
                         value={url}
+                        required
+                        placeholder="https://example.com"
                         onChange={(e) => setUrl(e.target.value)}
                         className="w-full px-4 py-3 bg-[#121A28] border border-gray-700 rounded-lg outline-none text-gray-200 text-sm sm:text-base"
                     />
@@ -214,7 +216,7 @@ export default function CreateNewMonitor() {
 
                 {/* ================= SUBMIT BUTTON ================= */}
                 <div className="pt-6">
-                    <button onClick={CreateMonitor} className="w-full bg-green-500 text-black font-semibold py-3 rounded-lg hover:bg-green-400 transition">
+                    <button onClick={CreateMonitor} className="w-full bg-green-500 cursor-pointer text-black font-semibold py-3 rounded-lg hover:bg-green-400 transition">
                         Create Monitor
                     </button>
                 </div>

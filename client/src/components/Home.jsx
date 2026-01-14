@@ -23,7 +23,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0B0F17] text-white px-4 sm:px-6 lg:px-20 py-6">
       {/* NAVBAR */}
-      <nav className="flex justify-between items-center gap-4 sm:gap-0 mb-16 sm:mb-24 backdrop-blur-sm bg-[#0D121C]/30 px-6 py-4 rounded-2xl border border-gray-800/50">
+      <nav className="flex justify-between items-center gap-4 sm:gap-0 mb-9 sm:mb-9 backdrop-blur-sm bg-[#0D121C]/30 px-6 py-4 rounded-2xl border border-gray-800/50">
         <div className="flex items-center gap-2 text-lg sm:text-xl font-bold">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
           <button

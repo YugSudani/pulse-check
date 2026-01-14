@@ -27,7 +27,7 @@ const sendAlertEmail = async ({
       }
     );
 
-    console.log("Alert email sent:", monitorName, status);
+    //console.log("Alert email sent:", monitorName, status);
   } catch (err) {
     console.error("❌ EmailJS error:", err);
   }
@@ -51,7 +51,7 @@ const sendOTPEmail = async ({ toEmail, userName, otp }) => {
       }
     );
 
-    console.log("OTP Email Send to:", toEmail);
+    //console.log("OTP Email Send to:", toEmail);
   } catch (err) {
     console.error("❌ EmailJS error:", err);
   }

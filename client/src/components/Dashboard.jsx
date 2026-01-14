@@ -40,7 +40,7 @@ export default function Dashboard() {
         // alert(data.msg || "Failed to delete monitor");
         return;
       }
-      console.log("reaching here>>>>");
+      // console.log("reaching here>>>>");
       setMonitors(data.monitors);
     } catch (error) {
       console.error(error);

@@ -24,7 +24,7 @@ const monitorWorker = async () => {
   try {
     //fetch monitor only which are eligible to be ping
     const monitors = await getActive_Eligible_Monitors();
-    console.log("Eligible monitors:", monitors.length);
+    //console.log("Eligible monitors:", monitors.length);
 
     for (const monitor of monitors) {
       //ping End-point and give data

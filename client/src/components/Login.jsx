@@ -38,7 +38,7 @@ export default function Login() {
           setTimeout(async () => {
             window.OneSignalDeferred.push(async (OneSignal) => {
               const id = await OneSignal.User.PushSubscription.id;
-              console.log("OneSignal Player ID:", id);
+              // console.log("OneSignal Player ID:", id);
 
               if (id) {
                 setPlayerId(id);
@@ -99,7 +99,6 @@ export default function Login() {
 
       await checkAuth();
 
-      
       // Send player ID to backend if user enabled notifications
       await setOneSignalPlayerId(playerId);
 
@@ -111,7 +110,11 @@ export default function Login() {
         if (status === 404) {
           alert("User not found");
         } else if (status === 401) {
-          alert("Wrong password");
+          alert(error.response.data.message);
+        } else if (status === 403) {
+          alert(error.response.data.message);
+          await api.post(`/user/genOTP`, form);
+          navigate(`/otpVerification/${form.email}`, { replace: true });
         } else if (status === 500) {
           alert("Server error, try again");
         }

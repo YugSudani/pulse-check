@@ -26,11 +26,8 @@ router.post("/genOTP", async (req, res) => {
         success: false,
       });
     }
-
     const OTP = generateOTP();
-
     await sendOTPEmail_2(email, name, OTP);
-
     await tokenModel.create({
       email,
       OTP,
@@ -44,37 +41,50 @@ router.post("/genOTP", async (req, res) => {
   }
 });
 
-router.post("/signup", async (req, res) => {
+router.post("/verifyOtp", async (req, res) => {
+  const { email, otp } = req.body;
+  console.log(email + " : " + " : " + otp);
+  
   try {
-    const { name, email, pwd, otp } = req.body;
-    // console.log(req.body);
-    try {
-      const token = await tokenModel.findOne({
-        email,
-        OTP: otp,
-        expiryTime: { $gt: Date.now() },
-      });
-      console.log(token);
-      if (!token) {
-        return res
-          .status(404)
-          .json({ message: "Token not found or Expired", success: false });
-      }
-    } catch (error) {
-      console.log("Failed to find token : ", error);
-      return res.status(500).json({
-        message: "Internal server error while finding token",
-        success: false,
-      });
+    const token = await tokenModel.findOne({
+      email,
+      OTP: otp,
+      expiryTime: { $gt: Date.now() },
+    });
+    console.log("token : " +token);
+    
+    if (!token) {
+      return res
+        .status(404)
+        .json({ message: "Token not found or Expired", success: false });
     }
 
+    const res1 = await userModel.findOneAndUpdate({ email }, { $set: { isVerified: true } }); // set if not verified true in login
+    console.log("r1 : " + res1);
+    
+    const res2 = await tokenModel.deleteMany({ email });
+    console.log("r2 : " + res2);
+    
+    res.json({ message: "OTP verified successfully", success: true });
+  } catch (error) {
+    console.log("Failed to find token : ", error);
+    return res.status(500).json({
+      message: "Internal server error while finding token",
+      success: false,
+    });
+  }
+});
+
+router.post("/signup", async (req, res) => {
+  try {
+    const { name, email, pwd } = req.body;
+    // console.log(req.body);
     try {
       const hashedPwd = await bcrypt.hash(pwd, 11);
       await userModel.create({ name, email, pwd: hashedPwd });
       res
         .status(201)
         .json({ message: "User created successfully", success: true });
-      await tokenModel.deleteMany({ email });
     } catch (error) {
       console.log("Failed to create user : ", error);
       res.status(500).json({
@@ -101,6 +111,13 @@ router.post("/login", async (req, res) => {
         .json({ message: "User not found", success: false });
     }
 
+    
+    if (user.isVerified === false) {
+      console.log("user : "+user.isVerified);
+      return res
+        .status(403)
+        .json({ message: "User not verified", success: false });
+    }
     if (!pwd) {
       const token = await tokenModel.findOne({
         email,
@@ -114,7 +131,7 @@ router.post("/login", async (req, res) => {
       }
     }
 
-    if(!otp){
+    if (!otp) {
       const isMatch = await bcrypt.compare(pwd, user.pwd);
       if (!isMatch) {
         return res
@@ -142,9 +159,9 @@ router.post("/login", async (req, res) => {
 router.post("/saveOneSignalPlayerId", auth, async (req, res) => {
   try {
     const { playerId } = req.body;
-    console.log(playerId);
+    //console.log(playerId);
     const user = req.user;
-    console.log(user);
+    //console.log(user);
     if (!user) {
       return res
         .status(401)
