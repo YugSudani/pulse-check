@@ -12,6 +12,10 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicRouter from "./PublicRouter";
 import EditeMonitor from "../components/EditeMonitor";
 import OtpVerification from "../components/OtpVerify";
+import Features from "../components/staticComps/features";
+import Solutions from "../components/staticComps/Solutions";
+import Resources from "../components/staticComps/Resourses";
+import Pricing from "../components/staticComps/Pricing";
 
 function Routes_() {
   return (
@@ -21,6 +25,10 @@ function Routes_() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/otpverification/:email" element={<OtpVerification />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/solutions" element={<Solutions />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/pricing" element={<Pricing />} />
         </Route>
         <Route path="/" element={<Home />} />
 

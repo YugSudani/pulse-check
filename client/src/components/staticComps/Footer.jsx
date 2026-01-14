@@ -1,9 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Footer() {
+      const navigate = useNavigate();
+
     return (
-        <div className="w-full mt-20">
+        <div className="w-full mt-10">
 
             {/* ================= CTA SECTION ================= */}
-            <section className="w-full backdrop-blur-sm bg-[#0D121C]/60 border-y border-gray-800/50 py-16 sm:py-24 text-center text-white relative overflow-hidden">
+            <section className="w-full backdrop-blur-sm bg-[#0D121C]/60 border-y border-gray-800/50 py-5 text-center text-white relative overflow-hidden">
                 
                 {/* Subtle gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-green-500/5 to-transparent pointer-events-none"></div>
@@ -22,7 +26,7 @@ export default function Footer() {
                     
                     <p className="text-gray-400 text-lg sm:text-xl mb-8">50 monitors included!</p>
 
-                    <button className="bg-green-500 text-black font-semibold px-8 py-4 rounded-xl text-base sm:text-lg shadow-lg shadow-green-500/20 hover:bg-green-400 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    <button onClick={() => navigate("/register")} className="bg-green-500 text-black font-semibold px-8 py-4 rounded-xl text-base sm:text-lg shadow-lg shadow-green-500/20 hover:bg-green-400 hover:scale-[1.02] active:scale-[0.98] transition-all">
                         Start monitoring in 30 seconds
                     </button>
 
@@ -36,7 +40,7 @@ export default function Footer() {
             </section>
 
             {/* ================= FOOTER SECTION ================= */}
-            <footer className="bg-[#0B0F17] text-white py-16 sm:py-20 px-6 lg:px-20">
+            <footer className="bg-[#0B0F17] text-white py-9 px-6 lg:px-20">
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
 

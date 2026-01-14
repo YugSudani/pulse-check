@@ -1,107 +1,12 @@
-import Footer from "./Footer";
-import { useNavigate } from "react-router-dom";
-import api from "../lib/api";
-import { useEffect, useState } from "react";
+import Footer from "./staticComps/Footer";
+import Navbar from "./staticComps/Navbar";
 
 export default function Home() {
-  const navigate = useNavigate();
-
-  const [user, setUser] = useState(false);
-
-  const fetchUser = async () => {
-    try {
-      const response = await api.get("/user/getMe", { withCredentials: true });
-      setUser(response.data.success);
-    } catch (error) {
-      // console.log(error)
-    }
-  };
-  useEffect(() => {
-    fetchUser();
-  }, []);
 
   return (
+    <>
+    <Navbar/>
     <div className="min-h-screen bg-[#0B0F17] text-white px-4 sm:px-6 lg:px-20 py-6">
-      {/* NAVBAR */}
-      <nav className="flex justify-between items-center gap-4 sm:gap-0 mb-9 sm:mb-9 backdrop-blur-sm bg-[#0D121C]/30 px-6 py-4 rounded-2xl border border-gray-800/50">
-        <div className="flex items-center gap-2 text-lg sm:text-xl font-bold">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-          <button
-            onClick={() => navigate("/")}
-            className="hover:text-green-400 transition"
-          >
-            PulseCheck
-          </button>
-        </div>
-
-        <div className="hidden md:flex items-center gap-6 lg:gap-8 text-gray-300 font-medium text-sm lg:text-base">
-          <button
-            onClick={() => navigate("/features")}
-            className="hover:text-green-400 transition-colors relative group"
-          >
-            Features
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-500 group-hover:w-full transition-all"></span>
-          </button>
-          <button
-            onClick={() => navigate("/solutions")}
-            className="hover:text-green-400 transition-colors relative group"
-          >
-            Solutions
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-500 group-hover:w-full transition-all"></span>
-          </button>
-          <button
-            onClick={() => navigate("/enterprise")}
-            className="hover:text-green-400 transition-colors relative group"
-          >
-            Enterprise
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-500 group-hover:w-full transition-all"></span>
-          </button>
-          <button
-            onClick={() => navigate("/resources")}
-            className="hover:text-green-400 transition-colors relative group"
-          >
-            Resources
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-500 group-hover:w-full transition-all"></span>
-          </button>
-          <button
-            onClick={() => navigate("/pricing")}
-            className="hover:text-green-400 transition-colors relative group"
-          >
-            Pricing
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-500 group-hover:w-full transition-all"></span>
-          </button>
-        </div>
-
-        {user ? (
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="backdrop-blur-sm bg-green-500/10 border border-green-500/30 text-green-400 font-semibold text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl hover:bg-green-500/20 hover:border-green-500/50 cursor-pointer transition-all flex items-center gap-2"
-          >
-            Dashboard
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </button>
-        ) : (
-          <button
-            onClick={() => navigate("/login")}
-            className="backdrop-blur-sm bg-white/5 border border-gray-700/50 text-gray-300 font-semibold text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl hover:bg-white/10 hover:border-gray-600 hover:text-white cursor-pointer transition-all"
-          >
-            Login
-          </button>
-        )}
-      </nav>
-
       {/* MAIN HERO SECTION */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
         {/* LEFT SIDE */}
@@ -154,22 +59,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-
-          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={() => navigate(user ? "/dashboard" : "/login")}
-              className="bg-green-500 text-black font-semibold px-8 py-3.5 rounded-xl hover:bg-green-400 active:scale-[0.98] transition-all shadow-lg shadow-green-500/20 text-base sm:text-lg"
-            >
-              Get Started Free
-            </button>
-            <button
-              onClick={() => navigate("/pricing")}
-              className="backdrop-blur-sm bg-white/5 border border-gray-700/50 text-gray-300 font-semibold px-8 py-3.5 rounded-xl hover:bg-white/10 hover:border-gray-600 hover:text-white transition-all text-base sm:text-lg"
-            >
-              View Pricing
-            </button>
           </div>
-        </div>
 
         {/* RIGHT DASHBOARD PREVIEW */}
         <div className="backdrop-blur-sm bg-[#0D121C]/60 p-6 sm:p-8 rounded-2xl border border-gray-800/50 shadow-2xl hover:border-gray-700/50 transition-all">
@@ -277,5 +167,6 @@ export default function Home() {
       </div>
       <Footer />
     </div>
+    </>
   );
 }
