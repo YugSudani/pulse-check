@@ -55,11 +55,10 @@ export default function Signup() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     if (!validate()) return;
-
+    setIsLoading(true);
     try {
-      await api.post(`/user/genOTP`, form);
+      await api.post(`/user/genOTP`, {...form, isForSignup: true});
       const response = await api.post(`/user/signup`, form);
       if (!response.data.success) {
         alert("failed to register");

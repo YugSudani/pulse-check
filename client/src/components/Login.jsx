@@ -87,7 +87,7 @@ export default function Login() {
   const handleSendOtp = async () => {
     setIsLoading(true);
     try {
-      const response = await api.post(`/user/genOTP`, form);
+      const response = await api.post(`/user/genOTP`, {...form, isForSignup: false});
       if (!response.data.success) {
         alert("failed to get OTP");
         setShowOtpField(false); // Hide if failed
@@ -434,6 +434,7 @@ export default function Login() {
               Don't have an account?{" "}
               <button
                 className="text-green-500 font-medium hover:text-green-400 hover:underline transition-colors"
+                onClick={() => navigate("/register")}
               >
                 Sign up
               </button>

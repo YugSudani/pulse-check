@@ -10,13 +10,18 @@ const auth = require("../middlewares/auth");
 
 router.post("/genOTP", async (req, res) => {
   try {
-    const { email, name } = req.body;
+    const { email, name, isForSignup } = req.body;
 
-    const user = await userModel.findOne({ email });
-    if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User not found. Please sign up first.", success: false });
+    if (!isForSignup) {
+      const user = await userModel.findOne({ email });
+      if (!user) {
+        return res
+          .status(404)
+          .json({
+            message: "User not found. Please sign up first.",
+            success: false,
+          });
+      }
     }
 
     // Check if OTP was recently sent
@@ -51,27 +56,30 @@ router.post("/genOTP", async (req, res) => {
 router.post("/verifyOtp", async (req, res) => {
   const { email, otp } = req.body;
   console.log(email + " : " + " : " + otp);
-  
+
   try {
     const token = await tokenModel.findOne({
       email,
       OTP: otp,
       expiryTime: { $gt: Date.now() },
     });
-    console.log("token : " +token);
-    
+    console.log("token : " + token);
+
     if (!token) {
       return res
         .status(404)
         .json({ message: "Token not found or Expired", success: false });
     }
 
-    const res1 = await userModel.findOneAndUpdate({ email }, { $set: { isVerified: true } }); // set if not verified true in login
+    const res1 = await userModel.findOneAndUpdate(
+      { email },
+      { $set: { isVerified: true } }
+    ); // set if not verified true in login
     console.log("r1 : " + res1);
-    
+
     const res2 = await tokenModel.deleteMany({ email });
     console.log("r2 : " + res2);
-    
+
     res.json({ message: "OTP verified successfully", success: true });
   } catch (error) {
     console.log("Failed to find token : ", error);
@@ -118,9 +126,8 @@ router.post("/login", async (req, res) => {
         .json({ message: "User not found", success: false });
     }
 
-    
     if (user.isVerified === false) {
-      console.log("user : "+user.isVerified);
+      console.log("user : " + user.isVerified);
       return res
         .status(403)
         .json({ message: "User not verified", success: false });
