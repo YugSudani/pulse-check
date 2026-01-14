@@ -12,7 +12,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicRouter from "./PublicRouter";
 import EditeMonitor from "../components/EditeMonitor";
 import OtpVerification from "../components/OtpVerify";
-import Features from "../components/staticComps/features";
+import Features from "../components/staticComps/Features";
 import Solutions from "../components/staticComps/Solutions";
 import Resources from "../components/staticComps/Resourses";
 import Pricing from "../components/staticComps/Pricing";
