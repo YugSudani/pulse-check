@@ -10,7 +10,7 @@ const auth = require("./middlewares/auth");
 
 app.use(
   cors({
-    origin: process.env.frontend_url || 'https://geoponic-verlie-impressionistically.ngrok-free.dev' ,
+    origin: process.env.frontend_url ,
     credentials: true,
   })
 );
