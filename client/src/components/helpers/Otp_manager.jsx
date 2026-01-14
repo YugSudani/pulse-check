@@ -54,9 +54,7 @@ export default function Otp_manager({ otp, setOtp, errors = {} }) {
 
   return (
     <div>
-      <label className="text-gray-300 block mb-2">Enter 6 Digit OTP </label>
-
-      <div className="flex gap-1 md:gap-[13px]" onPaste={handlePaste}>
+      <div className="flex gap-3 pt-2  md:gap-[13px]" onPaste={handlePaste}>
         {otp.map((digit, index) => (
           <input
             key={index}

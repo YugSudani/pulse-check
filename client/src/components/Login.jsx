@@ -84,27 +84,29 @@ export default function Login() {
     });
   };
 
-  const handleSendOtp = async () => {
-    setIsLoading(true);
-    try {
-      const response = await api.post(`/user/genOTP`, {...form, isForSignup: false});
-      if (!response.data.success) {
-        alert("failed to get OTP");
-        setShowOtpField(false); // Hide if failed
-      } else if (error.response.status === 404) {
-        alert(error.response.data.message);
-        setShowOtpField(false); // Hide if failed
-      } else {
-        setShowOtpField(true); // Show OTP field immediately
-      }
-    } catch (error) {
-      console.log(error);
-      alert(error.response.data.message);
-      setShowOtpField(false); // Hide if error
-    } finally {
-      setIsLoading(false);
+ const handleSendOtp = async () => {
+  setIsLoading(true);
+  try {
+    const response = await api.post("/user/genOTP", {
+      ...form,
+      isForSignup: false,
+    });
+
+    if (response.data.success) {
+      setShowOtpField(true); // ✅ THIS WILL WORK
+    } else {
+      alert(response.data.message || "Failed to send OTP");
+      setShowOtpField(false);
     }
-  };
+  } catch (error) {
+    console.error(error);
+    alert(error?.response?.data?.message || "Something went wrong");
+    setShowOtpField(false);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -295,21 +297,7 @@ export default function Login() {
                   </div>
                 ) : showOtpField ? (
                   <div>
-                    <div className="flex gap-2 justify-center">
-                      {otp.map((digit, idx) => (
-                        <input
-                          key={idx}
-                          id={`otp-${idx}`}
-                          type="text"
-                          inputMode="numeric"
-                          maxLength="1"
-                          value={digit}
-                          onChange={(e) => handleOtpChange(idx, e.target.value)}
-                          onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                          className="w-12 h-12 text-center bg-[#121A28]/60 border border-gray-700/50 rounded-xl text-white text-lg font-semibold outline-none focus:bg-[#121A28] focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
-                        />
-                      ))}
-                    </div>
+                    <Otp_manager otp={otp} setOtp={setOtp} />
                     <button
                       type="button"
                       onClick={handleSendOtp}
@@ -418,6 +406,7 @@ export default function Login() {
                 </div>
               </div>
             </div>
+            {isLoading && <span className="loader block my-10 mx-auto"></span>}
 
             {/* LOGIN BUTTON */}
             <button
