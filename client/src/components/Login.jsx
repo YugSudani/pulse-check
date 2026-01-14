@@ -11,10 +11,15 @@ export default function Login() {
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [isLoading, setIsLoading] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
+  const [notificationLoading, setNotificationLoading] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [playerId, setPlayerId] = useState(null);
+  const [loginMethod, setLoginMethod] = useState("password");
 
   const handleNotificationToggle = async () => {
+     if (notificationLoading) return;
+    setNotificationLoading(true);
+    
     if (notificationsEnabled) {
       // User wants to disable notifications
       window.OneSignalDeferred.push(async (OneSignal) => {
@@ -25,29 +30,43 @@ export default function Login() {
           console.log("Notifications disabled");
         } catch (err) {
           console.error("Error disabling notifications:", err);
+        } finally {
+          setNotificationLoading(false);
         }
       });
     } else {
       // User wants to enable notifications
       window.OneSignalDeferred.push(async (OneSignal) => {
         try {
+          // Listen for subscription changes
+          const handleSubscriptionChange = async (event) => {
+            if (event.current.id) {
+              setPlayerId(event.current.id);
+              setNotificationsEnabled(true);
+              console.log("OneSignal Player ID:", event.current.id);
+              setNotificationLoading(false);
+              // Remove listener after getting the ID
+              OneSignal.User.PushSubscription.removeEventListener('change', handleSubscriptionChange);
+            }
+          };
+
+          // Add event listener before opting in
+          OneSignal.User.PushSubscription.addEventListener('change', handleSubscriptionChange);
+
           // Opt in to push notifications
           await OneSignal.User.PushSubscription.optIn();
 
-          // Wait a bit for subscription to complete
-          setTimeout(async () => {
-            window.OneSignalDeferred.push(async (OneSignal) => {
-              const id = await OneSignal.User.PushSubscription.id;
-              // console.log("OneSignal Player ID:", id);
-
-              if (id) {
-                setPlayerId(id);
-                setNotificationsEnabled(true);
-              }
-            });
-          }, 1000);
+          // Also check immediately in case ID is already available
+          const id = await OneSignal.User.PushSubscription.id;
+          if (id) {
+            setPlayerId(id);
+            setNotificationsEnabled(true);
+            setNotificationLoading(false);
+            OneSignal.User.PushSubscription.removeEventListener('change', handleSubscriptionChange);
+          }
         } catch (err) {
           console.error("Notification prompt error:", err);
+          setNotificationLoading(false);
         }
       });
     }
@@ -71,6 +90,9 @@ export default function Login() {
       const response = await api.post(`/user/genOTP`, form);
       if (!response.data.success) {
         alert("failed to get OTP");
+        setShowOtpField(false); // Hide if failed
+      } else if (error.response.status === 404) {
+        alert(error.response.data.message);
         setShowOtpField(false); // Hide if failed
       } else {
         setShowOtpField(true); // Show OTP field immediately
@@ -121,6 +143,8 @@ export default function Login() {
       } else {
         alert("Network error");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -140,13 +164,13 @@ export default function Login() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* --------- EMAIL FIELD --------- */}
+            {/* EMAIL FIELD */}
             <div>
               <label className="text-gray-300 block mb-2 text-sm sm:text-base font-medium">
                 Email
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 -top-3/7 left-0 pl-4 flex items-center pointer-events-none z-10">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
                   <svg
                     className="w-5 h-5 text-gray-400 peer-focus:text-green-500 transition-colors"
                     fill="none"
@@ -170,93 +194,156 @@ export default function Login() {
                   required
                   className="peer w-full pl-12 pr-4 py-3.5 bg-[#121A28]/60 backdrop-blur-sm border border-gray-700/50 rounded-xl text-gray-200 placeholder-gray-500 outline-none focus:bg-[#121A28] focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all text-sm sm:text-base min-h-[48px]"
                 />
-                <div className="pt-4">
-                  <button
-                    type="button"
-                    disabled={!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)}
-                    onClick={handleSendOtp}
-                    className="disabled:bg-gray-500 text-gray-900 bg-green-500 font-semibold cursor-pointer px-2 py-0.5 rounded-lg"
-                  >
-                    Send OTP
-                  </button>
-                </div>
               </div>
-
-              {/* --------- OTP FIELD (ANIMATED) --------- */}
-              <div
-                className={`transition-all duration-400 ease-out overflow-hidden ${
-                  showOtpField ? "max-h-32 opacity-100" : "max-h-0 opacity-0"
-                }`}
-              >
-                <div className="pt-4">
-                  <Otp_manager otp={otp} setOtp={setOtp} />
-                </div>
-              </div>
-              {isLoading && <span className="loader block my-9 mx-auto"></span>}
-
-              <h3 className="text-center text-gray-300 mt-6">
-                <hr />
-                or use password
-              </h3>
             </div>
 
-            {/* --------- PASSWORD FIELD --------- */}
+            {/* LOGIN METHOD TOGGLE */}
             <div>
-              <label className="text-gray-300 block mb-2 text-sm sm:text-base font-medium">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
-                  <svg
-                    className="w-5 h-5 text-gray-400 peer-focus:text-green-500 transition-colors"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="password"
-                  name="pwd"
-                  placeholder="Enter password"
-                  value={form.pwd}
-                  onChange={handleChange}
-                  required
-                  className="peer w-full pl-12 pr-4 py-3.5 bg-[#121A28]/60 backdrop-blur-sm border border-gray-700/50 rounded-xl text-gray-200 placeholder-gray-500 outline-none focus:bg-[#121A28] focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all text-sm sm:text-base min-h-[48px]"
-                />
+              <div className="flex gap-2 p-1 bg-[#121A28]/60 rounded-xl border border-gray-700/50">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoginMethod("password");
+                    setShowOtpField(false);
+                  }}
+                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${loginMethod === "password"
+                      ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
+                      : "text-gray-400 hover:text-gray-200"
+                    }`}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    Password
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLoginMethod("otp")}
+                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${loginMethod === "otp"
+                      ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
+                      : "text-gray-400 hover:text-gray-200"
+                    }`}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    OTP
+                  </div>
+                </button>
               </div>
             </div>
 
-            {/* --------- NOTIFICATIONS TOGGLE --------- */}
+            {/* PASSWORD OR OTP FIELDS */}
+            {loginMethod === "password" ? (
+              <div>
+                <label className="text-gray-300 block mb-2 text-sm sm:text-base font-medium">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                    <svg
+                      className="w-5 h-5 text-gray-400 peer-focus:text-green-500 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="password"
+                    name="pwd"
+                    placeholder="Enter password"
+                    value={form.pwd}
+                    onChange={handleChange}
+                    className="peer w-full pl-12 pr-4 py-3.5 bg-[#121A28]/60 backdrop-blur-sm border border-gray-700/50 rounded-xl text-gray-200 placeholder-gray-500 outline-none focus:bg-[#121A28] focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all text-sm sm:text-base min-h-[48px]"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-gray-300 text-sm sm:text-base font-medium">
+                    One-Time Password
+                  </label>
+                  {!showOtpField && (
+                    <button
+                      type="button"
+                      disabled={!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)}
+                      onClick={handleSendOtp}
+                      className="disabled:bg-gray-600 disabled:cursor-not-allowed text-gray-900 bg-green-500 hover:bg-green-400 font-semibold cursor-pointer px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all"
+                    >
+                      Send OTP
+                    </button>
+                  )}
+                </div>
+
+                {isLoading ? (
+                  <div className="flex justify-center py-8">
+                    <svg className="w-8 h-8 text-green-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </div>
+                ) : showOtpField ? (
+                  <div>
+                    <div className="flex gap-2 justify-center">
+                      {otp.map((digit, idx) => (
+                        <input
+                          key={idx}
+                          id={`otp-${idx}`}
+                          type="text"
+                          inputMode="numeric"
+                          maxLength="1"
+                          value={digit}
+                          onChange={(e) => handleOtpChange(idx, e.target.value)}
+                          onKeyDown={(e) => handleOtpKeyDown(idx, e)}
+                          className="w-12 h-12 text-center bg-[#121A28]/60 border border-gray-700/50 rounded-xl text-white text-lg font-semibold outline-none focus:bg-[#121A28] focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                        />
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleSendOtp}
+                      className="text-green-500 hover:text-green-400 text-xs mt-3 mx-auto block transition-colors"
+                    >
+                      Resend OTP
+                    </button>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500 text-sm">
+                    Click "Send OTP" to receive your code
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* NOTIFICATIONS TOGGLE */}
             <div
               onClick={handleNotificationToggle}
-              className={`relative cursor-pointer p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 ${
-                notificationsEnabled
+              className={`relative cursor-pointer p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 ${notificationLoading ? "opacity-75 cursor-wait" : ""
+                } ${notificationsEnabled
                   ? "bg-green-500/10 border-green-500/50"
                   : "bg-[#121A28]/60 border-gray-700/50 hover:bg-[#121A28] hover:border-gray-700"
-              }`}
+                }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div
-                    className={`p-2.5 rounded-lg transition-all duration-300 ${
-                      notificationsEnabled
-                        ? "bg-green-500/20"
-                        : "bg-gray-700/50"
-                    }`}
+                    className={`p-2.5 rounded-lg transition-all duration-300 ${notificationsEnabled ? "bg-green-500/20" : "bg-gray-700/50"
+                      }`}
                   >
                     <svg
-                      className={`w-5 h-5 transition-colors duration-300 ${
-                        notificationsEnabled
-                          ? "text-green-500"
-                          : "text-gray-400"
-                      }`}
+                      className={`w-5 h-5 transition-colors duration-300 ${notificationsEnabled ? "text-green-500" : "text-gray-400"
+                        }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -271,11 +358,8 @@ export default function Login() {
                   </div>
                   <div>
                     <p
-                      className={`text-sm sm:text-base font-medium transition-colors duration-300 ${
-                        notificationsEnabled
-                          ? "text-green-400"
-                          : "text-gray-300"
-                      }`}
+                      className={`text-sm sm:text-base font-medium transition-colors duration-300 ${notificationsEnabled ? "text-green-400" : "text-gray-300"
+                        }`}
                     >
                       Push Notifications
                     </p>
@@ -288,34 +372,54 @@ export default function Login() {
                 </div>
 
                 <div
-                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
-                    notificationsEnabled ? "bg-green-500" : "bg-gray-600"
-                  }`}
+                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${notificationsEnabled ? "bg-green-500" : "bg-gray-600"
+                    }`}
                 >
                   <div
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-md transform transition-transform duration-300 flex items-center justify-center ${
-                      notificationsEnabled ? "translate-x-6" : "translate-x-0"
-                    }`}
+                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-md transform transition-transform duration-300 flex items-center justify-center ${notificationsEnabled ? "translate-x-6" : "translate-x-0"
+                      }`}
                   >
-                    {notificationsEnabled && (
+                    {notificationLoading ? (
                       <svg
-                        className="w-3 h-3 text-green-500"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
+                        className="w-3 h-3 text-gray-600 animate-spin"
+                        fill="none"
+                        viewBox="0 0 24 24"
                       >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
                         <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
+                    ) : (
+                      notificationsEnabled && (
+                        <svg
+                          className="w-3 h-3 text-green-500"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      )
                     )}
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* --------- LOGIN BUTTON --------- */}
+            {/* LOGIN BUTTON */}
             <button
               type="submit"
               className="w-full bg-green-500 py-3.5 rounded-xl text-black font-semibold text-base sm:text-lg hover:bg-green-400 active:scale-[0.98] transition-all min-h-[52px] shadow-lg shadow-green-500/20"
@@ -324,12 +428,11 @@ export default function Login() {
             </button>
           </form>
 
-          {/* --------- SIGNUP LINK --------- */}
+          {/* SIGNUP LINK */}
           <div className="mt-8 text-center">
             <p className="text-gray-400 text-sm sm:text-base">
               Don't have an account?{" "}
               <button
-                onClick={() => navigate("/register", { replace: true })}
                 className="text-green-500 font-medium hover:text-green-400 hover:underline transition-colors"
               >
                 Sign up
@@ -341,3 +444,4 @@ export default function Login() {
     </div>
   );
 }
+

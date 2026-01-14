@@ -12,6 +12,13 @@ router.post("/genOTP", async (req, res) => {
   try {
     const { email, name } = req.body;
 
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User not found. Please sign up first.", success: false });
+    }
+
     // Check if OTP was recently sent
     const recentToken = await tokenModel.findOne({
       email,
