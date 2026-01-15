@@ -4,7 +4,7 @@ dotenv.config({ path: path.join(__dirname, "../.env") });
 const monitorModel = require("../models/monitorModel");
 const logsModel = require("../models/logModel");
 const incidentModel = require("../models/incidentModel");
-const sendAlertEmail_2 = require("../helpers/sendMail");
+const { sendAlertEmail_2 } = require("../helpers/sendMail");
 const connectDB = require("../helpers/connectWorkerDB");
 const getActive_Eligible_Monitors = require("../helpers/fetchMonitor");
 const pingIt = require("../helpers/ping-it");
@@ -99,13 +99,13 @@ const monitorWorker = async () => {
         (monitor.lastStatus === "UP" || monitor.lastStatus === null) &&
         status !== "UP"
       ) {
-        // sendAlertEmail_2("DOWN", monitor, status); //DOWN alert
+        sendAlertEmail_2("DOWN", monitor, status); //DOWN alert
         await sendAlertNotification("DOWN",monitor);
       }
       if (
         monitor.lastStatus !== "UP" && monitor.lastStatus !== null && status === "UP"
       ) {
-        // sendAlertEmail_2("RECOVERED", monitor, status); // RECOVERY alert
+        sendAlertEmail_2("RECOVERED", monitor, status); // RECOVERY alert
         await sendAlertNotification("RECOVERED",monitor);
       }
     }
@@ -116,6 +116,6 @@ const monitorWorker = async () => {
   }
 };
 
-setInterval(monitorWorker, 30000);
+setInterval(monitorWorker, 30000); 
 
 module.exports = monitorWorker;

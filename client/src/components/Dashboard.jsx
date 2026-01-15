@@ -8,9 +8,11 @@ export default function Dashboard() {
   const [monitors, setMonitors] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
+  const [loading, setLoading] = useState(false);
 
   const getMonitors = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`/monitor/getAllMonitors`, {
         withCredentials: true,
       });
@@ -23,6 +25,8 @@ export default function Dashboard() {
     } catch (error) {
       // navigate("/login", { replace: true });
       // alert("Failed to get monitors");
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -243,6 +247,7 @@ export default function Dashboard() {
               </div>
             );
           })}
+          {loading && <span className="loader absolute left-1/2 top-1/4"></span>}
           {monitors?.length === 0 && (
             <div className="p-4 rounded-2xl border-gray-800 text-center">
               <p className="text-gray-400">No monitors found</p>

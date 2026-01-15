@@ -12,7 +12,7 @@ const sendAlertEmail_2 = async (status, monitor, currentStatus) => {
     status: status,
     reason: status === "RECOVERED" ? monitor.lastStatus : currentStatus,
   });
-  // console.log(`${status} alert sent for : ${monitor.name}`);
+  console.log(`${status} alert sent for : ${monitor.name}`);
 };
 
 const sendOTPEmail_2 = async (email,name,otp) => {

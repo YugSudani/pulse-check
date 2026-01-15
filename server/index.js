@@ -32,3 +32,9 @@ app.use("/incident", auth, incidentRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+require("./workers/monitorWorker")().then(() => {
+  console.log("Monitor Worker started");
+}).catch((err) => {
+  console.error("Error starting Monitor Worker:", err);
+});
