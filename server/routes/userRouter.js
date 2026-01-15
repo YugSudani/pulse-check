@@ -63,7 +63,7 @@ router.post("/verifyOtp", async (req, res) => {
       OTP: otp,
       expiryTime: { $gt: Date.now() },
     });
-    console.log("token : " + token);
+    //console.log("token : " + token);
 
     if (!token) {
       return res
@@ -75,10 +75,10 @@ router.post("/verifyOtp", async (req, res) => {
       { email },
       { $set: { isVerified: true } }
     ); // set if not verified true in login
-    console.log("r1 : " + res1);
+    //console.log("r1 : " + res1);
 
     const res2 = await tokenModel.deleteMany({ email });
-    console.log("r2 : " + res2);
+   // console.log("r2 : " + res2);
 
     res.json({ message: "OTP verified successfully", success: true });
   } catch (error) {
@@ -219,6 +219,10 @@ router.get("/getMe", async (req, res) => {
   } catch (error) {
     return res.status(401).json({ message: "User not found", success: false });
   }
+});
+
+router.head("/healthCheck", (req, res) => {
+  res.status(200).end();
 });
 
 module.exports = router;

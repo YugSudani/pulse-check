@@ -147,8 +147,7 @@ export default function ViewMonitor() {
         return;
       }
 
-      const date = new Date(monitor.lastCheckedAt);
-      const diff = Math.floor((Date.now() - date) / 1000);
+      const diff = Math.max(0, Math.floor((Date.now() - new Date(monitor.lastCheckedAt)) / 1000));
 
       const time =
         diff < 60
