@@ -6,15 +6,21 @@ const logModel = require("../models/logModel");
 
 router.post("/createMonitor", async (req, res) => {
   try {
-    const { name, url, interval } = req.body;
+    const { name, url, interval, alert } = req.body;
     const user = req.user;
     const UID = user._id;
+
+    console.log(alert);
 
     const monitor = await monitorModel.create({
       userId: UID,
       name,
       url,
       interval,
+      alert: {
+        email: alert.email.emailAlert,
+        push: alert.push.pushAlert,
+      },
     });
 
     res.status(201).json({ success: true, monitor });
@@ -154,7 +160,7 @@ router.get("/:monitorId/response-history", async (req, res) => {
 
 router.put("/editeMonitor/:monitorId", async (req, res) => {
   const monitorId = req.params.monitorId;
-  const { name, url, interval } = req.body;
+  const { name, url, interval, alert } = req.body;
 
   // console.log(monitorId);
   try {
@@ -165,6 +171,8 @@ router.put("/editeMonitor/:monitorId", async (req, res) => {
     monitor.name = name;
     monitor.url = url;
     monitor.interval = interval;
+    monitor.alert.email = alert.email;
+    monitor.alert.push = alert.push;
     await monitor.save();
     res.status(200).json({ success: true });
   } catch (error) {

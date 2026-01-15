@@ -8,6 +8,9 @@ export default function CreateNewMonitor() {
 
     const [url, setUrl] = useState(null);
     const [name, setName] = useState("New Monitor");
+    const [emailAlert, setEmailAlert] = useState(true);
+    const [pushAlert, setPushAlert] = useState(true);
+
 
     // Predefined interval options in seconds
     const intervalOptions = [
@@ -25,13 +28,18 @@ export default function CreateNewMonitor() {
     const interval = intervalOptions[intervalIndex].value;
 
     const CreateMonitor = async () => {
+    //console.log(url + " | " + name + " | " + emailAlert + " | " + pushAlert);
         try {
-            const response = await api.post(
+            await api.post(
                 "/monitor/createMonitor",
                 {
                     name,
                     url,
-                    interval
+                    interval,
+                    alert: {
+                        email: {emailAlert},
+                        push: {pushAlert},
+                    },
                 },
                 { withCredentials: true }
             );
@@ -88,23 +96,6 @@ export default function CreateNewMonitor() {
                     />
                 </section>
 
-                {/* ================= GROUP + TAGS ================= */}
-                <section className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-
-                    {/* Group */}
-                    <div>
-                        <h2 className="text-lg sm:text-xl font-semibold mb-3">Group</h2>
-
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 mb-2">
-                            🔒 Groups are available only on Paid plans.
-                            <span className="text-green-500 cursor-pointer hover:underline">Upgrade now</span>
-                        </div>
-
-                        <select className="w-full px-4 py-3 bg-[#121A28] border border-gray-800 rounded-lg text-gray-400 text-sm sm:text-base">
-                            <option>Monitors (default)</option>
-                        </select>
-                    </div>
-
                     {/* Tags */}
                     <div>
                         <h2 className="text-lg sm:text-xl font-semibold mb-3">Give Name to your monitor</h2>
@@ -122,51 +113,53 @@ export default function CreateNewMonitor() {
                         />
                     </div>
 
-                </section>
 
                 <hr className="border-gray-800" />
 
                 {/* ================= NOTIFICATIONS ================= */}
                 <section>
-                    <h2 className="text-lg sm:text-xl font-semibold mb-4">How will we notify you?</h2>
+                    <h2 className="text-lg sm:text-xl font-semibold mb-1">How will we notify you?</h2>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 
+                        {/* Push */}
+                        <div className="bg-[#121A28] border border-gray-700 p-4 rounded-lg">
+                            <label className="flex items-center gap-2 mb-2 cursor-pointer">
+                                <input type="checkbox" defaultChecked className="sr-only peer" onChange={(e)=>setPushAlert(e.target.checked)} />
+                                <div className="relative w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 peer-focus:outline-none peer-focus:ring-green-300"></div>
+                                Push Notification
+                            </label>
+                            <p className="text-gray-400 text-sm mb-3">Loged in browser</p>
+                            <p className="text-gray-500 text-xs">Instant, no repeat</p>
+                        </div>
+                        
                         {/* Email */}
                         <div className="bg-[#121A28] border border-gray-700 p-4 rounded-lg">
-                            <label className="flex items-center gap-2 mb-2">
-                                <input type="checkbox" defaultChecked />
+                            <label className="flex items-center gap-2 mb-2 cursor-pointer">
+                                <input type="checkbox" defaultChecked className="sr-only peer " onChange={(e)=>setEmailAlert(e.target.checked)} />
+                                <div className="relative w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 peer-focus:outline-none peer-focus:ring-green-300"></div>
                                 E-mail
                             </label>
                             <p className="text-gray-400 text-sm mb-3">yourmail@gmail.com</p>
-                            <p className="text-gray-500 text-xs">No delay, no repeat</p>
-                        </div>
-
-                        {/* SMS */}
-                        <div className="bg-[#121A28] border border-gray-700 p-4 rounded-lg">
-                            <label className="flex items-center gap-2 mb-2">
-                                <input type="checkbox" defaultChecked />
-                                SMS message
-                            </label>
-                            <p className="text-gray-400 text-sm mb-3">919510502422 ⚠️</p>
-                            <p className="text-gray-500 text-xs">No delay, no repeat</p>
+                            <p className="text-gray-500 text-xs">Instant, no repeat</p>
                         </div>
 
                         {/* Voice call */}
                         <div className="bg-[#121A28] border border-gray-700 p-4 rounded-lg">
-                            <label className="flex items-center gap-2 mb-2">
-                                <input type="checkbox" defaultChecked />
+                            <label className="flex items-center gap-2 mb-2 cursor-not-allowed opacity-50">
+                                <input type="checkbox" disabled className="sr-only peer" />
+                                <div className="relative w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 peer-focus:outline-none peer-focus:ring-green-300"></div>
                                 Voice call
                             </label>
-                            <p className="text-gray-400 text-sm mb-3">919510502422 ⚠️</p>
+                            <div className="text-sm text-gray-400 mb-2">
+                                🔒 Available only in Pro & Bussiness plan.
+                                <span className="text-green-500 ml-2 cursor-pointer">Upgrade now</span>
+                            </div>
+                            <p className="text-gray-400 text-sm mb-3">+91******2422</p>
                             <p className="text-gray-500 text-xs">No delay, no repeat</p>
                         </div>
 
                     </div>
-
-                    <p className="text-gray-400 text-sm mt-4">
-                        You can set up notifications for Integrations & Team in their specific pages.
-                    </p>
                 </section>  
 
                 <hr className="border-gray-800" />
@@ -205,7 +198,7 @@ export default function CreateNewMonitor() {
                     <h2 className="text-xl font-semibold mb-2">Region to monitor from</h2>
 
                     <div className="text-sm text-gray-400 mb-2">
-                        🔒 Available only in Solo, Team, and Enterprise.
+                        🔒 Available only in Pro & Business plan.
                         <span className="text-green-500 ml-2 cursor-pointer">Upgrade now</span>
                     </div>
 

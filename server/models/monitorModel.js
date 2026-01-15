@@ -25,6 +25,17 @@ const monitorSchema = new mongoose.Schema(
       required: true,
     },
 
+    alert: {
+      email: {
+        type: Boolean,
+        default: true,
+      },
+      push: {
+        type: Boolean,
+        default: true,
+      },
+    },
+
     isActive: {
       // start pause
       type: Boolean,

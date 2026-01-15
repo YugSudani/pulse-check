@@ -94,19 +94,32 @@ const monitorWorker = async () => {
         checkedAt: new Date(),
       });
 
-      //send alert mail
+      //send alert mail and push on down or recovered
       if (
         (monitor.lastStatus === "UP" || monitor.lastStatus === null) &&
         status !== "UP"
       ) {
-        sendAlertEmail_2("DOWN", monitor, status); //DOWN alert
-        await sendAlertNotification("DOWN",monitor);
+        if(monitor.alert.email){
+          // console.log("Sending email doen");
+          sendAlertEmail_2("DOWN", monitor, status); //DOWN alert
+        }
+        if(monitor.alert.push){
+          // console.log("Sending push down");
+          await sendAlertNotification("DOWN",monitor);
+        }
       }
+
       if (
         monitor.lastStatus !== "UP" && monitor.lastStatus !== null && status === "UP"
       ) {
-        sendAlertEmail_2("RECOVERED", monitor, status); // RECOVERY alert
-        await sendAlertNotification("RECOVERED",monitor);
+        if(monitor.alert.email){
+          // console.log("Sending email recivred");
+          sendAlertEmail_2("RECOVERED", monitor, status); // RECOVERY alert
+        }
+        if(monitor.alert.push){
+          // console.log("Sending push recovred");
+          await sendAlertNotification("RECOVERED",monitor);
+        }
       }
     }
   } catch (error) {

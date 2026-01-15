@@ -4,6 +4,8 @@ import api from "../lib/api";
 
 export default function CreateNewMonitor() {
     const navigate = useNavigate();
+
+
     const intervalOptions = [
         { value: 30 * 1000, label: "30 seconds" },      // 30000
         { value: 60 * 1000, label: "1 minute" },        // 60000
@@ -13,14 +15,18 @@ export default function CreateNewMonitor() {
         { value: 43200 * 1000, label: "12 hours" },     // 43200000
         { value: 86400 * 1000, label: "24 hours" }      // 86400000
     ];
-    
+
     const [intervalIndex, setIntervalIndex] = useState(2); // default to 5 minutes (index 2)
-    
+
     const { id } = useParams();
     const [newMonitor, setNewMonitor] = useState({
         name: "",
         url: "",
-        });
+        alert: {
+            email: true,
+            push: true,
+        },
+    });
 
     // Predefined interval options in seconds
 
@@ -31,9 +37,17 @@ export default function CreateNewMonitor() {
                 { withCredentials: true }
             );
             // console.log(response.data);
-            setNewMonitor(response.data.monitor);
+            setNewMonitor({
+                name: response.data.monitor.name || "",
+                url: response.data.monitor.url || "",
+                alert: {
+                    email: response.data.monitor.alert?.email ?? true,
+                    push: response.data.monitor.alert?.push ?? true,
+                },
+            });
 
-             const idx = intervalOptions.findIndex(
+
+            const idx = intervalOptions.findIndex(
                 opt => opt.value === response.data.monitor.interval
             );
             setIntervalIndex(idx === -1 ? 2 : idx);
@@ -42,16 +56,22 @@ export default function CreateNewMonitor() {
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getMonitor();
-    },[])
+    }, [])
 
 
     const handleEditMonitor = async () => {
         const payload = {
-            ...newMonitor,
+            name: newMonitor.name,
+            url: newMonitor.url,
+            alert: {
+                email: newMonitor.alert.email,
+                push: newMonitor.alert.push,
+            }, 
             interval: intervalOptions[intervalIndex].value,
         };
+
         // console.log(payload); 
 
         try {
@@ -60,12 +80,12 @@ export default function CreateNewMonitor() {
                 payload,
                 { withCredentials: true }
             );
-            // console.log(response.data);
+            console.log(response.data);
             navigate("/dashboard", { replace: true });
         } catch (error) {
             console.log(error);
         }
-        
+
     }
 
 
@@ -101,7 +121,7 @@ export default function CreateNewMonitor() {
                 {/* ================= GROUP + TAGS ================= */}
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
 
-                  
+
                     {/* Tags */}
                     <div>
                         <h2 className="text-lg sm:text-xl font-semibold mb-3">Give Name to your monitor</h2>
@@ -125,46 +145,79 @@ export default function CreateNewMonitor() {
 
                 {/* ================= NOTIFICATIONS ================= */}
                 <section>
-                    <h2 className="text-lg sm:text-xl font-semibold mb-4">How will we notify you?</h2>
+                    <h2 className="text-lg sm:text-xl font-semibold mb-1">How will we notify you?</h2>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 
+                        {/* Push */}
+                        <div className="bg-[#121A28] border border-gray-700 p-4 rounded-lg">
+                            <label className="flex items-center gap-2 mb-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="sr-only peer"
+                                    checked={newMonitor.alert.push}
+                                    onChange={(e) =>
+                                        setNewMonitor(prev => ({
+                                            ...prev,
+                                            alert: {
+                                                ...prev.alert,
+                                                push: e.target.checked,
+                                            },
+                                        }))
+                                    }
+                                />
+
+
+                                <div className="relative w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 peer-focus:outline-none peer-focus:ring-green-300"></div>
+                                Push Notification
+                            </label>
+                            <p className="text-gray-400 text-sm mb-3">Loged in browser</p>
+                            <p className="text-gray-500 text-xs">Instant, no repeat</p>
+                        </div>
+
                         {/* Email */}
                         <div className="bg-[#121A28] border border-gray-700 p-4 rounded-lg">
-                            <label className="flex items-center gap-2 mb-2">
-                                <input type="checkbox" defaultChecked />
+                            <label className="flex items-center gap-2 mb-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="sr-only peer"
+                                    checked={newMonitor.alert.email}
+                                    onChange={(e) =>
+                                        setNewMonitor(prev => ({
+                                            ...prev,
+                                            alert: {
+                                                ...prev.alert,
+                                                email: e.target.checked,
+                                            },
+                                        }))
+                                    }
+                                />
+
+
+                                <div className="relative w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 peer-focus:outline-none peer-focus:ring-green-300"></div>
                                 E-mail
                             </label>
                             <p className="text-gray-400 text-sm mb-3">yourmail@gmail.com</p>
-                            <p className="text-gray-500 text-xs">No delay, no repeat</p>
-                        </div>
-
-                        {/* SMS */}
-                        <div className="bg-[#121A28] border border-gray-700 p-4 rounded-lg">
-                            <label className="flex items-center gap-2 mb-2">
-                                <input type="checkbox" defaultChecked />
-                                SMS message
-                            </label>
-                            <p className="text-gray-400 text-sm mb-3">919510502422 ⚠️</p>
-                            <p className="text-gray-500 text-xs">No delay, no repeat</p>
+                            <p className="text-gray-500 text-xs">Instant, no repeat</p>
                         </div>
 
                         {/* Voice call */}
                         <div className="bg-[#121A28] border border-gray-700 p-4 rounded-lg">
-                            <label className="flex items-center gap-2 mb-2">
-                                <input type="checkbox" defaultChecked />
+                            <label className="flex items-center gap-2 mb-2 cursor-not-allowed opacity-50">
+                                <input type="checkbox" disabled className="sr-only peer" />
+                                <div className="relative w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 peer-focus:outline-none peer-focus:ring-green-300"></div>
                                 Voice call
                             </label>
-                            <p className="text-gray-400 text-sm mb-3">919510502422 ⚠️</p>
+                            <div className="text-sm text-gray-400 mb-2">
+                                🔒 Available only in Pro & Bussiness plan.
+                                <span className="text-green-500 ml-2 cursor-pointer">Upgrade now</span>
+                            </div>
+                            <p className="text-gray-400 text-sm mb-3">+91******2422</p>
                             <p className="text-gray-500 text-xs">No delay, no repeat</p>
                         </div>
 
                     </div>
-
-                    <p className="text-gray-400 text-sm mt-4">
-                        You can set up notifications for Integrations & Team in their specific pages.
-                    </p>
-                </section>  
+                </section>
 
                 <hr className="border-gray-800" />
 
