@@ -25,12 +25,13 @@ function Routes_() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/otpverification/:email" element={<OtpVerification />} />
+        </Route>
+          
+          <Route path="/" element={<Home />} />
           <Route path="/features" element={<Features />} />
           <Route path="/solutions" element={<Solutions />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/pricing" element={<Pricing />} />
-        </Route>
-        <Route path="/" element={<Home />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
