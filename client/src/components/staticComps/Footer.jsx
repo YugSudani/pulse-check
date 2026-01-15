@@ -42,7 +42,7 @@ export default function Footer() {
             {/* ================= FOOTER SECTION ================= */}
             <footer className="bg-[#0B0F17] text-white py-9 px-6 lg:px-20">
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
 
                     {/* BRAND SECTION */}
                     <div>
@@ -81,82 +81,34 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* MONITORING COLUMN */}
+                    {/* PAGES COLUMN */}
                     <div>
                         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                             <div className="w-1 h-1 rounded-full bg-green-500"></div>
-                            Monitoring
+                            Pages
                         </h3>
 
-                        <ul className="space-y-3 text-gray-400 text-sm">
+                        <div className="grid grid-cols-2 gap-4">
                             {[
-                                "Website monitoring",
-                                "SSL monitoring",
-                                "Domain monitoring",
-                                "Ping monitoring",
-                                "Port monitoring",
-                                "TCP monitoring",
-                                "Cron job monitoring"
+                                { name: "Features", path: "/features", icon: "M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" },
+                                { name: "Solutions", path: "/solutions", icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" },
+                                { name: "Resources", path: "/resources", icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" },
+                                { name: "Pricing", path: "/pricing", icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" }
                             ].map((item, index) => (
-                                <li key={index}>
-                                    <button className="hover:text-green-400 transition-colors hover:translate-x-1 inline-block">
-                                        {item}
-                                    </button>
-                                </li>
+                                <button 
+                                    key={index}
+                                    onClick={() => navigate(item.path)}
+                                    className="backdrop-blur-sm bg-white/5 border border-gray-700/50 rounded-lg p-4 hover:bg-white/10 hover:border-gray-600 transition-all group text-left"
+                                >
+                                    <svg className="w-6 h-6 text-gray-400 group-hover:text-green-400 transition-colors mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                                    </svg>
+                                    <p className="text-gray-400 group-hover:text-green-400 transition-colors font-medium">
+                                        {item.name}
+                                    </p>
+                                </button>
                             ))}
-                        </ul>
-                    </div>
-
-                    {/* COMPANY COLUMN */}
-                    <div>
-                        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                            <div className="w-1 h-1 rounded-full bg-green-500"></div>
-                            Company
-                        </h3>
-
-                        <ul className="space-y-3 text-gray-400 text-sm">
-                            {[
-                                "Pricing",
-                                "Blog",
-                                "Affiliate program",
-                                "Referral program",
-                                "Non profit & charities 🤝",
-                                "Terms / Privacy",
-                                "Contact us"
-                            ].map((item, index) => (
-                                <li key={index}>
-                                    <button className="hover:text-green-400 transition-colors hover:translate-x-1 inline-block">
-                                        {item}
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* RESOURCES COLUMN */}
-                    <div>
-                        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                            <div className="w-1 h-1 rounded-full bg-green-500"></div>
-                            Resources
-                        </h3>
-
-                        <ul className="space-y-3 text-gray-400 text-sm">
-                            {[
-                                "Integrations",
-                                "API",
-                                "FAQs",
-                                "Help center",
-                                "Locations & IPs",
-                                "Comparisons",
-                                "Case studies"
-                            ].map((item, index) => (
-                                <li key={index}>
-                                    <button className="hover:text-green-400 transition-colors hover:translate-x-1 inline-block">
-                                        {item}
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
+                        </div>
                     </div>
 
                 </div>

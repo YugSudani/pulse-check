@@ -239,7 +239,7 @@ export default function Login() {
             </div>
 
             {/* PASSWORD OR OTP FIELDS */}
-            {loginMethod === "password" ? (
+            {loginMethod == "password" ? (
               <div>
                 <label className="text-gray-300 block mb-2 text-sm sm:text-base font-medium">
                   Password

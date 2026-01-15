@@ -178,7 +178,7 @@ export default function ViewMonitor() {
   const [showIncidentCount, setShowIncidentCount] = useState(3);
 
   return (
-    <div className="overflow-x-hidden overflow-y-auto  h-[99vh] bg-[#101724] text-white p-4 sm:p-6 md:p-8 lg:p-12 flex gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <div className="overflow-x-hidden overflow-y-auto flex-1 min-h-0 bg-[#101724] text-white p-4 sm:p-6 md:p-8 lg:p-12 flex gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       {/* ================= MAIN CONTENT ================= */}
       <div className="flex-1 space-y-4 sm:space-y-5">
         {/* BACK + TITLE */}
@@ -345,9 +345,9 @@ export default function ViewMonitor() {
           </div>
 
           {/* ================= DESKTOP TABLE ================= */}
-          <div className=" md:block bg-[#131e30] border border-gray-800 rounded-xl">
+          <div className=" md:block overflow-y-auto bg-[#131e30]  rounded-xl">
             <table className="text-sm w-full">
-              <thead className="bg-[#0D121C] text-center text-gray-400">
+              <thead className="bg-[#0D121C] text-center text-gray-4100">
                 <tr>
                   <th className="text-left px-2 py-3">Root Cause</th>
                   <th className="text-left px-2 py-3">Started</th>
@@ -424,7 +424,6 @@ export default function ViewMonitor() {
       </div>
 
       {/* ================= RIGHT SIDEBAR ================= */}
-      {/* ================= RIGHT SIDEBAR (PREMIUM GATED) ================= */}
       <aside className="hidden lg:block w-80 mt-13 space-y-5">
         {/* Domain & SSL */}
         <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4 relative">

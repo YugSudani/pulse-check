@@ -16,10 +16,12 @@ import Features from "../components/staticComps/Features";
 import Solutions from "../components/staticComps/Solutions";
 import Resources from "../components/staticComps/Resourses";
 import Pricing from "../components/staticComps/Pricing";
+import ScrollToTop from "./ScrollToTop";
 
 function Routes_() {
   return (
     <>
+      <ScrollToTop />
       <Routes>
         <Route element={<PublicRouter />}>
           <Route path="/login" element={<Login />} />
@@ -35,8 +37,8 @@ function Routes_() {
 
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/create-new-monitor" element={<CreateNewMonitor />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/edit-monitor/:id" element={<EditeMonitor />} />
             <Route path="/monitor/:id" element={<ViewMonitor />} />
             <Route path="/incidents" element={<Incedents />} />

@@ -19,7 +19,7 @@ export default function Incidents() {
   },[])
   
   return (
-    <div className="bg-[#101724] text-white min-h-screen p-4 sm:p-6 md:p-10 overflow-y-auto h-[100vh] w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ">
+    <div className="bg-[#101724] text-white p-4 sm:p-6 md:p-10 overflow-y-auto flex-1 min-h-0 w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ">
       {/* ================= HEADER ================= */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <h1 className="text-xl sm:text-2xl font-bold ml-12 mt-1.5 md:m-0">Incidents.</h1>

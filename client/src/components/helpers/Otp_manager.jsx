@@ -54,7 +54,7 @@ export default function Otp_manager({ otp, setOtp, errors = {} }) {
 
   return (
     <div>
-      <div className="flex gap-3 pt-2  md:gap-[13px]" onPaste={handlePaste}>
+      <div className="flex gap-1 pt-2  md:gap-[13px]" onPaste={handlePaste}>
         {otp.map((digit, index) => (
           <input
             key={index}
@@ -65,7 +65,7 @@ export default function Otp_manager({ otp, setOtp, errors = {} }) {
             value={digit}
             onChange={(e) => handleOtpChange(e, index)}
             onKeyDown={(e) => handleKeyDown(e, index)}
-            className={`w-11.5 md:w-12.5 h-12 text-center text-lg rounded-lg 
+            className={`w-[20%] md:w-12.5 h-12 text-center text-lg rounded-lg 
               bg-[#121A28] text-gray-200 border
               focus:outline-none focus:ring-0 focus:border-gray-600
               ${errors?.otp ? "border-red-500" : "border-gray-700"}`}

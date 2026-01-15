@@ -90,7 +90,7 @@ export default function CreateNewMonitor() {
 
 
     return (
-        <div className="overflow-y-auto h-[100vh] flex-1 p-3 sm:p-6 md:p-10">
+        <div className="overflow-y-auto flex-1 min-h-0 p-3 sm:p-6 md:p-10">
             <button
                 onClick={() => navigate("/dashboard", { replace: true })}
                 className="mt-14 ml-1 md:ml-0 md:mt-0 inline-block bg-[#121A28] px-4 py-2 rounded-lg mb-4 sm:mb-6 hover:bg-[#172235] cursor-pointer font-bold text-base sm:text-lg transition"
