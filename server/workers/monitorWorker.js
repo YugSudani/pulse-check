@@ -92,10 +92,10 @@ const processMonitor = async (monitor) => {
       status !== "UP"
     ) {
       if (monitor.alert.email) {
-        // sendAlertEmail_2("DOWN", monitor, status);
+        sendAlertEmail_2("DOWN", monitor, status);
       }
       if (monitor.alert.push) {
-        // sendAlertNotification("DOWN", monitor);
+        sendAlertNotification("DOWN", monitor);
       }
     }
 
@@ -105,10 +105,10 @@ const processMonitor = async (monitor) => {
       status === "UP"
     ) {
       if (monitor.alert.email) {
-        // sendAlertEmail_2("RECOVERED", monitor, status);
+        sendAlertEmail_2("RECOVERED", monitor, status);
       }
       if (monitor.alert.push) {
-        // sendAlertNotification("RECOVERED", monitor);
+        sendAlertNotification("RECOVERED", monitor);
       }
     }
   } catch (error) {

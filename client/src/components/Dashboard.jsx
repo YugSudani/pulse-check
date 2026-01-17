@@ -167,7 +167,7 @@ export default function Dashboard() {
               <div
                 key={monitor._id}
                 onClick={() =>
-                  navigate(`/monitor/${monitor._id}`, { replace: true })
+                  navigate(`/monitor/${monitor._id}`, { replace: false })
                 }
                 className={`bg-[#131e30] p-4 sm:p-5 rounded-2xl relative cursor-pointer hover:bg-[#1A2333] transition  ${
                   search ? "search-highlight" : ""

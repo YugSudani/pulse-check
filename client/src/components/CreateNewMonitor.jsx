@@ -17,8 +17,8 @@ export default function CreateNewMonitor() {
 
   const [url, setUrl] = useState(null);
   const [name, setName] = useState("New Monitor");
-  const [emailAlert, setEmailAlert] = useState(false);
-  const [pushAlert, setPushAlert] = useState(false);
+  const [emailAlert, setEmailAlert] = useState(null);
+  const [pushAlert, setPushAlert] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Predefined interval options in seconds

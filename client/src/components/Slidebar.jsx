@@ -92,7 +92,7 @@ export default function Slidebar() {
           <nav className="space-y-2 sm:space-y-3 text-gray-300">
             <button
               onClick={() => {
-                navigate("/dashboard", { replace: true });
+                navigate("/dashboard");
                 setOpenSidebar(false);
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
@@ -102,7 +102,7 @@ export default function Slidebar() {
 
             <button
               onClick={() => {
-                navigate("/incidents", { replace: true });
+                navigate("/incidents");
                 setOpenSidebar(false);
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
