@@ -5,16 +5,116 @@ const monitorModel = require("../models/monitorModel");
 const logsModel = require("../models/logModel");
 const incidentModel = require("../models/incidentModel");
 const { sendAlertEmail_2 } = require("../helpers/sendMail");
+const { sendAlertNotification } = require("../helpers/sendPushNotification");
 const connectDB = require("../helpers/connectWorkerDB");
 const getActive_Eligible_Monitors = require("../helpers/fetchMonitor");
 const pingIt = require("../helpers/ping-it");
-const { sendAlertNotification } = require("../helpers/sendPushNotification");
 
 //db connection
 connectDB();
 
-// Flage to prevent multiple instances of the worker
+// Flag to prevent multiple instances of the worker
 let isRunning = false;
+
+// Process individual monitor without blocking the loop
+const processMonitor = async (monitor) => {
+  try {
+    // ping End-point and get data
+    const { status, statusCode, responseTime } = await pingIt(monitor);
+
+    // create incident
+    if (status !== monitor.lastStatus && status !== "UP") {
+      await incidentModel.create({
+        userID: monitor.userId,
+        monitorId: monitor._id,
+        monitorUrl: monitor.url,
+        incidentType: status,
+        incidentStartTime: new Date(),
+      });
+    }
+
+    // update incident
+    if (monitor.lastStatus !== "UP" && status === "UP") {
+      await incidentModel.findOneAndUpdate(
+        {
+          monitorId: monitor._id,
+          incidentEndTime: null, // open incident
+        },
+        [
+          {
+            $set: {
+              incidentEndTime: "$$NOW",
+              incidentDuration: {
+                $subtract: ["$$NOW", "$incidentStartTime"],
+              },
+            },
+          },
+        ],
+        {
+          sort: { incidentStartTime: -1 },
+          updatePipeline: true,
+        },
+      );
+    }
+
+    // Check if status changed BEFORE updating
+    const statusChanged = status !== monitor.lastStatus;
+
+    // Update monitor with current-Up-Down-TimeStart reset if status changed
+    await monitorModel.findOneAndUpdate(
+      { _id: monitor._id },
+      {
+        $set: {
+          lastStatus: status,
+          lastCheckedAt: new Date(),
+          ...(statusChanged ? { currentUpDownTimeStart: new Date() } : {}),
+        },
+        $inc: {
+          totalChecks: 1,
+          ...(status !== "UP" ? { totalDown: 1 } : {}),
+        },
+      },
+      { new: true },
+    );
+
+    // create log
+    await logsModel.create({
+      monitorId: monitor._id,
+      statusCode,
+      responseTime,
+      isUp: status === "UP",
+      checkedAt: new Date(),
+    });
+
+    // send alert mail and push on down or recovered (fire and forget)
+    if (
+      (monitor.lastStatus === "UP" || monitor.lastStatus === null) &&
+      status !== "UP"
+    ) {
+      if (monitor.alert.email) {
+        // sendAlertEmail_2("DOWN", monitor, status);
+      }
+      if (monitor.alert.push) {
+        // sendAlertNotification("DOWN", monitor);
+      }
+    }
+
+    if (
+      monitor.lastStatus !== "UP" &&
+      monitor.lastStatus !== null &&
+      status === "UP"
+    ) {
+      if (monitor.alert.email) {
+        // sendAlertEmail_2("RECOVERED", monitor, status);
+      }
+      if (monitor.alert.push) {
+        // sendAlertNotification("RECOVERED", monitor);
+      }
+    }
+  } catch (error) {
+    console.error("Error processing monitor:", monitor._id, error);
+  }
+};
 
 // core Logic function
 const monitorWorker = async () => {
@@ -22,106 +122,13 @@ const monitorWorker = async () => {
   isRunning = true;
 
   try {
-    //fetch monitor only which are eligible to be ping
+    // fetch monitors only which are eligible to be pinged
     const monitors = await getActive_Eligible_Monitors();
-    //console.log("Eligible monitors:", monitors.length);
 
-    for (const monitor of monitors) {
-      //ping End-point and give data
-      const { status, statusCode, responseTime } = await pingIt(monitor);
-
-      // create incident
-      if (status !== monitor.lastStatus && status !== "UP") {
-        await incidentModel.create({
-          userID: monitor.userId,
-          monitorId: monitor._id,
-          monitorUrl: monitor.url,
-          incidentType: status,
-          incidentStartTime: new Date(),
-        });
-        // console.log("Incident created for", monitor.url, " FOR : " + status);
-      }
-
-      // update incident
-      if (monitor.lastStatus !== "UP" && status === "UP") {
-        await incidentModel.findOneAndUpdate(
-          {
-            monitorId: monitor._id,
-            incidentEndTime: null, // open incident
-          },
-          [
-            {
-              $set: {
-                incidentEndTime: "$$NOW",
-                incidentDuration: {
-                  $subtract: ["$$NOW", "$incidentStartTime"],
-                },
-              },
-            },
-          ],
-          {
-            sort: { incidentStartTime: -1 },
-            updatePipeline: true,
-          }
-        );
-      }
-
-      // Check if status changed BEFORE updating
-      const statusChanged = status !== monitor.lastStatus;
-      // Update monitor with current-Up-Down-TimeStart reset if status changed
-      await monitorModel.findOneAndUpdate(
-        { _id: monitor._id },
-        {
-          $set: {
-            lastStatus: status,
-            lastCheckedAt: new Date(),
-            ...(statusChanged ? { currentUpDownTimeStart: new Date() } : {}),
-          },
-          $inc: {
-            totalChecks: 1,
-            ...(status !== "UP" ? { totalDown: 1 } : {}),
-          },
-        },
-        { new: true }
-      );
-
-      // create log
-      await logsModel.create({
-        monitorId: monitor._id,
-        statusCode,
-        responseTime,
-        isUp: status === "UP",
-        checkedAt: new Date(),
-      });
-
-      //send alert mail and push on down or recovered
-      if (
-        (monitor.lastStatus === "UP" || monitor.lastStatus === null) &&
-        status !== "UP"
-      ) {
-        if(monitor.alert.email){
-          // console.log("Sending email doen");
-          sendAlertEmail_2("DOWN", monitor, status); //DOWN alert
-        }
-        if(monitor.alert.push){
-          // console.log("Sending push down");
-          await sendAlertNotification("DOWN",monitor);
-        }
-      }
-
-      if (
-        monitor.lastStatus !== "UP" && monitor.lastStatus !== null && status === "UP"
-      ) {
-        if(monitor.alert.email){
-          // console.log("Sending email recivred");
-          sendAlertEmail_2("RECOVERED", monitor, status); // RECOVERY alert
-        }
-        if(monitor.alert.push){
-          // console.log("Sending push recovred");
-          await sendAlertNotification("RECOVERED",monitor);
-        }
-      }
-    }
+    // Fire off all monitors concurrently - no await, let Node.js handle it
+    monitors.forEach((monitor) => {
+      processMonitor(monitor);
+    });
   } catch (error) {
     console.error("Monitor worker error:", error);
   } finally {
@@ -129,6 +136,6 @@ const monitorWorker = async () => {
   }
 };
 
-setInterval(monitorWorker, 30000); 
+setInterval(monitorWorker, 30000);
 
 module.exports = monitorWorker;

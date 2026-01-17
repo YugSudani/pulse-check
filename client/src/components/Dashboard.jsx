@@ -72,9 +72,9 @@ export default function Dashboard() {
   };
 
   return (
-    <>
+    <div className="flex flex-col lg:flex-row h-full overflow-hidden">
       {/* ================ MAIN CONTENT ================ */}
-      <main className="flex-1 p-4 sm:p-6 md:p-8 mt-14 md:mt-0">
+      <main className="flex-1 overflow-y-auto h-full p-4 sm:p-6 md:p-8 mt-14 md:mt-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {/* Header */}
         <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">
           Monitors<span className="text-green-500">.</span>
@@ -257,7 +257,7 @@ export default function Dashboard() {
       </main>
 
       {/* ================ RIGHT STATUS COLUMN ================ */}
-      <aside className="hidden lg:block w-80 p-6 md:p-8 bg-[#0D121C] border-l border-gray-800">
+      <aside className="hidden lg:block w-80 overflow-y-auto h-full p-6 md:p-8 bg-[#0D121C] border-l border-gray-800 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {/* Current Status Card */}
         <div className="bg-[#131e30] p-6 rounded-xl border border-gray-800 mb-6">
           <h2 className="font-semibold mb-4">Current status.</h2>
@@ -284,10 +284,10 @@ export default function Dashboard() {
           </div>
 
           <p className="text-center text-gray-400 text-sm mt-4">
-            Using 2 of 50 monitors.
+            Using {monitors.length} of 50 monitors.
           </p>
         </div>
       </aside>
-    </>
+    </div>
   );
 }

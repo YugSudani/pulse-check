@@ -14,6 +14,8 @@ export default function ViewMonitor() {
   const [stats, setStats] = useState({ min: null, max: null, avg: null });
   const [range, setRange] = useState("15m");
   const [upDownTime, setUpDownTime] = useState(null);
+  const [loading, setLoading] = useState(false);
+
 
   const fetchLogData = async (range) => {
     try {
@@ -63,6 +65,7 @@ export default function ViewMonitor() {
 
   const handlePause = async (monitorId) => {
     try {
+      setLoading(true);
       await api.patch(
         `/monitor/pause/${monitorId}`,
         {},
@@ -72,6 +75,8 @@ export default function ViewMonitor() {
     } catch (error) {
       alert("failed to pause monitor");
       console.error("Error pausing monitor:", error);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -178,7 +183,7 @@ export default function ViewMonitor() {
   const [showIncidentCount, setShowIncidentCount] = useState(3);
 
   return (
-    <div className="overflow-x-hidden overflow-y-auto flex-1 min-h-0 bg-[#101724] text-white p-4 sm:p-6 md:p-8 lg:p-12 flex gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <div className="overflow-x-hidden overflow-y-auto flex-1 min-h-0 h-full bg-[#101724] text-white p-4 sm:p-6 md:p-8 lg:p-12 flex gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       {/* ================= MAIN CONTENT ================= */}
       <div className="flex-1 space-y-4 sm:space-y-5">
         {/* BACK + TITLE */}
@@ -215,10 +220,15 @@ export default function ViewMonitor() {
                 Edit
               </button>
               <button
-                className="bg-[#131e30] px-4 py-2 w-17 md:w-30 rounded-lg text-xs sm:text-sm hover:bg-[#1A2333] cursor-pointer transition whitespace-nowrap"
+                className="bg-[#131e30] px-4 py-2 w-17 md:w-30 rounded-lg text-xs sm:text-sm hover:bg-[#1A2333] cursor-pointer transition whitespace-nowrap flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => handlePause(monitor._id)}
+                disabled={loading}
               >
-                {monitorStatusBtn ? "Pause" : "Resume"}
+                {loading ? (
+                  <div className="w-4 h-4 border-4 border-gray-400 border-t-green-500 rounded-full animate-spin"></div>
+                ) : (
+                  monitorStatusBtn ? "Pause" : "Resume"
+                )}
               </button>
               <button className="bg-[#131e30] px-4 py-2 w-17 md:w-30 rounded-lg text-xs sm:text-sm hover:bg-[#1A2333] cursor-pointer transition whitespace-nowrap">
                 Test

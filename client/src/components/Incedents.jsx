@@ -5,13 +5,22 @@ export default function Incidents() {
   const [category, setCategory] = useState('all');
   const [incidents, setIncidents] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   const getAllIncidents=async()=>{
+    try {
+      setLoading(true);
       const response = await api.get("/incident/getAll",
         {withCredentials: true}
       )
       // console.log(response.data.incidents);
       setIncidents(response.data.incidents);
+    } catch (error) {
+      console.log(error);      
+    }finally{
+      setLoading(false)
+    }
   }
 
   useEffect(()=>{
@@ -19,7 +28,7 @@ export default function Incidents() {
   },[])
   
   return (
-    <div className="bg-[#101724] text-white p-4 sm:p-6 md:p-10 overflow-y-auto flex-1 min-h-0 w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ">
+    <div className="bg-[#101724] text-white p-4 sm:p-6 md:p-10 overflow-y-auto flex-1 min-h-0 h-full w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ">
       {/* ================= HEADER ================= */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <h1 className="text-xl sm:text-2xl font-bold ml-12 mt-1.5 md:m-0">Incidents.</h1>
@@ -43,6 +52,7 @@ export default function Incidents() {
         </div>
       </div>
 
+
       {/* ================= DESKTOP TABLE ================= */}
       <div className="hidden md:block bg-[#131e30] border border-gray-800 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
@@ -61,12 +71,12 @@ export default function Incidents() {
             {[...incidents].reverse().map((item, i) => {
               if(category !== "all" && item.incidentType !== category) return null;
               if(search && !item.monitorUrl.toLowerCase().includes(search.toLowerCase())) return null;
-                
+              
               return(
-              <tr
+                <tr
                 key={i}
                 className="border-t border-gray-800 hover:bg-[#1A2333] transition "
-              >
+                >
                 <td className={"px-4 py-3 text-gray-200 max-w-xs truncate  " + (search ? "search-highlight" : "")}>
                   {item.monitorUrl}
                 </td>
@@ -97,13 +107,18 @@ export default function Incidents() {
         {incidents.length === 0 && <p className="text-center text-gray-400 py-6">No Incidents found</p>}
         </div>
       </div>
+      {loading && <div className="loader absolute left-4/9 top-1/5"></div>}
 
       {/* ================= MOBILE CARDS ================= */}
       <div className="md:hidden space-y-4">
-        {incidents.map((item, i) => (
+        {[...incidents].reverse().map((item, i) => {
+          if(category !== "all" && item.incidentType !== category) return null;
+          if(search && !item.monitorUrl.toLowerCase().includes(search.toLowerCase())) return null;
+          
+          return (
           <div
-            key={i}
-            className="bg-[#131e30] border border-gray-800 rounded-xl p-4 space-y-3"
+          key={i}
+          className="bg-[#131e30] border border-gray-800 rounded-xl p-4 space-y-3"
           >
             <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="text-green-400 text-xs sm:text-sm">✔ {item.incidentType}</span>
@@ -129,7 +144,8 @@ export default function Incidents() {
               </div>
             </div>
           </div>
-        ))}
+          );
+        })}
         {incidents.length === 0 && <p className="text-center text-gray-400 py-6">No Incidents found</p>}
       </div>
 

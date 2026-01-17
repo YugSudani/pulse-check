@@ -25,6 +25,10 @@ const schema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  subscriptionPlan: {
+    type: String,
+    default: "starter",
+  }
 });
 
 const userModel = mongoose.model("userModel", schema);

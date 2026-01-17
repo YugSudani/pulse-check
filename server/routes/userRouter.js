@@ -39,7 +39,7 @@ router.post("/genOTP", async (req, res) => {
       });
     }
     const OTP = generateOTP();
-    await sendOTPEmail_2(email, name, OTP);
+    //await sendOTPEmail_2(email, name, OTP);
     await tokenModel.create({
       email,
       OTP,
@@ -215,7 +215,7 @@ router.get("/getMe", async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "user found true", success: true, name: user.name });
+      .json({ message: "user found true", success: true, user: user });
   } catch (error) {
     return res.status(401).json({ message: "User not found", success: false });
   }

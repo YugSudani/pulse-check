@@ -2,8 +2,18 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { useAuth } from "../context/AuthContext";
+import InstallButton from "./staticComps/InstallButton";
 
 export default function Slidebar() {
+  const [subscriptionPlan, setSubscriptionPlan] = useState("starter");
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      setSubscriptionPlan(user.subscriptionPlan);
+    }
+  }, [user]);
+
   const [openSidebar, setOpenSidebar] = useState(false);
   const navigate = useNavigate();
   const { checkAuth } = useAuth();
@@ -12,12 +22,25 @@ export default function Slidebar() {
 
   const fetchUser = async () => {
     const { data } = await api.get("/user/getMe");
-    setUserName(data.name);
+    setUserName(data.user.name);
   };
 
   useEffect(() => {
     fetchUser();
   }, []);
+
+  // Prevent body scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (openSidebar) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [openSidebar]);
 
   return (
     <>
@@ -41,7 +64,7 @@ export default function Slidebar() {
       <aside
         className={`
                     fixed md:static top-0 left-0 z-40
-                    h-[100vh] w-72 md:w-67 bg-[linear-gradient(0deg,_rgba(59,215,113,0.05)_0%,_rgb(20,32,45)_75%)] border-r border-gray-800 p-6
+                    h-screen w-72 md:w-67 bg-[linear-gradient(0deg,_rgba(59,215,113,0.05)_0%,_rgb(20,32,45)_75%)] border-r border-gray-800 p-6
                     flex flex-col justify-between
                     transform transition-transform duration-300 ease-in-out
                     ${
@@ -89,48 +112,61 @@ export default function Slidebar() {
 
             <button
               onClick={() => {
-                navigate("/status-pages", { replace: true });
+                navigate("/features");
                 setOpenSidebar(false);
               }}
               className="flex cursor-pointer cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              📡 Status pages
+              📡 Features
             </button>
 
             <button
               onClick={() => {
-                navigate("/maintenance", { replace: true });
+                navigate("/pricing");
                 setOpenSidebar(false);
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              🛠️ Maintenance
+              🛠️ Pricing
             </button>
 
             <button
               onClick={() => {
-                navigate("/team", { replace: true });
+                navigate("/solutions");
                 setOpenSidebar(false);
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              👤 Team members
+              👤 Solutions
             </button>
 
             <button
               onClick={() => {
-                navigate("/integrations", { replace: true });
+                navigate("/resources");
                 setOpenSidebar(false);
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              🔗 Integrations & API
+              🔗 resourses
             </button>
+
           </nav>
+            <InstallButton />
         </div>
 
         {/* User Bottom Section */}
         <div className="mt-10">
+          <div className="py-3">
+            <p
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-1 rounded-full
+                    bg-gradient-to-r from-green-500/15 to-green-400/5
+                    text-green-400 border border-green-500/25
+                    uppercase tracking-wide shadow-sm"
+            >
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+              {subscriptionPlan} Plan
+            </p>
+          </div>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm">
               {userName?.split(" ")[0]?.charAt(0)?.toUpperCase()}
@@ -157,9 +193,14 @@ export default function Slidebar() {
             </button>
           </div>
 
-          <button className="w-full bg-green-500 text-black py-2 sm:py-2 rounded-full font-semibold hover:bg-green-400 transition min-h-[44px]">
-            Upgrade now
-          </button>
+          {subscriptionPlan === "starter" && (
+            <button
+              onClick={() => navigate("/pricing")}
+              className="w-full bg-green-500 text-black py-2 sm:py-2 rounded-full font-semibold hover:bg-green-400 transition min-h-[44px]"
+            >
+              Upgrade now
+            </button>
+          )}
         </div>
       </aside>
     </>

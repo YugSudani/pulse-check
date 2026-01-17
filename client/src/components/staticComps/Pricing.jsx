@@ -18,14 +18,24 @@ export default function Pricing() {
         "Push Notification alert",
         "Email alerts",
         "24-hour data retention",
-        "Community support"
+        "Community support",
       ],
       cta: "Start for Free",
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+        <svg
+          className="w-8 h-8"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+          />
         </svg>
-      )
+      ),
     },
     {
       name: "Pro",
@@ -38,14 +48,24 @@ export default function Pricing() {
         "SMS & Voice with email & push alert",
         "30-day data retention",
         "SSL Expiry monitoring",
-        "Priority email support"
+        "Priority email support",
       ],
       cta: "Get Started",
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        <svg
+          className="w-8 h-8"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M13 10V3L4 14h7v7l9-11h-7z"
+          />
         </svg>
-      )
+      ),
     },
     {
       name: "Business",
@@ -59,34 +79,48 @@ export default function Pricing() {
         "1-year data retention",
         "Status pages (Public & Private)",
         "Dedicated account manager",
-        "SSO Authentication"
+        "SSO Authentication",
       ],
-      cta: "Contact Sales",
+      cta: "Get Started",
       icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        <svg
+          className="w-8 h-8"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+          />
         </svg>
-      )
-    }
+      ),
+    },
   ];
 
   const faqs = [
     {
       question: "Can I change plans later?",
-      answer: "Yes, you can upgrade or downgrade your plan at any time. Prorated charges will be applied automatically."
+      answer:
+        "Yes, you can upgrade or downgrade your plan at any time. Prorated charges will be applied automatically.",
     },
     {
       question: "What payment methods do you accept?",
-      answer: "We accept all major credit cards & UPI. For enterprise plans, we support invoicing."
+      answer:
+        "We accept all major credit cards & UPI. For enterprise plans, we support invoicing.",
     },
     {
       question: "Is there a free trial for paid plans?",
-      answer: "Yes, both Pro and Business plans come with a 7-day free trial. card required to start."
+      answer:
+        "Yes, both Pro and Business plans come with a 7-day free trial. card required to start.",
     },
     {
       question: "What happens if I exceed my monitor limit?",
-      answer: "We'll notify you when you're close to your limit. You won't be charged extra, but you won't be able to add new monitors until you upgrade."
-    }
+      answer:
+        "We'll notify you when you're close to your limit. You won't be charged extra, but you won't be able to add new monitors until you upgrade.",
+    },
   ];
 
   return (
@@ -116,17 +150,38 @@ export default function Pricing() {
 
           {/* BILLING TOGGLE */}
           <div className="flex items-center justify-center gap-4">
-            <span className={`text-sm ${billingCycle === 'monthly' ? 'text-white font-medium' : 'text-gray-500'}`}>
+            <span
+              className={`text-sm ${
+                billingCycle === "monthly"
+                  ? "text-white font-medium"
+                  : "text-gray-500"
+              }`}
+            >
               Monthly
             </span>
             <button
-              onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
+              onClick={() =>
+                setBillingCycle(
+                  billingCycle === "monthly" ? "yearly" : "monthly"
+                )
+              }
               className="w-14 h-7 bg-gray-800 rounded-full p-1 relative transition-colors duration-300 focus:outline-none border border-gray-700"
             >
-              <div className={`w-5 h-5 bg-green-500 rounded-full shadow-md transform transition-transform duration-300 ${billingCycle === 'yearly' ? 'translate-x-7' : 'translate-x-0'}`}></div>
+              <div
+                className={`w-5 h-5 bg-green-500 rounded-full shadow-md transform transition-transform duration-300 ${
+                  billingCycle === "yearly" ? "translate-x-7" : "translate-x-0"
+                }`}
+              ></div>
             </button>
-            <span className={`text-sm ${billingCycle === 'yearly' ? 'text-white font-medium' : 'text-gray-500'}`}>
-              Yearly <span className="text-green-400 text-xs ml-1">(Save 20%)</span>
+            <span
+              className={`text-sm ${
+                billingCycle === "yearly"
+                  ? "text-white font-medium"
+                  : "text-gray-500"
+              }`}
+            >
+              Yearly{" "}
+              <span className="text-green-400 text-xs ml-1">(Save 20%)</span>
             </span>
           </div>
         </div>
@@ -137,9 +192,10 @@ export default function Pricing() {
             <div
               key={index}
               className={`relative backdrop-blur-sm p-8 rounded-2xl border transition-all duration-300 flex flex-col
-                ${plan.popular 
-                  ? 'bg-[#0D121C]/80 border-green-500/50 shadow-[0_0_30px_rgba(34,197,94,0.1)] scale-100 md:scale-105 z-10' 
-                  : 'bg-[#0D121C]/60 border-gray-800/50 hover:border-green-500/30'
+                ${
+                  plan.popular
+                    ? "bg-[#0D121C]/80 border-green-500/50 shadow-[0_0_30px_rgba(34,197,94,0.1)] scale-100 md:scale-105 z-10"
+                    : "bg-[#0D121C]/60 border-gray-800/50 hover:border-green-500/30"
                 }`}
             >
               {plan.popular && (
@@ -150,7 +206,13 @@ export default function Pricing() {
 
               {/* Header */}
               <div className="mb-8">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${plan.popular ? 'bg-green-500 text-white' : 'bg-green-500/10 text-green-500'}`}>
+                <div
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${
+                    plan.popular
+                      ? "bg-green-500 text-white"
+                      : "bg-green-500/10 text-green-500"
+                  }`}
+                >
                   {plan.icon}
                 </div>
                 <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
@@ -161,11 +223,14 @@ export default function Pricing() {
               <div className="mb-8">
                 <div className="flex items-end gap-2">
                   <span className="text-4xl font-bold text-white">
-                    ${billingCycle === 'monthly' ? plan.price.monthly : plan.price.yearly}
+                    $
+                    {billingCycle === "monthly"
+                      ? plan.price.monthly
+                      : plan.price.yearly}
                   </span>
                   <span className="text-gray-500 mb-1">/mo</span>
                 </div>
-                {billingCycle === 'yearly' && (
+                {billingCycle === "yearly" && (
                   <p className="text-xs text-green-400 mt-2">
                     Billed ${Number(plan.price.yearly) * 12} yearly
                   </p>
@@ -176,8 +241,20 @@ export default function Pricing() {
               <div className="flex-grow mb-8 space-y-4">
                 {plan.features.map((feature, idx) => (
                   <div key={idx} className="flex items-start gap-3">
-                    <svg className={`w-5 h-5 flex-shrink-0 mt-0.5 ${plan.popular ? 'text-green-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg
+                      className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+                        plan.popular ? "text-green-400" : "text-gray-500"
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span className="text-sm text-gray-300">{feature}</span>
                   </div>
@@ -187,12 +264,22 @@ export default function Pricing() {
               {/* CTA */}
               <button
                 className={`w-full py-3 rounded-xl font-semibold transition-all duration-300
-                  ${plan.popular 
-                    ? 'bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-500/25' 
-                    : 'bg-[#1A202C] hover:bg-gray-700 text-white border border-gray-700'
+                  ${
+                    plan.popular
+                      ? "bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-500/25"
+                      : "bg-[#1A202C] hover:bg-gray-700 text-white border border-gray-700"
                   }`}
+                onClick={() => {
+                  if (plan.name === "Starter") {
+                    navigate("/dashboard");
+                  } else if (plan.name === "Pro") {
+                    navigate("/login");
+                  } else if (plan.name === "Business") {
+                    navigate("/login");
+                  }
+                }}
               >
-                {plan.cta}
+                    {plan.name === "Starter" ? "Start for Free" : plan.name === "Pro" ? "Get Started with pro" : "Get Started with business"}
               </button>
             </div>
           ))}
@@ -221,8 +308,7 @@ export default function Pricing() {
             ))}
           </div>
         </div>
-
-       </div>
+      </div>
     </>
   );
 }
