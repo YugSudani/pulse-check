@@ -88,7 +88,7 @@ router.delete("/deleteMonitor/:id", async (req, res) => {
 
     const result = await Promise.allSettled([
       logModel.deleteMany({ monitorId }),
-      incidentModel.deleteMany({ monitorId }),
+      incidentModel.deleteMany({ monitorId }),   // not deleting 
     ]);
 
     // result.forEach((item) => {

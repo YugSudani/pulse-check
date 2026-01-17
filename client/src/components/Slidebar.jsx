@@ -66,12 +66,12 @@ export default function Slidebar() {
                     fixed md:static top-0 left-0 z-40
                     h-screen w-72 md:w-67 bg-[linear-gradient(0deg,_rgba(59,215,113,0.05)_0%,_rgb(20,32,45)_75%)] border-r border-gray-800 p-6
                     flex flex-col justify-between
+                    overflow-y-auto
                     transform transition-transform duration-300 ease-in-out
-                    ${
-                      openSidebar
-                        ? "translate-x-0"
-                        : "-translate-x-full md:translate-x-0"
-                    }
+                    ${openSidebar
+            ? "translate-x-0"
+            : "-translate-x-full md:translate-x-0"
+          }
                 `}
       >
         {/* Top Section */}
@@ -151,7 +151,7 @@ export default function Slidebar() {
             </button>
 
           </nav>
-            <InstallButton />
+          <InstallButton />
         </div>
 
         {/* User Bottom Section */}

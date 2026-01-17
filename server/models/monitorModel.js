@@ -28,11 +28,11 @@ const monitorSchema = new mongoose.Schema(
     alert: {
       email: {
         type: Boolean,
-        default: true,
+        default: false,
       },
       push: {
         type: Boolean,
-        default: true,
+        default: false,
       },
     },
 
