@@ -16,7 +16,7 @@ function App() {
         promptOptions: {
           slidedown: {
             enabled: true,
-            autoPrompt: false, // Don't auto-prompt, we'll trigger manually
+            autoPrompt: true, // Don't auto-prompt, we'll trigger manually
             actionMessage: "We'd like to send you notifications for updates.",
             acceptButtonText: "Allow", 
             cancelButtonText: "No Thanks",

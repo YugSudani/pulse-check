@@ -45,7 +45,7 @@ module.exports.sendAlertNotification = async function sendAlertNotification(
           {
             id: "view",
             text: "View Details",
-            url: `https://geoponic-verlie-impressionistically.ngrok-free.dev/monitor/${monitor._id}`,
+            url: `https://pulse-check-5qky.onrender.com/monitor/${monitor._id}`,
           },
         ],
       },
