@@ -5,14 +5,22 @@ dotenv.config({ path: path.join(__dirname, "../.env") });
 const userModel = require("../models/userModel");
 const axios = require("axios");
 
-
 const ONESIGNAL_APP_ID = process.env.ONE_SIGNAL_APP_ID;
 const ONESIGNAL_REST_API_KEY = process.env.ONE_SIGNAL_REST_API_KEY;
 
 // Send notification to specific user
-module.exports.sendAlertNotification = async function sendAlertNotification(reason, monitor) {
+module.exports.sendAlertNotification = async function sendAlertNotification(
+  reason,
+  monitor,
+) {
   try {
     const user = await userModel.findById(monitor.userId);
+    if (!user?.playerId) {
+      console.warn(
+        `⚠️ No playerId found for user ${monitor.userId}, skipping notification`,
+      );
+      return;
+    }
 
     const response = await axios.post(
       "https://onesignal.com/api/v1/notifications",
@@ -26,8 +34,8 @@ module.exports.sendAlertNotification = async function sendAlertNotification(reas
           en: `🚨 Server Alert: ${monitor.name} is ${reason}!`,
         },
         data: {
-          serverName:monitor.name,
-          serverUrl:monitor.url,
+          serverName: monitor.name,
+          serverUrl: monitor.url,
           timestamp: new Date().toISOString(),
           type: "server_down",
         },
@@ -46,7 +54,7 @@ module.exports.sendAlertNotification = async function sendAlertNotification(reas
           "Content-Type": "application/json",
           Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
         },
-      }
+      },
     );
 
     console.log("Notification sent successfully:", response.data);
@@ -54,8 +62,8 @@ module.exports.sendAlertNotification = async function sendAlertNotification(reas
   } catch (error) {
     console.error(
       "Error sending notification:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     throw error;
   }
-}
+};
