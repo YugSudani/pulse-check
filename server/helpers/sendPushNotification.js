@@ -56,7 +56,6 @@ module.exports.sendAlertNotification = async function sendAlertNotification(
             id: "dismiss",
             text: "Dismiss",
             icon: "https://your-domain.com/close-icon.png", // Optional
-            url: `https://pulse-check-5qky.onrender.com/dashboard`,
           },
         ],
       },
