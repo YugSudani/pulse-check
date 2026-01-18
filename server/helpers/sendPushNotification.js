@@ -43,12 +43,20 @@ module.exports.sendAlertNotification = async function sendAlertNotification(
           type: "server_down",
         },
         priority: 10,
+        ttl: 10,
         // Optional: add action buttons
         web_buttons: [
           {
             id: "view",
             text: "View Details",
+            icon: "https://your-domain.com/view-icon.png", // Optional
             url: `https://pulse-check-5qky.onrender.com/monitor/${monitor._id}`,
+          },
+          {
+            id: "dismiss",
+            text: "Dismiss",
+            icon: "https://your-domain.com/close-icon.png", // Optional
+            url: `https://pulse-check-5qky.onrender.com/dashboard`,
           },
         ],
       },

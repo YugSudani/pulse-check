@@ -110,6 +110,12 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!notificationsEnabled) {
+      alert("Please enable notifications to login");
+      return;
+    }
+
     setIsLoading(true);
     const finalOtp = otp.join("");
 

@@ -3,6 +3,8 @@ const router = express.Router();
 const monitorModel = require("../models/monitorModel");
 const incidentModel = require("../models/incidentModel");
 const logModel = require("../models/logModel");
+const { sendAlertNotification } = require("../helpers/sendPushNotification");
+const { sendAlertEmail_2 } = require("../helpers/sendMail");
 
 router.post("/createMonitor", async (req, res) => {
   try {
@@ -88,7 +90,7 @@ router.delete("/deleteMonitor/:id", async (req, res) => {
 
     const result = await Promise.allSettled([
       logModel.deleteMany({ monitorId }),
-      incidentModel.deleteMany({ monitorId }),   // not deleting 
+      incidentModel.deleteMany({ monitorId }), // not deleting
     ]);
 
     // result.forEach((item) => {
@@ -144,7 +146,7 @@ router.get("/:monitorId/response-history", async (req, res) => {
     stats.min = Math.min(...responseTimes);
     stats.max = Math.max(...responseTimes);
     stats.avg = Math.round(
-      responseTimes.reduce((sum, rt) => sum + rt, 0) / responseTimes.length
+      responseTimes.reduce((sum, rt) => sum + rt, 0) / responseTimes.length,
     );
   }
 
@@ -178,6 +180,27 @@ router.put("/editeMonitor/:monitorId", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, msg: "Failed to edit monitor" });
+  }
+});
+
+router.post("/test_alert", async (req, res) => {
+  try {
+    const { monitorId } = req.body;
+
+    const monitor = await monitorModel.findById(monitorId);
+    if (!monitor) {
+      return res.status(404).json({ success: false, msg: "Monitor not found" });
+    }
+    if (monitor.alert.email) {
+      sendAlertEmail_2("DOWN", monitor, "down");
+    }
+    if (monitor.alert.push) {
+      sendAlertNotification("DOWN", monitor);
+    }
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, msg: "Failed to test monitor" });
   }
 });
 

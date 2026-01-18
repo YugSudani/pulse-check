@@ -182,6 +182,16 @@ export default function ViewMonitor() {
 
   const [showIncidentCount, setShowIncidentCount] = useState(3);
 
+  const handleTestAlerts = async (monitorId) => {
+    try {
+      const response = await api.post("/monitor/test_alert", { monitorId });
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
   return (
     <div className="overflow-x-hidden overflow-y-auto flex-1 min-h-0 h-full bg-[#101724] text-white p-4 sm:p-6 md:p-8 lg:p-12 flex gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       {/* ================= MAIN CONTENT ================= */}
@@ -230,7 +240,7 @@ export default function ViewMonitor() {
                   monitorStatusBtn ? "Pause" : "Resume"
                 )}
               </button>
-              <button className="bg-[#131e30] px-4 py-2 w-17 md:w-30 rounded-lg text-xs sm:text-sm hover:bg-[#1A2333] cursor-pointer transition whitespace-nowrap">
+              <button onClick={()=>handleTestAlerts(monitor._id)} className="bg-[#131e30] px-4 py-2 w-17 md:w-30 rounded-lg text-xs sm:text-sm hover:bg-[#1A2333] cursor-pointer transition whitespace-nowrap">
                 Test
               </button>
             </div>
