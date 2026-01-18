@@ -3,7 +3,7 @@ import api from "../lib/api";
 
 const authContext = createContext();
 
-export const AuthProvider = ({children}) =>{
+export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(null);
 
@@ -17,7 +17,7 @@ export const AuthProvider = ({children}) =>{
             setIsAuthenticated(true);
         } catch (error) {
             setUser(null);
-            setIsAuthenticated(false);            
+            setIsAuthenticated(false);
         }
     }
 
@@ -25,9 +25,9 @@ export const AuthProvider = ({children}) =>{
         checkAuth();
     }, [])
 
-    return(
-        <authContext.Provider 
-            value={{user, isAuthenticated, checkAuth}}>
+    return (
+        <authContext.Provider
+            value={{ user, isAuthenticated, checkAuth }}>
             {children}
         </authContext.Provider>
     );

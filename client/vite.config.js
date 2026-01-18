@@ -3,12 +3,16 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(),    
+  plugins: [
+    react(),
+    tailwindcss(),
     VitePWA({
+      // ✅ DISABLE automatic service worker registration
+      injectRegister: null,
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg", "favicon.ico"],
+      
       manifest: {
         name: "Pulse Check",
         short_name: "Pulse",
@@ -27,15 +31,18 @@ export default defineConfig({
             src: "/pwa-512x512.png",
             sizes: "512x512",
             type: "image/png",
-          }
+          },
         ],
+      },
+      
+      // ✅ Don't generate a service worker - we'll use OneSignal's
+      injectManifest: {
+        injectionPoint: undefined,
       },
     }),
   ],
-  
+
   server: {
-    allowedHosts: [
-      ".ngrok-free.dev" // allow all ngrok subdomains
-    ]
-  }
+    allowedHosts: [".ngrok-free.dev"],
+  },
 });

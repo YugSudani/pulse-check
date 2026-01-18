@@ -17,9 +17,9 @@ export default function Login() {
   const [loginMethod, setLoginMethod] = useState("password");
 
   const handleNotificationToggle = async () => {
-     if (notificationLoading) return;
+    if (notificationLoading) return;
     setNotificationLoading(true);
-    
+
     if (notificationsEnabled) {
       // User wants to disable notifications
       window.OneSignalDeferred.push(async (OneSignal) => {
@@ -84,28 +84,28 @@ export default function Login() {
     });
   };
 
- const handleSendOtp = async () => {
-  setIsLoading(true);
-  try {
-    const response = await api.post("/user/genOTP", {
-      ...form,
-      isForSignup: false,
-    });
+  const handleSendOtp = async () => {
+    setIsLoading(true);
+    try {
+      const response = await api.post("/user/genOTP", {
+        ...form,
+        isForSignup: false,
+      });
 
-    if (response.data.success) {
-      setShowOtpField(true); // ✅ THIS WILL WORK
-    } else {
-      alert(response.data.message || "Failed to send OTP");
+      if (response.data.success) {
+        setShowOtpField(true); // ✅ THIS WILL WORK
+      } else {
+        alert(response.data.message || "Failed to send OTP");
+        setShowOtpField(false);
+      }
+    } catch (error) {
+      console.error(error);
+      alert(error?.response?.data?.message || "Something went wrong");
       setShowOtpField(false);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error(error);
-    alert(error?.response?.data?.message || "Something went wrong");
-    setShowOtpField(false);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
 
   const handleSubmit = async (e) => {
@@ -209,8 +209,8 @@ export default function Login() {
                     setShowOtpField(false);
                   }}
                   className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${loginMethod === "password"
-                      ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
-                      : "text-gray-400 hover:text-gray-200"
+                    ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
+                    : "text-gray-400 hover:text-gray-200"
                     }`}
                 >
                   <div className="flex items-center justify-center gap-2">
@@ -224,8 +224,8 @@ export default function Login() {
                   type="button"
                   onClick={() => setLoginMethod("otp")}
                   className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${loginMethod === "otp"
-                      ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
-                      : "text-gray-400 hover:text-gray-200"
+                    ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
+                    : "text-gray-400 hover:text-gray-200"
                     }`}
                 >
                   <div className="flex items-center justify-center gap-2">

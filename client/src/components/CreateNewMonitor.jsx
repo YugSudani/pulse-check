@@ -205,11 +205,11 @@ export default function CreateNewMonitor() {
                   <div className="text-sm text-gray-400 mb-2">
                     🔒 Available only in Pro & Bussiness plan.
                     <button
-                    onClick={() => navigate("/pricing")}
-                    className="text-green-500 ml-2 cursor-pointer"
-                  >
-                    Upgrade Now
-                  </button>
+                      onClick={() => navigate("/pricing")}
+                      className="text-green-500 ml-2 cursor-pointer"
+                    >
+                      Upgrade Now
+                    </button>
                   </div>
                 )}
               <p className="text-gray-400 text-sm mb-3">yourmail@gmail.com</p>
@@ -323,11 +323,11 @@ export default function CreateNewMonitor() {
           <div className="text-sm text-gray-400 mb-2">
             🔒 Available only in Pro & Business plan.
             <button
-                    onClick={() => navigate("/pricing")}
-                    className="text-green-500 ml-2 cursor-pointer"
-                  >
-                    Upgrade Now
-                  </button>
+              onClick={() => navigate("/pricing")}
+              className="text-green-500 ml-2 cursor-pointer"
+            >
+              Upgrade Now
+            </button>
           </div>
 
           <select className="w-full bg-[#121A28] px-2 py-3 rounded-lg border border-gray-800 text-gray-300">

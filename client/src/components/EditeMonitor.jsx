@@ -224,7 +224,7 @@ export default function CreateNewMonitor() {
                     }))
                   }
                 />
-                 <div
+                <div
                   className="relative w-11 h-6 rounded-full bg-gray-600
                                 peer-checked:bg-green-500
                                 peer-disabled:bg-gray-700
@@ -243,11 +243,11 @@ export default function CreateNewMonitor() {
                   <div className="text-sm text-gray-400 mb-2">
                     🔒 Available only in Pro & Bussiness plan.
                     <button
-                    onClick={() => navigate("/pricing")}
-                    className="text-green-500 ml-2 cursor-pointer"
-                  >
-                    Upgrade Now
-                  </button>
+                      onClick={() => navigate("/pricing")}
+                      className="text-green-500 ml-2 cursor-pointer"
+                    >
+                      Upgrade Now
+                    </button>
                   </div>
                 )}
               <p className="text-gray-400 text-sm mb-3">yourmail@gmail.com</p>

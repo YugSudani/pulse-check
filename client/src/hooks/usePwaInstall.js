@@ -7,25 +7,23 @@ export function usePwaInstall() {
   useEffect(() => {
     console.log("[PWA] usePwaInstall hook mounted");
 
+    // ✅ Check if app is already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      console.log("[PWA] App is already installed");
+      return;
+    }
+
     const handler = (e) => {
       console.log("[PWA] beforeinstallprompt event fired");
-      console.log("[PWA] Event object:", e);
-
-      // Stop Chrome from showing the default mini-infobar
       e.preventDefault();
-
-      console.log("[PWA] Default install prompt prevented");
-
       setDeferredPrompt(e);
       setIsInstallable(true);
-
       console.log("[PWA] App is now installable");
     };
 
     window.addEventListener("beforeinstallprompt", handler);
 
     return () => {
-      console.log("[PWA] usePwaInstall hook unmounted");
       window.removeEventListener("beforeinstallprompt", handler);
     };
   }, []);
@@ -34,7 +32,7 @@ export function usePwaInstall() {
     console.log("[PWA] Install button clicked");
 
     if (!deferredPrompt) {
-      console.warn("[PWA] No deferredPrompt available — install aborted");
+      console.warn("[PWA] No deferredPrompt available");
       return;
     }
 
@@ -42,19 +40,10 @@ export function usePwaInstall() {
     deferredPrompt.prompt();
 
     const choiceResult = await deferredPrompt.userChoice;
-
-    console.log("[PWA] User choice result:", choiceResult);
-
-    if (choiceResult.outcome === "accepted") {
-      console.log("[PWA] User accepted the install prompt");
-    } else {
-      console.log("[PWA] User dismissed the install prompt");
-    }
+    console.log("[PWA] User choice:", choiceResult.outcome);
 
     setDeferredPrompt(null);
     setIsInstallable(false);
-
-    console.log("[PWA] deferredPrompt cleared, install state reset");
   };
 
   return { isInstallable, installApp };

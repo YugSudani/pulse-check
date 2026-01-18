@@ -18,7 +18,7 @@ function App() {
             enabled: true,
             autoPrompt: false, // Don't auto-prompt, we'll trigger manually
             actionMessage: "We'd like to send you notifications for updates.",
-            acceptButtonText: "Allow", 
+            acceptButtonText: "Allow",
             cancelButtonText: "No Thanks",
           },
         },
