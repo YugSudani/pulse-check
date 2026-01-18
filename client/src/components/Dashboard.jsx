@@ -25,7 +25,7 @@ export default function Dashboard() {
     } catch (error) {
       // navigate("/login", { replace: true });
       // alert("Failed to get monitors");
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -148,7 +148,7 @@ export default function Dashboard() {
 
         </div>
         {/* Main Monitor List */}
-        <div className="h-135 sm:h-130 flex flex-col gap-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="h-80 sm:h-130 flex flex-col gap-4 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-gray-600">
           {[...monitors].reverse().map((monitor) => {
             if (
               search &&
@@ -169,9 +169,8 @@ export default function Dashboard() {
                 onClick={() =>
                   navigate(`/monitor/${monitor._id}`, { replace: false })
                 }
-                className={`bg-[#131e30] p-4 sm:p-5 rounded-2xl relative cursor-pointer hover:bg-[#1A2333] transition  ${
-                  search ? "search-highlight" : ""
-                }`}
+                className={`bg-[#131e30] p-4 sm:p-5 rounded-2xl relative cursor-pointer hover:bg-[#1A2333] transition  ${search ? "search-highlight" : ""
+                  }`}
               >
                 <h2 className="font-semibold text-base sm:text-lg mb-2">
                   {monitor.name}

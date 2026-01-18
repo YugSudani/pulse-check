@@ -29,18 +29,7 @@ export default function Slidebar() {
     fetchUser();
   }, []);
 
-  // Prevent body scroll when sidebar is open on mobile
-  useEffect(() => {
-    if (openSidebar) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [openSidebar]);
+
 
   return (
     <>
@@ -65,7 +54,7 @@ export default function Slidebar() {
         className={`
                     fixed md:static top-0 left-0 z-40
                     h-screen w-72 md:w-67 bg-[linear-gradient(0deg,_rgba(59,215,113,0.05)_0%,_rgb(20,32,45)_75%)] border-r border-gray-800 p-6
-                    flex flex-col justify-between
+                    flex flex-col
                     overflow-y-auto
                     transform transition-transform duration-300 ease-in-out
                     ${openSidebar
@@ -75,7 +64,7 @@ export default function Slidebar() {
                 `}
       >
         {/* Top Section */}
-        <div>
+        <div className="flex-shrink-0">
           <div className="flex items-center gap-2 text-xl sm:text-2xl font-semibold mb-10">
             <span className="text-green-500 text-lg sm:text-xl">⬤</span>
             PulseCheck
@@ -155,7 +144,7 @@ export default function Slidebar() {
         </div>
 
         {/* User Bottom Section */}
-        <div className="mt-10">
+        <div className="mt-auto pt-6 flex-shrink-0">
           <div className="py-3">
             <p
               className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-1 rounded-full
