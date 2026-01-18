@@ -8,15 +8,15 @@ function App() {
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function (OneSignal) {
       await OneSignal.init({
-        appId: "224242a0-7959-4a1d-ab2e-cc56a6428b0d",
+        appId: "0083fa83-9121-4f94-88dc-8252974df51f",
         safari_web_id:
-          "web.onesignal.auto.07679346-76f9-40eb-adf2-79670b2a6a52",
+          "web.onesignal.auto.3b8b9214-66ac-44d1-a7fb-a9dc856242cb",
         allowLocalhostAsSecureOrigin: true,
         // Enable slidedown prompts
         promptOptions: {
           slidedown: {
             enabled: true,
-            autoPrompt: true, // Don't auto-prompt, we'll trigger manually
+            autoPrompt: false, // Don't auto-prompt, we'll trigger manually
             actionMessage: "We'd like to send you notifications for updates.",
             acceptButtonText: "Allow", 
             cancelButtonText: "No Thanks",
