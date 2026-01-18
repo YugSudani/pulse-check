@@ -22,6 +22,9 @@ module.exports.sendAlertNotification = async function sendAlertNotification(
       return;
     }
 
+    console.log(`📤 Sending notification to player: ${user.playerId}`);
+    console.log(`📋 Monitor: ${monitor.name} - Status: ${reason}`);
+
     const response = await axios.post(
       "https://onesignal.com/api/v1/notifications",
       {
@@ -33,21 +36,19 @@ module.exports.sendAlertNotification = async function sendAlertNotification(
         contents: {
           en: `🚨 Server Alert: ${monitor.name} is ${reason}!`,
         },
+        // Web URL for click action
+        url: `https://pulse-check-5qky.onrender.com/monitor/${monitor._id}`,
+        // Additional data
         data: {
           serverName: monitor.name,
           serverUrl: monitor.url,
           timestamp: new Date().toISOString(),
-          type: "server_down",
+          type: "server_alert",
         },
-        priority: 10,
-        // Optional: add action buttons
-        web_buttons: [
-          {
-            id: "view",
-            text: "View Details",
-            url: `https://pulse-check-5qky.onrender.com/monitor/${monitor._id}`,
-          },
-        ],
+        // Web-specific settings
+        chrome_web_icon:
+          "https://pulse-check-5qky.onrender.com/pwa-192x192.png",
+        firefox_icon: "https://pulse-check-5qky.onrender.com/pwa-192x192.png",
       },
       {
         headers: {
