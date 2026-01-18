@@ -2,12 +2,12 @@ importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
 // Basic PWA functionality
 self.addEventListener('install', (event) => {
-  console.log('Service Worker installed');
+  //console.log('Service Worker installed');
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker activated');
+  //console.log('Service Worker activated');
   event.waitUntil(clients.claim());
 });
 

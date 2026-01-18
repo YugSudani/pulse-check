@@ -27,7 +27,7 @@ export default function Login() {
           await OneSignal.User.PushSubscription.optOut();
           setNotificationsEnabled(false);
           setPlayerId(null);
-          console.log("Notifications disabled");
+          //console.log("Notifications disabled");
         } catch (err) {
           console.error("Error disabling notifications:", err);
         } finally {
@@ -43,7 +43,7 @@ export default function Login() {
             if (event.current.id) {
               setPlayerId(event.current.id);
               setNotificationsEnabled(true);
-              console.log("OneSignal Player ID:", event.current.id);
+              //console.log("OneSignal Player ID:", event.current.id);
               setNotificationLoading(false);
               // Remove listener after getting the ID
               OneSignal.User.PushSubscription.removeEventListener('change', handleSubscriptionChange);

@@ -55,7 +55,7 @@ router.post("/genOTP", async (req, res) => {
 
 router.post("/verifyOtp", async (req, res) => {
   const { email, otp } = req.body;
-  console.log(email + " : " + " : " + otp);
+  //console.log(email + " : " + " : " + otp);
 
   try {
     const token = await tokenModel.findOne({
@@ -127,7 +127,7 @@ router.post("/login", async (req, res) => {
     }
 
     if (user.isVerified === false) {
-      console.log("user : " + user.isVerified);
+      //console.log("user : " + user.isVerified);
       return res
         .status(403)
         .json({ message: "User not verified", success: false });

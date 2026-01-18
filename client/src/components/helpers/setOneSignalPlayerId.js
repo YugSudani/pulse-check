@@ -3,7 +3,7 @@ import api from "../../lib/api";
 async function setOneSignalPlayerId(playerId) {
   // Send player ID to backend if user enabled notifications
   if (!playerId) playerId = null;
-  console.log("playerId saved : ", playerId);
+  //console.log("playerId saved : ", playerId);
   try {
     await api.post("/user/saveOneSignalPlayerId", { playerId });
     console.log("Player ID saved successfully");
