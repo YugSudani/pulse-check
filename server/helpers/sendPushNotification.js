@@ -36,19 +36,21 @@ module.exports.sendAlertNotification = async function sendAlertNotification(
         contents: {
           en: `🚨 Server Alert: ${monitor.name} is ${reason}!`,
         },
-        // Web URL for click action
-        url: `https://pulse-check-5qky.onrender.com/monitor/${monitor._id}`,
-        // Additional data
         data: {
           serverName: monitor.name,
           serverUrl: monitor.url,
           timestamp: new Date().toISOString(),
-          type: "server_alert",
+          type: "server_down",
         },
-        // Web-specific settings
-        chrome_web_icon:
-          "https://pulse-check-5qky.onrender.com/pwa-192x192.png",
-        firefox_icon: "https://pulse-check-5qky.onrender.com/pwa-192x192.png",
+        priority: 10,
+        // Optional: add action buttons
+        web_buttons: [
+          {
+            id: "view",
+            text: "View Details",
+            url: `https://pulse-check-5qky.onrender.com/monitor/${monitor._id}`,
+          },
+        ],
       },
       {
         headers: {
