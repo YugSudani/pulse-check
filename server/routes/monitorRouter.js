@@ -5,6 +5,7 @@ const incidentModel = require("../models/incidentModel");
 const logModel = require("../models/logModel");
 const { sendAlertNotification } = require("../helpers/sendPushNotification");
 const { sendAlertEmail_2 } = require("../helpers/sendMail");
+const { makeTestCall } = require("../services/Call");
 
 router.post("/createMonitor", async (req, res) => {
   try {
@@ -185,8 +186,8 @@ router.put("/editeMonitor/:monitorId", async (req, res) => {
 
 router.post("/test_alert", async (req, res) => {
   try {
-    const { monitorId } = req.body;
-
+    const { monitorId, phoneNumber } = req.body;
+    // console.log(phoneNumber);
     const monitor = await monitorModel.findById(monitorId);
     if (!monitor) {
       return res.status(404).json({ success: false, msg: "Monitor not found" });
@@ -197,6 +198,7 @@ router.post("/test_alert", async (req, res) => {
     if (monitor.alert.push) {
       sendAlertNotification("DOWN", monitor);
     }
+    await makeTestCall(phoneNumber);
     res.status(200).json({ success: true });
   } catch (error) {
     console.log(error);

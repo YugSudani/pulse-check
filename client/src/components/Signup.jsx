@@ -1,13 +1,15 @@
 import api from "../lib/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    name: "", 
+    name: "",
     email: "",
     pwd: "",
   });
@@ -52,13 +54,13 @@ export default function Signup() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
     setIsLoading(true);
     try {
-      await api.post(`/user/genOTP`, {...form, isForSignup: true});
+      await api.post(`/user/genOTP`, { ...form, isForSignup: true });
       const response = await api.post(`/user/signup`, form);
       if (!response.data.success) {
         alert("failed to register");
@@ -221,19 +223,30 @@ export default function Signup() {
                   </svg>
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="pwd"
                   placeholder="Create password"
                   value={form.pwd}
                   onChange={handleChange}
                   required
-                  className={`peer w-full pl-12 pr-4 py-3.5 bg-[#121A28]/60 backdrop-blur-sm border rounded-xl text-gray-200 placeholder-gray-500 outline-none focus:bg-[#121A28] transition-all text-sm sm:text-base min-h-[48px]
+                  className={`peer w-full pl-12 pr-12 py-3.5 bg-[#121A28]/60 backdrop-blur-sm border rounded-xl text-gray-200 placeholder-gray-500 outline-none focus:bg-[#121A28] transition-all text-sm sm:text-base min-h-[48px]
                                         ${
                                           errors.pwd
                                             ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
                                             : "border-gray-700/50 focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
                                         }`}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center z-10 cursor-pointer"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5 text-gray-400 hover:text-green-500 transition-colors" />
+                  ) : (
+                    <Eye className="w-5 h-5 text-gray-400 hover:text-green-500 transition-colors" />
+                  )}
+                </button>
               </div>
               {errors.pwd && (
                 <p className="text-red-400 text-sm mt-1.5 flex items-center gap-1">

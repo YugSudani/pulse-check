@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import api from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import setOneSignalPlayerId from "./helpers/setOneSignalPlayerId";
@@ -15,6 +16,7 @@ export default function Login() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [playerId, setPlayerId] = useState(null);
   const [loginMethod, setLoginMethod] = useState("password");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleNotificationToggle = async () => {
     if (notificationLoading) return;
@@ -46,12 +48,18 @@ export default function Login() {
               //console.log("OneSignal Player ID:", event.current.id);
               setNotificationLoading(false);
               // Remove listener after getting the ID
-              OneSignal.User.PushSubscription.removeEventListener('change', handleSubscriptionChange);
+              OneSignal.User.PushSubscription.removeEventListener(
+                "change",
+                handleSubscriptionChange,
+              );
             }
           };
 
           // Add event listener before opting in
-          OneSignal.User.PushSubscription.addEventListener('change', handleSubscriptionChange);
+          OneSignal.User.PushSubscription.addEventListener(
+            "change",
+            handleSubscriptionChange,
+          );
 
           // Opt in to push notifications
           await OneSignal.User.PushSubscription.optIn();
@@ -62,7 +70,10 @@ export default function Login() {
             setPlayerId(id);
             setNotificationsEnabled(true);
             setNotificationLoading(false);
-            OneSignal.User.PushSubscription.removeEventListener('change', handleSubscriptionChange);
+            OneSignal.User.PushSubscription.removeEventListener(
+              "change",
+              handleSubscriptionChange,
+            );
           }
         } catch (err) {
           console.error("Notification prompt error:", err);
@@ -107,14 +118,13 @@ export default function Login() {
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!notificationsEnabled) {
-      alert("Please enable notifications to login");
-      return;
-    }
+    // if (!notificationsEnabled) {
+    //   alert("Please enable notifications to login");
+    //   return;
+    // }
 
     setIsLoading(true);
     const finalOtp = otp.join("");
@@ -214,14 +224,25 @@ export default function Login() {
                     setLoginMethod("password");
                     setShowOtpField(false);
                   }}
-                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${loginMethod === "password"
-                    ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
-                    : "text-gray-400 hover:text-gray-200"
-                    }`}
+                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${
+                    loginMethod === "password"
+                      ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
+                      : "text-gray-400 hover:text-gray-200"
+                  }`}
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                      />
                     </svg>
                     Password
                   </div>
@@ -229,14 +250,25 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setLoginMethod("otp")}
-                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${loginMethod === "otp"
-                    ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
-                    : "text-gray-400 hover:text-gray-200"
-                    }`}
+                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${
+                    loginMethod === "otp"
+                      ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
+                      : "text-gray-400 hover:text-gray-200"
+                  }`}
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
                     </svg>
                     OTP
                   </div>
@@ -267,13 +299,24 @@ export default function Login() {
                     </svg>
                   </div>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="pwd"
                     placeholder="Enter password"
                     value={form.pwd}
                     onChange={handleChange}
-                    className="peer w-full pl-12 pr-4 py-3.5 bg-[#121A28]/60 backdrop-blur-sm border border-gray-700/50 rounded-xl text-gray-200 placeholder-gray-500 outline-none focus:bg-[#121A28] focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all text-sm sm:text-base min-h-[48px]"
+                    className="peer w-full pl-12 pr-12 py-3.5 bg-[#121A28]/60 backdrop-blur-sm border border-gray-700/50 rounded-xl text-gray-200 placeholder-gray-500 outline-none focus:bg-[#121A28] focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all text-sm sm:text-base min-h-[48px]"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center z-10 cursor-pointer"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5 text-gray-400 hover:text-green-500 transition-colors" />
+                    ) : (
+                      <Eye className="w-5 h-5 text-gray-400 hover:text-green-500 transition-colors" />
+                    )}
+                  </button>
                 </div>
               </div>
             ) : (
@@ -296,9 +339,24 @@ export default function Login() {
 
                 {isLoading ? (
                   <div className="flex justify-center py-8">
-                    <svg className="w-8 h-8 text-green-500 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="w-8 h-8 text-green-500 animate-spin"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                   </div>
                 ) : showOtpField ? (
@@ -323,21 +381,29 @@ export default function Login() {
             {/* NOTIFICATIONS TOGGLE */}
             <div
               onClick={handleNotificationToggle}
-              className={`relative cursor-pointer p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 ${notificationLoading ? "opacity-75 cursor-wait" : ""
-                } ${notificationsEnabled
+              className={`relative cursor-pointer p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 ${
+                notificationLoading ? "opacity-75 cursor-wait" : ""
+              } ${
+                notificationsEnabled
                   ? "bg-green-500/10 border-green-500/50"
                   : "bg-[#121A28]/60 border-gray-700/50 hover:bg-[#121A28] hover:border-gray-700"
-                }`}
+              }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div
-                    className={`p-2.5 rounded-lg transition-all duration-300 ${notificationsEnabled ? "bg-green-500/20" : "bg-gray-700/50"
-                      }`}
+                    className={`p-2.5 rounded-lg transition-all duration-300 ${
+                      notificationsEnabled
+                        ? "bg-green-500/20"
+                        : "bg-gray-700/50"
+                    }`}
                   >
                     <svg
-                      className={`w-5 h-5 transition-colors duration-300 ${notificationsEnabled ? "text-green-500" : "text-gray-400"
-                        }`}
+                      className={`w-5 h-5 transition-colors duration-300 ${
+                        notificationsEnabled
+                          ? "text-green-500"
+                          : "text-gray-400"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -352,8 +418,11 @@ export default function Login() {
                   </div>
                   <div>
                     <p
-                      className={`text-sm sm:text-base font-medium transition-colors duration-300 ${notificationsEnabled ? "text-green-400" : "text-gray-300"
-                        }`}
+                      className={`text-sm sm:text-base font-medium transition-colors duration-300 ${
+                        notificationsEnabled
+                          ? "text-green-400"
+                          : "text-gray-300"
+                      }`}
                     >
                       Push Notifications
                     </p>
@@ -366,12 +435,14 @@ export default function Login() {
                 </div>
 
                 <div
-                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${notificationsEnabled ? "bg-green-500" : "bg-gray-600"
-                    }`}
+                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
+                    notificationsEnabled ? "bg-green-500" : "bg-gray-600"
+                  }`}
                 >
                   <div
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-md transform transition-transform duration-300 flex items-center justify-center ${notificationsEnabled ? "translate-x-6" : "translate-x-0"
-                      }`}
+                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-md transform transition-transform duration-300 flex items-center justify-center ${
+                      notificationsEnabled ? "translate-x-6" : "translate-x-0"
+                    }`}
                   >
                     {notificationLoading ? (
                       <svg
@@ -440,4 +511,3 @@ export default function Login() {
     </div>
   );
 }
-

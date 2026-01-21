@@ -28,7 +28,7 @@ export default function ResponseTimeChart({ data, range }) {
     };
     const startTime = now - ranges[range];
     return (
-        <div className="h-[24vh] md:h-[27.5vh] w-full">
+        <div className="h-[197px] md:h-[225px] w-full">
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
                     <XAxis

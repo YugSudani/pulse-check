@@ -4,6 +4,7 @@ import api from "../lib/api";
 import ResponseTimeChart from "./ResponseTimeChart";
 import { useNavigate } from "react-router-dom";
 import exportLogs from "./helpers/Logs_csv_generator";
+import { useAuth } from "../context/AuthContext";
 
 export default function ViewMonitor() {
   const navigate = useNavigate();
@@ -15,13 +16,25 @@ export default function ViewMonitor() {
   const [range, setRange] = useState("15m");
   const [upDownTime, setUpDownTime] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showIncidentCount, setShowIncidentCount] = useState(3);
+  const [incidents, setIncidents] = useState([]);
+  const [stat, setStat] = useState({});
+  const [timeAgo, setTimeAgo] = useState("");
+  const [user,setUser] = useState({});
 
+  
+    useEffect(() => {
+      api.get("/user/getMe").then((res) => {
+        const user = res.data.user;
+        setUser(user);
+      });
+    }, []);
 
   const fetchLogData = async (range) => {
     try {
       const response = await api.get(
         `/monitor/${id}/response-history?range=${range}`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
       const data = response.data;
       // console.log(data);
@@ -48,39 +61,6 @@ export default function ViewMonitor() {
     }
   };
 
-  useEffect(() => {
-    fetchMonitor();
-
-    const interval = setInterval(fetchMonitor, 15000);
-    return () => clearInterval(interval);
-  }, [id]);
-
-  useEffect(() => {
-    if (!monitor?.isActive) return;
-
-    fetchLogData(range);
-    const interval2 = setInterval(() => fetchLogData(range), 15000);
-    return () => clearInterval(interval2);
-  }, [monitor?.isActive, range]);
-
-  const handlePause = async (monitorId) => {
-    try {
-      setLoading(true);
-      await api.patch(
-        `/monitor/pause/${monitorId}`,
-        {},
-        { withCredentials: true }
-      );
-      setMonitorStatusBtn(!monitorStatusBtn);
-    } catch (error) {
-      alert("failed to pause monitor");
-      console.error("Error pausing monitor:", error);
-    }finally{
-      setLoading(false);
-    }
-  };
-
-  const [incidents, setIncidents] = useState([]);
   const fetchIncidents = async () => {
     try {
       const response = await api.get(`/incident/${id}`, {
@@ -94,6 +74,46 @@ export default function ViewMonitor() {
     }
   };
 
+  // useEffect(() => {
+  //   fetchMonitor();
+
+  //   const interval = setInterval(fetchMonitor, 30000);
+  //   return () => clearInterval(interval);
+  // }, [id]);
+
+  // useEffect(() => {
+  //   if (!monitor?.isActive) return;
+
+  //   fetchLogData(range);
+  //   fetchIncidents();
+  //   const interval2 = setInterval(
+  //     () => fetchLogData(range) && fetchIncidents(),
+  //     30000,
+  //   );
+  //   return () => clearInterval(interval2);
+  // }, [monitor?.isActive, range]);
+
+  const handlePause = async (monitorId) => {
+    try {
+      setLoading(true);
+      await api.patch(
+        `/monitor/pause/${monitorId}`,
+        {},
+        { withCredentials: true },
+      );
+      setMonitorStatusBtn(!monitorStatusBtn);
+    } catch (error) {
+      alert("failed to pause monitor");
+      console.error("Error pausing monitor:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const triggerExportLog = () => {
+    exportLogs(incidents, monitor);
+  };
+
   const updateUpDownTime = () => {
     if (!monitor?.currentUpDownTimeStart) return;
     const past = new Date(monitor?.currentUpDownTimeStart);
@@ -103,13 +123,11 @@ export default function ViewMonitor() {
       diffMs / 1000 / 60 / 60 > 0.99
         ? (diffMs / 1000 / 60 / 60).toFixed(2) + " hours"
         : diffMs / 1000 / 60 > 0.99
-        ? (diffMs / 1000 / 60).toFixed(0) + " min"
-        : Math.floor(diffMs / 1000) + " sec";
+          ? (diffMs / 1000 / 60).toFixed(0) + " min"
+          : Math.floor(diffMs / 1000) + " sec";
     setUpDownTime(diffHoursTime.trim());
   };
 
-  //set stat
-  const [stat, setStat] = useState({});
   const get24hStat = (incidents) => {
     const now = Date.now();
     const last24HoursStart = now - 24 * 60 * 60 * 1000; // 24h ago
@@ -144,53 +162,72 @@ export default function ViewMonitor() {
   };
 
   // Live updating time ago
-  const [timeAgo, setTimeAgo] = useState("");
-
-  useEffect(() => {
-    const updateTimeAgo = () => {
-      if (!monitor?.lastCheckedAt) {
-        return;
-      }
-
-      const diff = Math.max(0, Math.floor((Date.now() - new Date(monitor.lastCheckedAt)) / 1000));
-
-      const time =
-        diff < 60
-          ? `${diff}s`
-          : diff < 3600
+  const updateTimeAgo = () => {
+    if (!monitor?.lastCheckedAt) {
+      return;
+    }
+    const diff = Math.max(
+      0,
+      Math.floor((Date.now() - new Date(monitor.lastCheckedAt)) / 1000),
+    );
+    const time =
+      diff < 60
+        ? `${diff}s`
+        : diff < 3600
           ? `${Math.floor(diff / 60)}m`
           : diff < 86400
-          ? `${Math.floor(diff / 3600)}h`
-          : `${Math.floor(diff / 86400)}d`;
+            ? `${Math.floor(diff / 3600)}h`
+            : `${Math.floor(diff / 86400)}d`;
 
-      setTimeAgo(time);
-    };
+    setTimeAgo(time);
+  };
 
+  const handleTestAlerts = async (monitorId) => {
+    try {
+      const response = await api.post("/monitor/test_alert", {
+        monitorId,
+        phoneNumber: user.number,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // initial fetch
+  useEffect(() => {
+    fetchMonitor();
+    fetchLogData(range);
+    fetchIncidents();
+    console.log("Initial fetch");
+  }, []);
+
+  //update data on timeAgo intervals
+  useEffect(() => {
+    if (
+      timeAgo === "30s" ||
+      timeAgo === "1m" ||
+      timeAgo === "5m" ||
+      timeAgo === "15m" ||
+      timeAgo === "30m" ||
+      timeAgo === "1h"
+    ) {
+      fetchMonitor();
+      fetchLogData(range);
+      fetchIncidents();
+      console.log("Fetching latest data");
+    }
+  }, [timeAgo]);
+
+  //update time ago every second
+  useEffect(() => {
     updateUpDownTime();
     get24hStat(incidents);
-    fetchIncidents();
-
     updateTimeAgo(); // Initial update
     const interval = setInterval(updateTimeAgo, 1000); // Update every second
 
     return () => clearInterval(interval); // Cleanup
   }, [monitor]);
-
-  const triggerExportLog = () => {
-    exportLogs(incidents, monitor);
-  };
-
-  const [showIncidentCount, setShowIncidentCount] = useState(3);
-
-  const handleTestAlerts = async (monitorId) => {
-    try {
-      const response = await api.post("/monitor/test_alert", { monitorId });
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
 
   return (
     <div className="overflow-x-hidden overflow-y-auto flex-1 min-h-0 h-full bg-[#101724] text-white p-4 sm:p-6 md:p-8 lg:p-12 flex gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -236,11 +273,16 @@ export default function ViewMonitor() {
               >
                 {loading ? (
                   <div className="w-4 h-4 border-4 border-gray-400 border-t-green-500 rounded-full animate-spin"></div>
+                ) : monitorStatusBtn ? (
+                  "Pause"
                 ) : (
-                  monitorStatusBtn ? "Pause" : "Resume"
+                  "Resume"
                 )}
               </button>
-              <button onClick={()=>handleTestAlerts(monitor._id)} className="bg-[#131e30] px-4 py-2 w-17 md:w-30 rounded-lg text-xs sm:text-sm hover:bg-[#1A2333] cursor-pointer transition whitespace-nowrap">
+              <button
+                onClick={() => handleTestAlerts(monitor._id)}
+                className="bg-[#131e30] px-4 py-2 w-17 md:w-30 rounded-lg text-xs sm:text-sm hover:bg-[#1A2333] cursor-pointer transition whitespace-nowrap"
+              >
                 Test
               </button>
             </div>
@@ -409,11 +451,11 @@ export default function ViewMonitor() {
 
                       <td className="px-4 py-3">
                         {`${String(
-                          Math.floor(item.incidentDuration / 3600000)
+                          Math.floor(item.incidentDuration / 3600000),
                         ).padStart(2, "0")}:${String(
-                          Math.floor(item.incidentDuration / 60000) % 60
+                          Math.floor(item.incidentDuration / 60000) % 60,
                         ).padStart(2, "0")}:${String(
-                          Math.floor(item.incidentDuration / 1000) % 60
+                          Math.floor(item.incidentDuration / 1000) % 60,
                         ).padStart(2, "0")}`}
                       </td>
                     </tr>

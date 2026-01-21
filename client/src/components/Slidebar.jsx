@@ -1,41 +1,32 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
-import { useAuth } from "../context/AuthContext";
 import InstallButton from "./staticComps/InstallButton";
 
 export default function Slidebar() {
   const [subscriptionPlan, setSubscriptionPlan] = useState("starter");
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (user) {
-      setSubscriptionPlan(user.subscriptionPlan);
-    }
-  }, [user]);
-
-  const [openSidebar, setOpenSidebar] = useState(false);
-  const navigate = useNavigate();
-  const { checkAuth } = useAuth();
-
   const [userName, setUserName] = useState("");
 
-  const fetchUser = async () => {
-    const { data } = await api.get("/user/getMe");
-    setUserName(data.user.name);
-  };
-
   useEffect(() => {
-    fetchUser();
+    api.get("/user/getMe").then((res) => {
+      const user = res.data.user;
+      setSubscriptionPlan(user.subscriptionPlan);
+      if (user.number) {
+        setVerifiedPhoneNumber(user.number);
+      }
+      setUserName(user.name);
+    });
   }, []);
 
 
+  const [openSidebar, setOpenSidebar] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
       {/* ================ MOBILE SIDEBAR TOGGLE ================ */}
       <button
-        className="md:hidden fixed top-4 left-4 z-5 bg-[linear-gradient(0deg,_rgba(59,215,113,0.05)_0%,_rgb(20,32,45)_75%)] px-3 py-2 rounded-lg hover:bg-[#1A2333] transition"
+        className="md:hidden fixed top-4 left-4 z-5 bg-[linear-gradient(0deg,_rgba(59,215,113,0.05)_0%,_rgb(20,32,45)_75%)] px-3 py-2 rounded-lg hover:bg-[#1A2333] transition "
         onClick={() => setOpenSidebar(!openSidebar)}
       >
         {openSidebar ? "✕" : "☰"}
@@ -57,6 +48,7 @@ export default function Slidebar() {
                     flex flex-col
                     overflow-y-auto
                     transform transition-transform duration-300 ease-in-out
+                    [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
                     ${openSidebar
             ? "translate-x-0"
             : "-translate-x-full md:translate-x-0"

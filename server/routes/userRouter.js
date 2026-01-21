@@ -15,12 +15,10 @@ router.post("/genOTP", async (req, res) => {
     if (!isForSignup) {
       const user = await userModel.findOne({ email });
       if (!user) {
-        return res
-          .status(404)
-          .json({
-            message: "User not found. Please sign up first.",
-            success: false,
-          });
+        return res.status(404).json({
+          message: "User not found. Please sign up first.",
+          success: false,
+        });
       }
     }
 
@@ -31,7 +29,7 @@ router.post("/genOTP", async (req, res) => {
     });
     if (recentToken) {
       const timeLeft = Math.ceil(
-        (recentToken.expiryTime - Date.now()) / 1000 / 60
+        (recentToken.expiryTime - Date.now()) / 1000 / 60,
       );
       return res.status(429).json({
         message: `OTP already sent. Please wait ${timeLeft} minutes or use the existing OTP.`,
@@ -73,12 +71,12 @@ router.post("/verifyOtp", async (req, res) => {
 
     const res1 = await userModel.findOneAndUpdate(
       { email },
-      { $set: { isVerified: true } }
+      { $set: { isVerified: true } },
     ); // set if not verified true in login
     //console.log("r1 : " + res1);
 
     const res2 = await tokenModel.deleteMany({ email });
-   // console.log("r2 : " + res2);
+    // console.log("r2 : " + res2);
 
     res.json({ message: "OTP verified successfully", success: true });
   } catch (error) {
@@ -191,6 +189,23 @@ router.post("/saveOneSignalPlayerId", auth, async (req, res) => {
   }
 });
 
+router.post("/saveCallNumber", auth, async (req, res) => {
+  try {
+    const { phoneNumber } = req.body;
+    const user = req.user;
+
+    await userModel.updateOne({ _id: user._id }, { phoneNumber });
+    res
+      .status(200)
+      .json({ success: true, message: "Phone number saved successfully" });
+  } catch (error) {
+    console.error("Phone number save failed:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Phone number save failed" });
+  }
+});
+
 router.post("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
@@ -200,22 +215,23 @@ router.post("/logout", (req, res) => {
   res.status(200).json({ message: "Logout successful" });
 });
 
+
 router.get("/getMe", async (req, res) => {
   try {
     const token = req.cookies.token;
-    // console.log(token);
-    const user = getUser(token);
-    // console.log(user);
-    if (!user) {
-      return res
-        .status(401)
-        .json({ message: "User not found", success: false });
+    const decoded = getUser(token); // Verify JWT first
+    
+    if (!decoded || !decoded._id) {
+      return res.status(401).json({ message: "User not found", success: false });
     }
-    // console.log(user);
-
-    return res
-      .status(200)
-      .json({ message: "user found true", success: true, user: user });
+    
+    const user = await userModel.findById(decoded._id).select('-pwd');
+    
+    if (!user) {
+      return res.status(401).json({ message: "User not found", success: false });
+    }
+    
+    return res.status(200).json({ message: "user found true", success: true, user: user });
   } catch (error) {
     return res.status(401).json({ message: "User not found", success: false });
   }

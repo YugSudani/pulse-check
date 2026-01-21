@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../lib/api";
-import { useAuth } from "../context/AuthContext";
 
 export default function CreateNewMonitor() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const [subscriptionPlan, setSubscriptionPlan] = useState("starter");
-  const { user } = useAuth();
 
-  useEffect(() => {
-    if (user) {
+   useEffect(() => {
+    api.get("/user/getMe").then((res) => {
+      const user = res.data.user;
       setSubscriptionPlan(user.subscriptionPlan);
-    }
-  }, [user]);
+      if (user.number) {
+        setVerifiedPhoneNumber(user.number);
+      }
+    });
+  }, []);
+
 
   const intervalOptions = [
     { value: 30 * 1000, label: "30 seconds" }, // 30000
@@ -68,7 +71,7 @@ export default function CreateNewMonitor() {
       });
 
       const idx = intervalOptions.findIndex(
-        (opt) => opt.value === response.data.monitor.interval
+        (opt) => opt.value === response.data.monitor.interval,
       );
       setIntervalIndex(idx === -1 ? 2 : idx);
     } catch (error) {

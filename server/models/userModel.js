@@ -29,6 +29,10 @@ const schema = new mongoose.Schema({
   subscriptionPlan: {
     type: String,
     default: "starter",
+  },
+  phoneNumber: {
+    type: String,
+    default: null,
   }
 });
 

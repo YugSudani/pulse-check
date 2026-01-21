@@ -1,25 +1,31 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
-import { useAuth } from "../context/AuthContext";
+import PhoneNumberDialog from "./staticComps/Phonenumberdialog ";
 
 export default function CreateNewMonitor() {
   const navigate = useNavigate();
 
   const [subscriptionPlan, setSubscriptionPlan] = useState("starter");
-  const { user } = useAuth();
 
   useEffect(() => {
-    if (user) {
+    api.get("/user/getMe").then((res) => {
+      const user = res.data.user;
       setSubscriptionPlan(user.subscriptionPlan);
-    }
-  }, [user]);
+      if (user.number) {
+        setVerifiedPhoneNumber(user.number);
+      }
+    });
+  }, []);
 
   const [url, setUrl] = useState(null);
   const [name, setName] = useState("New Monitor");
   const [emailAlert, setEmailAlert] = useState(false);
   const [pushAlert, setPushAlert] = useState(true);
+  const [voiceCallAlert, setVoiceCallAlert] = useState(false);
+  const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
+  const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
 
   // Predefined interval options in seconds
   const intervalOptions = [
@@ -47,24 +53,40 @@ export default function CreateNewMonitor() {
     return true; // 5 min and above → all plans
   };
 
+  const handlePhoneNumberSave = (phoneNumber) => {
+    // Phone number is saved in PhoneNumberDialog
+    // Just update the local state
+    setVerifiedPhoneNumber(phoneNumber);
+    setVoiceCallAlert(true);
+    setPhoneDialogOpen(false);
+  };
+
   const CreateMonitor = async () => {
-    //console.log(url + " | " + name + " | " + emailAlert + " | " + pushAlert);
     try {
       setLoading(true);
+      const alertConfig = {
+        email: { emailAlert },
+        push: { pushAlert },
+      };
+
+      // Include voice call config if enabled
+      if (voiceCallAlert && verifiedPhoneNumber) {
+        alertConfig.voiceCall = {
+          voiceCallAlert,
+          phoneNumber: `${verifiedPhoneNumber}`,
+        };
+      }
+
       await api.post(
         "/monitor/createMonitor",
         {
           name,
           url,
           interval,
-          alert: {
-            email: { emailAlert },
-            push: { pushAlert },
-          },
+          alert: alertConfig,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
-      // console.log(response.data);
       navigate("/dashboard", { replace: true });
     } catch (error) {
       console.log(error);
@@ -74,10 +96,10 @@ export default function CreateNewMonitor() {
   };
 
   return (
-    <div className="overflow-y-auto flex-1 min-h-0 h-full p-3 sm:p-6 md:p-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-6 md:p-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       <button
         onClick={() => navigate("/dashboard", { replace: true })}
-        className="mt-14 ml-1 md:ml-0 md:mt-0 inline-block bg-[#121A28] px-4 py-2 rounded-lg mb-4 sm:mb-6 hover:bg-[#172235] cursor-pointer font-bold text-base sm:text-lg transition"
+        className="mt-0 ml-1 md:ml-0 inline-block bg-[#121A28] px-4 py-2 rounded-lg mb-4 sm:mb-6 hover:bg-[#172235] cursor-pointer font-bold text-base sm:text-lg transition"
       >
         ← Monitoring
       </button>
@@ -164,19 +186,19 @@ export default function CreateNewMonitor() {
                 <div className="relative w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 peer-focus:outline-none peer-focus:ring-green-300"></div>
                 Push Notification
               </label>
-              <p className="text-gray-400 text-sm mb-3">Loged in browser</p>
+              <p className="text-gray-400 text-sm mb-3">Logged in browser</p>
               <p className="text-gray-500 text-xs">Instant, no repeat</p>
             </div>
+
             {/* Email */}
             <div className="relative bg-[#121A28] border border-gray-700 p-4 rounded-lg">
-              {/* PRO badge */}
               <span
                 className="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full
                            bg-blue-500/20 text-green-400 border border-green-500/30 uppercase tracking-wider"
               >
                 PRO
               </span>
-              <label className="flex items-center  gap-2 mb-2 cursor-pointer">
+              <label className="flex items-center gap-2 mb-2 cursor-pointer">
                 <input
                   type="checkbox"
                   disabled={
@@ -203,7 +225,7 @@ export default function CreateNewMonitor() {
               {subscriptionPlan !== "pro" &&
                 subscriptionPlan !== "business" && (
                   <div className="text-sm text-gray-400 mb-2">
-                    🔒 Available only in Pro & Bussiness plan.
+                    🔒 Available only in Pro & Business plan.
                     <button
                       onClick={() => navigate("/pricing")}
                       className="text-green-500 ml-2 cursor-pointer"
@@ -217,18 +239,27 @@ export default function CreateNewMonitor() {
             </div>
 
             {/* Voice call */}
-            <div className="relative bg-[#121A28] border border-gray-700 p-4 rounded-lg">
-              {/* PRO badge */}
+            <div className="relative bg-[#121A28] border border-gray-700 p-4 rounded-lg transition-all hover:border-green-500/50">
               <span
                 className="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full
                            bg-blue-500/20 text-green-400 border border-green-500/30 uppercase tracking-wider"
               >
-                PRO
+                BUSINESS
               </span>
               <label className="flex items-center gap-2 mb-2 cursor-pointer">
                 <input
                   type="checkbox"
                   disabled={subscriptionPlan !== "business"}
+                  checked={voiceCallAlert}
+                  onChange={(e) => {
+                    if (subscriptionPlan === "business") {
+                      if (e.target.checked && !verifiedPhoneNumber) {
+                        setPhoneDialogOpen(true);
+                      } else {
+                        setVoiceCallAlert(e.target.checked);
+                      }
+                    }
+                  }}
                   className="sr-only peer"
                 />
                 <div
@@ -245,9 +276,10 @@ export default function CreateNewMonitor() {
                 ></div>
                 Voice call
               </label>
+
               {subscriptionPlan !== "business" && (
                 <div className="text-sm text-gray-400 mb-2">
-                  🔒 Available only in Bussiness plan.
+                  🔒 Available only in Business plan.
                   <button
                     onClick={() => navigate("/pricing")}
                     className="text-green-500 ml-2 cursor-pointer"
@@ -256,11 +288,49 @@ export default function CreateNewMonitor() {
                   </button>
                 </div>
               )}
-              <p className="text-gray-400 text-sm mb-3">+91**********</p>
-              <p className="text-gray-500 text-xs">No delay, no repeat</p>
+
+              {verifiedPhoneNumber && (
+                <div className="text-sm text-green-400 mb-2 flex items-center gap-2">
+                  ✓ Verified: {verifiedPhoneNumber}
+                  <button
+                    onClick={() => {
+                      setVerifiedPhoneNumber("");
+                      setVoiceCallAlert(false);
+                      setPhoneDialogOpen(true);
+                    }}
+                    className="text-xs text-gray-400 hover:text-gray-300 ml-auto"
+                  >
+                    Change
+                  </button>
+                </div>
+              )}
+
+              {subscriptionPlan === "business" && !verifiedPhoneNumber && (
+                <button
+                  onClick={() => setPhoneDialogOpen(true)}
+                  className="w-full text-sm text-gray-400 hover:text-green-400 transition border border-gray-700 hover:border-green-500/50 rounded py-1 px-2 mb-3"
+                >
+                  + Enter phone number
+                </button>
+              )}
+
+              <p className="text-gray-500 text-xs">No delay, instant alerts</p>
             </div>
           </div>
         </section>
+
+        {/* ================= PHONE NUMBER INPUT SECTION ================= */}
+        {phoneDialogOpen && (
+          <>
+            <hr className="border-gray-800" />
+            <PhoneNumberDialog
+              isOpen={phoneDialogOpen}
+              onClose={() => setPhoneDialogOpen(false)}
+              onSave={handlePhoneNumberSave}
+              loading={false}
+            />
+          </>
+        )}
 
         <hr className="border-gray-800" />
 

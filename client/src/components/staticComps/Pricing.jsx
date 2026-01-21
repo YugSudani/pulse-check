@@ -40,7 +40,7 @@ export default function Pricing() {
     {
       name: "Pro",
       description: "For growing businesses that need reliable monitoring.",
-      price: { monthly: "29", yearly: "24" }, // Yearly price represents monthly cost when billed yearly
+      price: { monthly: "9", yearly: "8" }, // Yearly price represents monthly cost when billed yearly
       popular: true,
       features: [
         "Up to 150 monitors",
@@ -70,7 +70,7 @@ export default function Pricing() {
     {
       name: "Business",
       description: "Advanced features for large scale applications.",
-      price: { monthly: "99", yearly: "89" },
+      price: { monthly: "25", yearly: "22" },
       popular: false,
       features: [
         "Unlimited monitors",

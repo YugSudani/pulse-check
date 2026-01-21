@@ -17,6 +17,7 @@ import Solutions from "../components/staticComps/Solutions";
 import Resources from "../components/staticComps/Resourses";
 import Pricing from "../components/staticComps/Pricing";
 import ScrollToTop from "./ScrollToTop";
+import NotFound from "../components/NotFound";
 
 function Routes_() {
   return (
@@ -44,6 +45,7 @@ function Routes_() {
             <Route path="/incidents" element={<Incedents />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
