@@ -41,7 +41,7 @@ export default function Pricing() {
     {
       name: "Pro",
       description: "For growing businesses that need reliable monitoring.",
-      price: { monthly: "9", yearly: "8" }, // Yearly price represents monthly cost when billed yearly
+      price: { monthly: "850", yearly: "780" }, // Yearly price represents monthly cost when billed yearly
       popular: true,
       features: [
         "Up to 150 monitors",
@@ -71,7 +71,7 @@ export default function Pricing() {
     {
       name: "Business",
       description: "Advanced features for large scale applications.",
-      price: { monthly: "25", yearly: "22" },
+      price: { monthly: "2250", yearly: "2050" },
       popular: false,
       features: [
         "Unlimited monitors",
@@ -224,7 +224,7 @@ export default function Pricing() {
               <div className="mb-8">
                 <div className="flex items-end gap-2">
                   <span className="text-4xl font-bold text-white">
-                    $
+                    ₹
                     {billingCycle === "monthly"
                       ? plan.price.monthly
                       : plan.price.yearly}
@@ -233,7 +233,7 @@ export default function Pricing() {
                 </div>
                 {billingCycle === "yearly" && (
                   <p className="text-xs text-green-400 mt-2">
-                    Billed ${Number(plan.price.yearly) * 12} yearly
+                    Billed ₹{Number(plan.price.yearly) * 12} yearly
                   </p>
                 )}
               </div>
