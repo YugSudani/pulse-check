@@ -7,8 +7,8 @@ router.post("/create-checkout-session", async (req, res) => {
     const { plan } = req.body;
 
     const PRICE_MAP = {
-      pro: 'price_pro_id',      // Replace with actual Stripe price ID for Pro plan
-      business: 'price_business_id', // Replace with actual Stripe price ID for Business plan
+      pro: 'prod_Tq6ZHIm3HHS28S',      // Replace with actual Stripe price ID for Pro plan
+      business: 'prod_Tq6aqgDfCcHY8x', // Replace with actual Stripe price ID for Business plan
     };
 
     if (!PRICE_MAP[plan]) {
