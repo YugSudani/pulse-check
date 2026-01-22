@@ -7,8 +7,8 @@ router.post("/create-checkout-session", async (req, res) => {
     const { plan } = req.body;
 
     const PRICE_MAP = {
-      pro: 900,      
-      business: 2500, 
+      pro: 'price_pro_id',      // Replace with actual Stripe price ID for Pro plan
+      business: 'price_business_id', // Replace with actual Stripe price ID for Business plan
     };
 
     if (!PRICE_MAP[plan]) {
@@ -22,13 +22,7 @@ router.post("/create-checkout-session", async (req, res) => {
 
       line_items: [
         {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: `PulseCheck - ${plan} Plan`,
-            },
-            unit_amount: PRICE_MAP[plan],
-          },
+          price: PRICE_MAP[plan],
           quantity: 1,
         },
       ],
