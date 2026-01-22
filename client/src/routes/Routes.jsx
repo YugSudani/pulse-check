@@ -18,6 +18,8 @@ import Resources from "../components/staticComps/Resourses";
 import Pricing from "../components/staticComps/Pricing";
 import ScrollToTop from "./ScrollToTop";
 import NotFound from "../components/NotFound";
+import PaymentSuccess from "../components/payment/Succsess";
+import PaymentCancel from "../components/payment/Payment-cancel";
 
 function Routes_() {
   return (
@@ -29,12 +31,14 @@ function Routes_() {
           <Route path="/register" element={<Register />} />
           <Route path="/otpverification/:email" element={<OtpVerification />} />
         </Route>
-          
-          <Route path="/" element={<Home />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/solutions" element={<Solutions />} />
-          <Route path="/resources" element={<Resources />} />
-          <Route path="/pricing" element={<Pricing />} />
+
+        <Route path="/" element={<Home />} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/solutions" element={<Solutions />} />
+        <Route path="/resources" element={<Resources />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-cancel" element={<PaymentCancel />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>

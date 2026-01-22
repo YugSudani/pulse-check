@@ -5,6 +5,8 @@ import ResponseTimeChart from "./ResponseTimeChart";
 import { useNavigate } from "react-router-dom";
 import exportLogs from "./helpers/Logs_csv_generator";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "sonner";
+import TextToSpeech from "./helpers/TextToSpeech";
 
 export default function ViewMonitor() {
   const navigate = useNavigate();
@@ -20,15 +22,38 @@ export default function ViewMonitor() {
   const [incidents, setIncidents] = useState([]);
   const [stat, setStat] = useState({});
   const [timeAgo, setTimeAgo] = useState("");
-  const [user,setUser] = useState({});
+  const { user } = useAuth();
 
-  
-    useEffect(() => {
-      api.get("/user/getMe").then((res) => {
-        const user = res.data.user;
-        setUser(user);
-      });
-    }, []);
+  // AI Summary states
+  const [aiSummary, setAiSummary] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [displayedSummary, setDisplayedSummary] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+
+  // Typewriter effect for AI summary
+  useEffect(() => {
+    if (aiSummary && !aiLoading) {
+      setIsTyping(true);
+      setDisplayedSummary("");
+      const words = aiSummary.split(" ");
+      let currentIndex = 0;
+
+      const typeInterval = setInterval(() => {
+        if (currentIndex < words.length) {
+          setDisplayedSummary(
+            (prev) =>
+              prev + (currentIndex === 0 ? "" : " ") + words[currentIndex],
+          );
+          currentIndex++;
+        } else {
+          clearInterval(typeInterval);
+          setIsTyping(false);
+        }
+      }, 100); // 50ms per word
+
+      return () => clearInterval(typeInterval);
+    }
+  }, [aiSummary, aiLoading]);
 
   const fetchLogData = async (range) => {
     try {
@@ -41,7 +66,7 @@ export default function ViewMonitor() {
       setLogData(data.data);
       setStats(data.stats || { min: null, max: null, avg: null });
     } catch (error) {
-      alert("failed to load log data");
+      toast.error("Failed to load log data");
       console.error("Error fetching log data:", error);
     }
   };
@@ -56,7 +81,7 @@ export default function ViewMonitor() {
       setMonitor(data.monitor);
       setMonitorStatusBtn(data.monitor.isActive);
     } catch (error) {
-      alert("failed to load monitor data");
+      toast.error("Failed to load monitor data");
       console.error("Error fetching monitor data:", error);
     }
   };
@@ -69,7 +94,7 @@ export default function ViewMonitor() {
       const data = response.data;
       setIncidents(data.incidents);
     } catch (error) {
-      alert("failed to load incident data");
+      toast.error("Failed to load incident data");
       console.error("Error fetching incident data:", error);
     }
   };
@@ -102,8 +127,9 @@ export default function ViewMonitor() {
         { withCredentials: true },
       );
       setMonitorStatusBtn(!monitorStatusBtn);
+      toast.success(monitorStatusBtn ? "Monitor paused" : "Monitor resumed");
     } catch (error) {
-      alert("failed to pause monitor");
+      toast.error("Failed to pause monitor");
       console.error("Error pausing monitor:", error);
     } finally {
       setLoading(false);
@@ -186,10 +212,11 @@ export default function ViewMonitor() {
     try {
       const response = await api.post("/monitor/test_alert", {
         monitorId,
-        phoneNumber: user.number,
+        phoneNumber: user.phoneNumber,
       });
-      console.log(response.data);
+      toast.success("Test alert initiated");
     } catch (error) {
+      toast.error("Failed to send test alert");
       console.error(error);
     }
   };
@@ -227,6 +254,17 @@ export default function ViewMonitor() {
     const interval = setInterval(updateTimeAgo, 1000); // Update every second
 
     return () => clearInterval(interval); // Cleanup
+  }, [monitor]);
+
+  useEffect(() => {
+    if (!monitor?.lastCheckedAt) {
+      setTimeout(() => {
+        fetchMonitor();
+        fetchLogData(range);
+        fetchIncidents();
+        console.log("Initial fetch after 30 seconds");
+      }, 31000);
+    }
   }, [monitor]);
 
   return (
@@ -301,7 +339,7 @@ export default function ViewMonitor() {
                   className={`text-${
                     monitor?.lastStatus === "UP" ? "green-400" : "red-400"
                   }`}
-                >
+                > 
                   {monitor?.lastStatus}
                 </p>
               ) : (
@@ -349,25 +387,66 @@ export default function ViewMonitor() {
             <h2 className="font-semibold text-base sm:text-lg">
               Response time.
             </h2>
-            <select
-              name="time"
-              id=""
-              onChange={(e) => setRange(e.target.value)}
-              className="bg-[#2d3747] rounded-lg px-3 py-2 text-sm border-none cursor-pointer outline-none focus:outline-none focus:ring-0 w-full sm:w-auto"
-            >
-              <option value="5m">5m</option>
-              <option value="15m" selected>
-                15m
-              </option>
-              <option value="30m">30m</option>
-              <option value="2h">2h</option>
-              <option value="6h">6h</option>
-              <option value="12h">12h</option>
-              <option value="24h">24h</option>
-            </select>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <select
+                name="time"
+                id=""
+                onChange={(e) => setRange(e.target.value)}
+                className="bg-[#2d3747] rounded-lg px-3 py-2 text-sm border-none cursor-pointer outline-none focus:outline-none focus:ring-0 flex-1 sm:flex-none sm:w-20"
+              >
+                <option value="5m">5m</option>
+                <option value="15m" selected>
+                  15m
+                </option>
+                <option value="30m">30m</option>
+                <option value="2h">2h</option>
+                <option value="6h">6h</option>
+                <option value="12h">12h</option>
+                <option value="24h">24h</option>
+              </select>
+              <button
+                onClick={async () => {
+                  setAiLoading(true);
+                  setAiSummary("");
+                  try {
+                    const response = await api.post("/ai/summarizeText", {
+                      text: JSON.stringify(logData),
+                    });
+                    if (response.data.status === "ok") {
+                      setAiSummary(
+                        response.data.output_summary?.choices?.[0]?.message
+                          ?.content || "No summary generated",
+                      );
+                      toast.success("AI Summary generated!");
+                    } else {
+                      toast.error("Failed to generate summary");
+                    }
+                  } catch (error) {
+                    console.error(error);
+                    toast.error("AI Summary failed");
+                  } finally {
+                    setAiLoading(false);
+                  }
+                }}
+                disabled={aiLoading || logData.length === 0}
+                className="bg-transparent border border-green-600 hover:bg-green-600 px-4 py-2 rounded-lg text-sm font-medium text-white cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+              >
+                {aiLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <span>✨</span>
+                    AI Summary
+                  </>
+                )}
+              </button>
+            </div>
           </div>
 
-          {/* Fake graph placeholder */}
+          {/*  graph placeholder */}
           <div className="h-48 sm:h-55 bg-[#0D121C] rounded-lg p-2 mb-4 overflow-hidden">
             <ResponseTimeChart data={logData} range={range} />
           </div>
@@ -392,6 +471,43 @@ export default function ViewMonitor() {
               </p>
             </div>
           </div>
+
+          {/* ================= AI SUMMARY SECTION ================= */}
+          {(aiSummary || aiLoading) && (
+            <div className="mt-4 p-4 bg-[#0D121C] rounded-lg border border-green-500/30">
+              <div className="flex items-center gap-2 mb-2">
+                <span>✨</span>
+                <h3 className="font-semibold text-green-400">AI Summary</h3>
+                <TextToSpeech text={aiSummary} />
+              </div>
+              {aiLoading ? (
+                <div className="flex items-center gap-3 text-gray-400">
+                  <div className="flex gap-1">
+                    <div
+                      className="w-2 h-2 bg-green-500 rounded-full animate-bounce"
+                      style={{ animationDelay: "0ms" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-green-500 rounded-full animate-bounce"
+                      style={{ animationDelay: "150ms" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-green-500 rounded-full animate-bounce"
+                      style={{ animationDelay: "300ms" }}
+                    ></div>
+                  </div>
+                  <span className="text-sm">Analyzing logs with AI...</span>
+                </div>
+              ) : (
+                <p className="text-gray-300 text-md whitespace-pre-wrap">
+                  {displayedSummary}
+                  {isTyping && (
+                    <span className="inline-block w-2 h-4 bg-green-400 ml-1 animate-pulse"></span>
+                  )}
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* ================= LATEST INCIDENTS ================= */}

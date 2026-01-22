@@ -176,6 +176,7 @@ router.put("/editeMonitor/:monitorId", async (req, res) => {
     monitor.interval = interval;
     monitor.alert.email = alert.email;
     monitor.alert.push = alert.push;
+    monitor.alert.call = alert.call;
     await monitor.save();
     res.status(200).json({ success: true });
   } catch (error) {
@@ -198,7 +199,9 @@ router.post("/test_alert", async (req, res) => {
     if (monitor.alert.push) {
       sendAlertNotification("DOWN", monitor);
     }
-    await makeTestCall(phoneNumber);
+    if (monitor.alert.call) {
+      makeTestCall(phoneNumber, monitor);
+    }
     res.status(200).json({ success: true });
   } catch (error) {
     console.log(error);

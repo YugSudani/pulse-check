@@ -24,10 +24,15 @@ connectDB(mongo_uri);
 const userRouter = require("./routes/userRouter");
 const monitorRouter = require("./routes/monitorRouter");
 const incidentRouter = require("./routes/incidentRouter");
-
+const aiRouter = require("./routes/AiRouter");
+const stripe = require("./routes/stripe"); //create checkout session
+const stripeW = require("./routes/stripeWebhook"); //webhook
 app.use("/user", userRouter);
 app.use("/monitor", auth, monitorRouter);
 app.use("/incident", auth, incidentRouter);
+app.use("/ai", auth, aiRouter);
+app.use("/stripe", stripe );
+app.use("/stripe", stripeW);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

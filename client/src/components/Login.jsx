@@ -5,6 +5,7 @@ import api from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import setOneSignalPlayerId from "./helpers/setOneSignalPlayerId";
 import Otp_manager from "./helpers/Otp_manager";
+import { toast } from "sonner";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -104,14 +105,15 @@ export default function Login() {
       });
 
       if (response.data.success) {
-        setShowOtpField(true); // ✅ THIS WILL WORK
+        setShowOtpField(true);
+        toast.success("OTP sent to your email");
       } else {
-        alert(response.data.message || "Failed to send OTP");
+        toast.error(response.data.message || "Failed to send OTP");
         setShowOtpField(false);
       }
     } catch (error) {
       console.error(error);
-      alert(error?.response?.data?.message || "Something went wrong");
+      toast.error(error?.response?.data?.message || "Something went wrong");
       setShowOtpField(false);
     } finally {
       setIsLoading(false);
@@ -142,24 +144,25 @@ export default function Login() {
       // Send player ID to backend if user enabled notifications
       await setOneSignalPlayerId(playerId);
 
+      toast.success("Login successful!");
       navigate("/dashboard", { replace: true });
     } catch (error) {
       if (error.response) {
         const status = error.response.status;
 
         if (status === 404) {
-          alert("User not found");
+          toast.error("User not found");
         } else if (status === 401) {
-          alert(error.response.data.message);
+          toast.error(error.response.data.message);
         } else if (status === 403) {
-          alert(error.response.data.message);
+          toast.error(error.response.data.message);
           await api.post(`/user/genOTP`, form);
           navigate(`/otpVerification/${form.email}`, { replace: true });
         } else if (status === 500) {
-          alert("Server error, try again");
+          toast.error("Server error, try again");
         }
       } else {
-        alert("Network error");
+        toast.error("Network error");
       }
     } finally {
       setIsLoading(false);

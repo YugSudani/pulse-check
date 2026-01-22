@@ -1,0 +1,572 @@
+================================================================================
+                     PULSE-CHECK - CHATBASE TRAINING DATA
+                    Comprehensive Website Documentation
+================================================================================
+
+Developer: Yug Sudani
+Contact: yugsudani88@gmail.com
+Target Audience: Developers
+Last Updated: January 2026
+
+================================================================================
+                            SECTION 1: APP OVERVIEW
+================================================================================
+
+WHAT IS PULSE-CHECK?
+--------------------
+Pulse-Check is a real-time server and website monitoring service that helps 
+developers track the uptime, response time, and health of their websites, 
+APIs, and servers. The platform sends instant alerts when services go down 
+and provides detailed analytics and incident tracking.
+
+CORE VALUE PROPOSITION:
+- Real-time server monitoring with up to 30-second check intervals
+- Instant notifications via push, email, SMS, and voice calls
+- 50 free monitors per account
+- AI-powered log analysis and summarization
+- Comprehensive incident tracking and reporting
+
+TECHNOLOGY STACK:
+- Frontend: React.js with Vite, React Router, TailwindCSS-like styling
+- Backend: Node.js with Express.js
+- Database: MongoDB (Mongoose ORM)
+- Authentication: JWT with HTTP-only cookies
+- Push Notifications: OneSignal
+- Email: Nodemailer
+- Voice Calls: Vonage API
+- AI Summarization: Groq API (LLaMA 3.1 8B)
+
+================================================================================
+                          SECTION 2: PRICING PLANS
+================================================================================
+
+STARTER PLAN (FREE - $0/month):
+-------------------------------
+- Up to 50 monitors
+- 30-second check interval (minimum)
+- Push notification alerts
+- Email alerts (basic)
+- 24-hour data retention
+- Community support
+
+PRO PLAN ($9/month or $8/month billed yearly):
+----------------------------------------------
+- Up to 150 monitors
+- 10-second check interval (minimum)
+- SMS & Voice alerts with email & push
+- 30-day data retention
+- SSL Expiry monitoring
+- Domain monitoring
+- Scheduled maintenance windows
+- Priority email support
+
+BUSINESS PLAN ($25/month or $22/month billed yearly):
+----------------------------------------------------
+- Unlimited monitors
+- Custom check interval
+- Advanced integrations (Slack, Discord, Telegram, Webhooks)
+- 1-year data retention
+- Status pages (Public & Private)
+- Multi-region monitoring (EU, Asia, AU)
+- Dedicated account manager
+- SSO Authentication
+
+TRIAL INFORMATION:
+- Pro and Business plans have a 7-day free trial
+- Credit card required to start trial
+- Plans can be upgraded or downgraded anytime
+- Prorated charges applied automatically
+
+================================================================================
+                          SECTION 3: FEATURES
+================================================================================
+
+1. REAL-TIME MONITORING
+-----------------------
+- Monitor websites, APIs, and HTTP endpoints
+- Check intervals: 30s, 1m, 5m, 30m, 1h, 12h, 24h
+- 99.9% monitoring accuracy
+- Instant status detection (UP/DOWN/TIMEOUT)
+
+2. SMART ALERTS
+---------------
+Notification channels available:
+- Push notifications (browser-based, instant)
+- Email alerts (Pro & Business plans)
+- SMS alerts (Pro & Business plans)
+- Voice call alerts (Business plan only)
+- 20+ integration options
+
+Alert triggers:
+- When monitor goes DOWN
+- When monitor RECOVERS (comes back UP)
+- Test alerts available for verification
+
+3. RESPONSE TIME TRACKING
+-------------------------
+- Detailed response time graphs
+- Time range options: 5m, 15m, 30m, 2h, 6h, 12h, 24h
+- Statistics: Average, Minimum, Maximum response times
+- Historical data visualization with Chart.js
+
+4. AI-POWERED SUMMARY
+---------------------
+- Uses Groq API with LLaMA 3.1 8B model
+- Analyzes monitoring logs automatically
+- Provides:
+  - Overall health summary with uptime percentage
+  - Average response time analysis
+  - Performance issues detection
+  - Downtime incident identification
+  - Quick recommendations
+- Text-to-speech feature for AI summaries
+
+5. INCIDENT MANAGEMENT
+----------------------
+- Automatic incident creation when monitor goes down
+- Incident tracking with:
+  - Root cause (DOWN/TIMEOUT)
+  - Start time
+  - End time (when resolved)
+  - Duration
+- Export incidents to CSV
+- 24-hour statistics:
+  - Incident count
+  - Downtime in minutes
+  - Uptime percentage
+
+6. PUBLIC STATUS PAGES (Business Plan)
+-------------------------------------
+- Custom branding options
+- Incident history display
+- Subscribe to updates feature
+
+7. GLOBAL MONITORING LOCATIONS (Pro/Business)
+----------------------------------------------
+- 10+ monitoring locations worldwide
+- Geographic coverage insights
+- Multi-region checks (EU, Asia, AU)
+
+8. SSL & DOMAIN MONITORING (Pro/Business)
+-----------------------------------------
+- SSL certificate expiry monitoring
+- Domain validity tracking
+- Upgrade required for these features
+
+9. DETAILED REPORTS
+-------------------
+- PDF export capability
+- Custom date ranges
+- Automated delivery options
+- CSV log export
+
+================================================================================
+                        SECTION 4: USER GUIDE
+================================================================================
+
+GETTING STARTED:
+----------------
+1. Go to the Pulse-Check homepage
+2. Click "Start for Free" to create an account
+3. Sign up with email and password
+4. Verify your email with OTP
+5. Log in to access the dashboard
+
+CREATING A MONITOR:
+-------------------
+1. From the Dashboard, click "+ New" button
+2. Select monitor type (HTTP/Website monitoring)
+3. Enter the URL to monitor (e.g., https://example.com)
+4. Give your monitor a name
+5. Configure notification preferences:
+   - Push Notification (enabled by default)
+   - Email (requires Pro plan)
+   - Voice Call (requires Business plan)
+6. Set the check interval (5 minutes default)
+7. Click "Create Monitor"
+
+VIEWING MONITOR DETAILS:
+------------------------
+Click on any monitor from the dashboard to see:
+- Current status (UP/DOWN)
+- Current uptime duration
+- Last check time
+- Check interval
+- Total pulse count
+- 24-hour statistics:
+  - Uptime percentage
+  - Incident count
+  - Downtime minutes
+- Response time chart with time range selector
+- AI Summary feature
+- Incident history table
+
+MANAGING MONITORS:
+------------------
+- Edit: Change monitor settings
+- Pause/Resume: Temporarily stop/start monitoring
+- Test: Send test alerts to verify notification setup
+- Delete: Remove monitor permanently
+
+USING AI SUMMARY:
+-----------------
+1. Navigate to a monitor's detail page
+2. Look at the Response Time section
+3. Click the "✨ AI Summary" button
+4. Wait for AI to analyze your logs
+5. Read the generated summary
+6. Use the speaker icon to hear it read aloud
+
+EXPORTING DATA:
+---------------
+- Click "Export logs" on the monitor detail page
+- Downloads CSV file with all incident data
+- Includes: Root cause, start/end times, duration
+
+================================================================================
+                      SECTION 5: API DOCUMENTATION
+================================================================================
+
+BASE URL: /api (relative to server)
+
+AUTHENTICATION ENDPOINTS:
+-------------------------
+
+POST /user/signup
+- Body: { name, email, pwd }
+- Creates new user account
+- Response: { message, success }
+
+POST /user/genOTP
+- Body: { email, name, isForSignup }
+- Sends OTP to email (5 min expiry)
+- Response: { message, success }
+
+POST /user/verifyOtp
+- Body: { email, otp }
+- Verifies OTP and marks user as verified
+- Response: { message, success }
+
+POST /user/login
+- Body: { email, pwd, otp } (password OR otp required)
+- Sets HTTP-only cookie with JWT token (7 days)
+- Response: { message, success }
+
+POST /user/logout
+- Clears authentication cookie
+- Response: { message }
+
+GET /user/getMe
+- Returns current authenticated user
+- Response: { message, success, user }
+
+POST /user/saveOneSignalPlayerId
+- Body: { playerId }
+- Saves OneSignal player ID for push notifications
+- Requires authentication
+
+POST /user/saveCallNumber
+- Body: { phoneNumber }
+- Saves phone number for voice call alerts
+- Requires authentication
+
+MONITOR ENDPOINTS:
+------------------
+
+POST /monitor/createMonitor
+- Body: { name, url, interval, alert }
+- Creates new monitor
+- alert: { email: { emailAlert }, push: { pushAlert } }
+- Requires authentication
+
+GET /monitor/getAllMonitors
+- Returns all monitors for authenticated user
+- Response: { success, monitors }
+
+GET /monitor/:id
+- Returns single monitor by ID
+- Response: { success, monitor }
+
+PATCH /monitor/pause/:id
+- Toggles monitor active/paused state
+- Response: { success }
+
+DELETE /monitor/deleteMonitor/:id
+- Deletes monitor and all associated logs/incidents
+- Response: { success, monitors }
+
+PUT /monitor/editeMonitor/:monitorId
+- Body: { name, url, interval, alert }
+- Updates monitor settings
+- Response: { success }
+
+GET /monitor/:monitorId/response-history
+- Query: ?range=5m|15m|30m|2h|6h|12h|24h
+- Returns response time logs with statistics
+- Response: { success, data, stats }
+
+POST /monitor/test_alert
+- Body: { monitorId, phoneNumber }
+- Sends test alerts via all enabled channels
+- Response: { success }
+
+INCIDENT ENDPOINTS:
+-------------------
+
+GET /incident/getAll
+- Returns all incidents for authenticated user
+- Response: { success, incidents }
+
+GET /incident/:id
+- Returns incidents for specific monitor
+- Response: { success, incidents }
+
+AI ENDPOINT:
+------------
+
+POST /ai/summarizeText
+- Body: { text }
+- Summarizes monitoring logs using Groq AI
+- Response: { status, output_summary }
+
+================================================================================
+                    SECTION 6: FREQUENTLY ASKED QUESTIONS
+================================================================================
+
+GENERAL QUESTIONS:
+------------------
+
+Q: What is Pulse-Check?
+A: Pulse-Check is a real-time server monitoring service that tracks your 
+   website and API uptime. It sends instant alerts when your services go 
+   down and provides detailed analytics with AI-powered insights.
+
+Q: How many monitors can I have for free?
+A: The free Starter plan includes up to 50 monitors.
+
+Q: What is the fastest check interval?
+A: 30 seconds on Starter plan, 10 seconds on Pro/Business plans.
+
+Q: How do I get notified when my site goes down?
+A: You can receive notifications via push notifications (free), email (Pro), 
+   SMS (Pro), or voice calls (Business).
+
+ACCOUNT & BILLING:
+------------------
+
+Q: Can I change plans later?
+A: Yes, you can upgrade or downgrade your plan at any time. Prorated charges 
+   will be applied automatically.
+
+Q: What payment methods do you accept?
+A: We accept all major credit cards and UPI. For enterprise plans, we 
+   support invoicing.
+
+Q: Is there a free trial for paid plans?
+A: Yes, both Pro and Business plans come with a 7-day free trial. 
+   Credit card is required to start.
+
+Q: What happens if I exceed my monitor limit?
+A: We'll notify you when you're close to your limit. You won't be charged 
+   extra, but you won't be able to add new monitors until you upgrade.
+
+MONITORING & ALERTS:
+--------------------
+
+Q: How quickly will I be notified if my site goes down?
+A: Notifications are sent instantly when your monitor detects a DOWN status. 
+   Detection time depends on your check interval (30s to 24h).
+
+Q: What counts as "down"?
+A: A monitor is marked as DOWN when it returns a non-2xx status code, 
+   times out, or fails to respond.
+
+Q: Can I pause monitoring temporarily?
+A: Yes, you can pause and resume any monitor from the dashboard or 
+   monitor detail page.
+
+Q: How is uptime percentage calculated?
+A: Uptime = (Total time - Downtime) / Total time × 100%
+   Calculated over the last 24 hours by default.
+
+Q: How do I test my alert settings?
+A: Click the "Test" button on any monitor detail page to send test alerts 
+   through all enabled notification channels.
+
+TECHNICAL QUESTIONS:
+--------------------
+
+Q: What types of monitors are supported?
+A: Currently, HTTP/HTTPS website and API monitoring is supported.
+
+Q: Can I monitor from different regions?
+A: Multi-region monitoring (EU, Asia, AU) is available on Pro and 
+   Business plans.
+
+Q: How long is monitoring data retained?
+A: Starter: 24 hours, Pro: 30 days, Business: 1 year.
+
+Q: What is the AI Summary feature?
+A: AI Summary analyzes your monitoring logs and provides a plain-text 
+   summary of your server health, including uptime percentage, average 
+   response time, detected issues, and recommendations.
+
+Q: Can I export my incident history?
+A: Yes, click "Export logs" on the monitor detail page to download 
+   a CSV file with all incident data.
+
+================================================================================
+                    SECTION 7: TROUBLESHOOTING
+================================================================================
+
+COMMON ISSUES:
+--------------
+
+Issue: Not receiving push notifications
+Solution: 
+1. Ensure browser notifications are enabled
+2. Check that push notifications are toggled ON in the login page
+3. Try logging out and back in
+4. Clear browser cache and re-enable notifications
+
+Issue: Monitor shows incorrect status
+Solution:
+1. Check if the URL is accessible from external networks
+2. Verify the URL doesn't require authentication
+3. Ensure your server allows HEAD/GET requests
+4. Wait for the next check interval
+
+Issue: Can't login with OTP
+Solution:
+1. Check spam folder for OTP email
+2. OTP expires in 5 minutes - request a new one
+3. Ensure you're using the correct email address
+4. Wait a few minutes before requesting another OTP (rate limit)
+
+Issue: Voice call alerts not working
+Solution:
+1. Verify phone number is correct with country code
+2. Voice calls require Business plan
+3. Check phone is not on DND mode
+4. Try the Test alert feature to verify
+
+Issue: Response time chart shows no data
+Solution:
+1. New monitors need at least one check cycle
+2. Select appropriate time range
+3. Ensure monitor is not paused
+4. Refresh the page
+
+================================================================================
+                    SECTION 8: DATA MODELS
+================================================================================
+
+USER MODEL:
+-----------
+{
+  name: String (required),
+  email: String (required, unique),
+  pwd: String (hashed password, required),
+  lastEmailSentAt: Date,
+  playerId: String (OneSignal ID),
+  isVerified: Boolean (default: false),
+  subscriptionPlan: String (default: "starter"),
+  phoneNumber: String
+}
+
+MONITOR MODEL:
+--------------
+{
+  userId: ObjectId (ref User),
+  name: String (required),
+  url: String (required),
+  interval: Number (milliseconds),
+  alert: {
+    email: Boolean,
+    push: Boolean,
+    call: Boolean
+  },
+  isActive: Boolean (default: true),
+  lastStatus: String (UP/DOWN/TIMEOUT),
+  lastCheckedAt: Date,
+  totalChecks: Number,
+  currentUpDownTimeStart: Date,
+  totalDown: Number
+}
+
+INCIDENT MODEL:
+---------------
+{
+  userID: ObjectId (ref User),
+  monitorId: ObjectId (ref Monitor),
+  monitorUrl: String,
+  incidentType: String (DOWN/TIMEOUT),
+  incidentStartTime: Date,
+  incidentEndTime: Date,
+  incidentDuration: Number (milliseconds)
+}
+
+LOG MODEL:
+----------
+{
+  monitorId: ObjectId (ref Monitor),
+  statusCode: Number (200, 404, 500, etc),
+  responseTime: Number (milliseconds),
+  isUp: Boolean,
+  checkedAt: Date (expires after 24 hours)
+}
+
+================================================================================
+                    SECTION 9: SYSTEM ARCHITECTURE
+================================================================================
+
+MONITORING WORKFLOW:
+--------------------
+1. Monitor Worker runs every 30 seconds
+2. Fetches all active monitors that are due for checking
+3. For each monitor:
+   a. Sends HTTP request to URL
+   b. Records response time and status code
+   c. Creates log entry
+   d. If status changes to DOWN:
+      - Creates new incident
+      - Sends email alert (if enabled)
+      - Sends push notification (if enabled)
+      - Makes voice call (if enabled)
+   e. If status changes to UP (recovery):
+      - Updates incident with end time
+      - Sends recovery alerts
+4. Process repeats continuously
+
+NOTIFICATION CHANNELS:
+----------------------
+1. Push Notifications: OneSignal (browser-based)
+2. Email Alerts: Nodemailer (SMTP)
+3. Voice Calls: Vonage API (automated calls)
+
+SECURITY:
+---------
+- Passwords hashed with bcrypt (salt rounds: 11)
+- JWT tokens stored in HTTP-only cookies
+- Token expiry: 7 days
+- OTP expiry: 5 minutes
+- CORS configured for cross-origin requests
+
+================================================================================
+                    SECTION 10: CONTACT & SUPPORT
+================================================================================
+
+DEVELOPER INFORMATION:
+----------------------
+Name: Yug Sudani
+Email: yugsudani88@gmail.com
+
+SUPPORT CHANNELS:
+-----------------
+- Starter Plan: Community support
+- Pro Plan: Priority email support
+- Business Plan: Dedicated account manager
+
+================================================================================
+                          END OF TRAINING DATA
+================================================================================

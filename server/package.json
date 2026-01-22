@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@emailjs/nodejs": "^5.0.2",
+    "@google/generative-ai": "^0.24.1",
     "@vonage/server-sdk": "^3.25.1",
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
@@ -23,6 +24,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.0",
     "nodemon": "^3.1.11",
+    "stripe": "^20.2.0",
     "twilio": "^5.11.2"
   }
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
+import UpgradeButton from "../payment/UpgradeBtn";
 
 export default function Pricing() {
   const navigate = useNavigate();
@@ -162,7 +163,7 @@ export default function Pricing() {
             <button
               onClick={() =>
                 setBillingCycle(
-                  billingCycle === "monthly" ? "yearly" : "monthly"
+                  billingCycle === "monthly" ? "yearly" : "monthly",
                 )
               }
               className="w-14 h-7 bg-gray-800 rounded-full p-1 relative transition-colors duration-300 focus:outline-none border border-gray-700"
@@ -262,25 +263,17 @@ export default function Pricing() {
               </div>
 
               {/* CTA */}
-              <button
-                className={`w-full py-3 rounded-xl font-semibold transition-all duration-300
-                  ${
-                    plan.popular
-                      ? "bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-500/25"
-                      : "bg-[#1A202C] hover:bg-gray-700 text-white border border-gray-700"
-                  }`}
-                onClick={() => {
-                  if (plan.name === "Starter") {
-                    navigate("/dashboard");
-                  } else if (plan.name === "Pro") {
-                    navigate("/login");
-                  } else if (plan.name === "Business") {
-                    navigate("/login");
-                  }
-                }}
-              >
-                    {plan.name === "Starter" ? "Start for Free" : plan.name === "Pro" ? "Get Started with pro" : "Get Started with business"}
-              </button>
+              <UpgradeButton
+                plan={plan.name.toLowerCase()}
+                buttonText={
+                  plan.name === "Starter"
+                    ? "Start for Free"
+                    : plan.name === "Pro"
+                      ? "Get Started with Pro"
+                      : "Get Started with Business"
+                }
+                isPopular={plan.popular}
+              />
             </div>
           ))}
         </div>

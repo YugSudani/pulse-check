@@ -2,22 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import InstallButton from "./staticComps/InstallButton";
+import { useAuth } from "../context/AuthContext";
 
 export default function Slidebar() {
-  const [subscriptionPlan, setSubscriptionPlan] = useState("starter");
-  const [userName, setUserName] = useState("");
+  const { user, checkAuth } = useAuth();
 
-  useEffect(() => {
-    api.get("/user/getMe").then((res) => {
-      const user = res.data.user;
-      setSubscriptionPlan(user.subscriptionPlan);
-      if (user.number) {
-        setVerifiedPhoneNumber(user.number);
-      }
-      setUserName(user.name);
-    });
-  }, []);
-
+  // Derive values from AuthContext user
+  const subscriptionPlan = user?.subscriptionPlan || "starter";
+  const userName = user?.name || "";
 
   const [openSidebar, setOpenSidebar] = useState(false);
   const navigate = useNavigate();
@@ -49,10 +41,11 @@ export default function Slidebar() {
                     overflow-y-auto
                     transform transition-transform duration-300 ease-in-out
                     [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
-                    ${openSidebar
-            ? "translate-x-0"
-            : "-translate-x-full md:translate-x-0"
-          }
+                    ${
+                      openSidebar
+                        ? "translate-x-0"
+                        : "-translate-x-full md:translate-x-0"
+                    }
                 `}
       >
         {/* Top Section */}
@@ -130,7 +123,6 @@ export default function Slidebar() {
             >
               🔗 resourses
             </button>
-
           </nav>
           <InstallButton />
         </div>

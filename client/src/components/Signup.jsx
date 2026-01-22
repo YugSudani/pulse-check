@@ -2,6 +2,7 @@ import api from "../lib/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
 
 export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
@@ -63,12 +64,13 @@ export default function Signup() {
       await api.post(`/user/genOTP`, { ...form, isForSignup: true });
       const response = await api.post(`/user/signup`, form);
       if (!response.data.success) {
-        alert("failed to register");
+        toast.error("Failed to register");
       } else {
+        toast.success("Account created! Please verify your email");
         navigate(`/otpVerification/${form.email}`, { replace: true });
       }
     } catch (error) {
-      alert(error.response.data.message);
+      toast.error(error.response?.data?.message || "Registration failed");
     } finally {
       setIsLoading(false);
     }

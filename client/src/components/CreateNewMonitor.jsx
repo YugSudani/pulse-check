@@ -2,28 +2,31 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import PhoneNumberDialog from "./staticComps/Phonenumberdialog ";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "sonner";
 
 export default function CreateNewMonitor() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const [subscriptionPlan, setSubscriptionPlan] = useState("starter");
+  // Derive subscription plan from AuthContext user
+  const subscriptionPlan = user?.subscriptionPlan || "starter";
 
+  // State for verified phone number - initialized from user data
+  const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState("");
+
+  // Set verified phone number from user data when available
   useEffect(() => {
-    api.get("/user/getMe").then((res) => {
-      const user = res.data.user;
-      setSubscriptionPlan(user.subscriptionPlan);
-      if (user.number) {
-        setVerifiedPhoneNumber(user.number);
-      }
-    });
-  }, []);
+    if (user?.phoneNumber) {
+      setVerifiedPhoneNumber(user.phoneNumber);
+    }
+  }, [user]);
 
   const [url, setUrl] = useState(null);
   const [name, setName] = useState("New Monitor");
   const [emailAlert, setEmailAlert] = useState(false);
   const [pushAlert, setPushAlert] = useState(true);
   const [voiceCallAlert, setVoiceCallAlert] = useState(false);
-  const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
 
@@ -87,9 +90,11 @@ export default function CreateNewMonitor() {
         },
         { withCredentials: true },
       );
+      toast.success("Monitor created successfully!");
       navigate("/dashboard", { replace: true });
     } catch (error) {
       console.log(error);
+      toast.error("Failed to create monitor");
     } finally {
       setLoading(false);
     }

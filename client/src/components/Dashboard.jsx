@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
+import { toast } from "sonner";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -41,14 +42,14 @@ export default function Dashboard() {
       });
 
       if (!data.success) {
-        // alert(data.msg || "Failed to delete monitor");
+        toast.error("Failed to delete monitor");
         return;
       }
-      // console.log("reaching here>>>>");
+      toast.success("Monitor deleted successfully");
       setMonitors(data.monitors);
     } catch (error) {
       console.error(error);
-      // alert("Failed to delete monitor");
+      toast.error("Failed to delete monitor");
     }
   };
 
@@ -145,7 +146,6 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-
         </div>
         {/* Main Monitor List */}
         <div className="h-80 sm:h-130 flex flex-col gap-4 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-gray-600">
@@ -169,8 +169,9 @@ export default function Dashboard() {
                 onClick={() =>
                   navigate(`/monitor/${monitor._id}`, { replace: false })
                 }
-                className={`bg-[#131e30] p-4 sm:p-5 rounded-2xl relative cursor-pointer hover:bg-[#1A2333] transition  ${search ? "search-highlight" : ""
-                  }`}
+                className={`bg-[#131e30] p-4 sm:p-5 rounded-2xl relative cursor-pointer hover:bg-[#1A2333] transition  ${
+                  search ? "search-highlight" : ""
+                }`}
               >
                 <h2 className="font-semibold text-base sm:text-lg mb-2">
                   {monitor.name}
@@ -246,7 +247,9 @@ export default function Dashboard() {
               </div>
             );
           })}
-          {loading && <span className="loader absolute left-1/2 top-1/4"></span>}
+          {loading && (
+            <span className="loader absolute left-1/2 top-1/4"></span>
+          )}
           {monitors?.length === 0 && (
             <div className="p-4 rounded-2xl border-gray-800 text-center">
               <p className="text-gray-400">No monitors found</p>

@@ -1,33 +1,57 @@
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
-// Basic PWA functionality
-self.addEventListener('install', (event) => {
-  //console.log('Service Worker installed');
+// Service Worker for OneSignal push notifications
+self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
-  //console.log('Service Worker activated');
+self.addEventListener("activate", (event) => {
   event.waitUntil(clients.claim());
 });
 
-// Optional: Add basic caching for offline support
-const CACHE_NAME = 'pulse-check-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-];
+// Fetch handler - Skip API calls to prevent duplicate requests
+self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
-  );
-});
+  // Skip API calls - let browser handle them directly
+  // This prevents duplicate network requests
+  if (
+    url.pathname.startsWith("/api") ||
+    url.pathname.startsWith("/user") ||
+    url.pathname.startsWith("/monitor") ||
+    url.pathname.startsWith("/incident") ||
+    event.request.method !== "GET"
+  ) {
+    return; // Don't intercept, let browser handle normally
+  }
 
-self.addEventListener('fetch', (event) => {
+  // For HTML and JS files, use network-first to ensure latest code is loaded
+  // This fixes PWA install button not working until hard refresh
+  if (
+    event.request.mode === "navigate" ||
+    url.pathname.endsWith(".html") ||
+    url.pathname.endsWith(".js") ||
+    url.pathname === "/"
+  ) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Cache the fresh response for offline use
+          const responseClone = response.clone();
+          caches.open("pwa-cache-v1").then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+          return response;
+        })
+        .catch(() => caches.match(event.request)),
+    );
+    return;
+  }
+
+  // For other static assets (images, CSS, fonts), try cache first, then network
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => response || fetch(event.request))
+    caches
+      .match(event.request)
+      .then((response) => response || fetch(event.request)),
   );
 });

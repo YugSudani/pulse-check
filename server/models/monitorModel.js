@@ -34,6 +34,10 @@ const monitorSchema = new mongoose.Schema(
         type: Boolean,
         default: false,
       },
+      call: {
+        type: Boolean,
+        default: false,
+      },
     },
 
     isActive: {
