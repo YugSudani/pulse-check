@@ -7,8 +7,8 @@ router.post("/create-checkout-session", async (req, res) => {
     const { plan } = req.body;
 
     const PRICE_MAP = {
-      pro: 'prod_Tq6ZHIm3HHS28S',      
-      business: 'prod_Tq6aqgDfCcHY8x', 
+      pro: 'price_1SsQMjQcnBP33XC0MuXZBqUn',      
+      business: 'price_1SsQNlQcnBP33XC0DE91i6dp', 
     };
 
     if (!PRICE_MAP[plan]) {
