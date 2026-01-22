@@ -17,7 +17,7 @@ function UpgradeButton({ plan, buttonText, isPopular }) {
     setIsLoading(true);
     try {
       const res = await fetch(
-        "https://geoponic-verlie-impressionistically.ngrok-free.dev/stripe/create-checkout-session",
+        "https://pulse-check-6drk.onrender.com/stripe/create-checkout-session",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
