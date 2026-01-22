@@ -7,8 +7,8 @@ router.post("/create-checkout-session", async (req, res) => {
     const { plan } = req.body;
 
     const PRICE_MAP = {
-      pro: 'prod_Tq6ZHIm3HHS28S',      // Replace with actual Stripe price ID for Pro plan
-      business: 'prod_Tq6aqgDfCcHY8x', // Replace with actual Stripe price ID for Business plan
+      pro: 'prod_Tq6ZHIm3HHS28S',      
+      business: 'prod_Tq6aqgDfCcHY8x', 
     };
 
     if (!PRICE_MAP[plan]) {
@@ -16,7 +16,7 @@ router.post("/create-checkout-session", async (req, res) => {
     }
 
     const session = await stripe.checkout.sessions.create({
-      mode: "payment", // use "subscription" if monthly recurring
+      mode: "subscription", 
 
       currency: "usd",
 
