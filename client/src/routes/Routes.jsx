@@ -20,6 +20,7 @@ import ScrollToTop from "./ScrollToTop";
 import NotFound from "../components/NotFound";
 import PaymentSuccess from "../components/payment/Succsess";
 import PaymentCancel from "../components/payment/Payment-cancel";
+import AuthSuccess from "../components/Google.jsx/AuthSuccess";
 
 function Routes_() {
   return (
@@ -39,7 +40,8 @@ function Routes_() {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-cancel" element={<PaymentCancel />} />
-
+        <Route path="/auth-success" element={<AuthSuccess />} />
+        
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
             <Route path="/create-new-monitor" element={<CreateNewMonitor />} />

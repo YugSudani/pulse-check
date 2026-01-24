@@ -221,30 +221,37 @@ export default function ViewMonitor() {
     }
   };
 
-  // initial fetch
+  // initial fetch + polling
   useEffect(() => {
     fetchMonitor();
     fetchLogData(range);
     fetchIncidents();
     console.log("Initial fetch");
+
+    const interval = setInterval(() => {
+      pollingData();
+    }, 15000);
+
+    const interval2 = setInterval(() => {
+      pollingLastCheckedAt();
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(interval2);
+    };
   }, []);
 
-  //update data on timeAgo intervals
-  useEffect(() => {
-    if (
-      timeAgo === "30s" ||
-      timeAgo === "1m" ||
-      timeAgo === "5m" ||
-      timeAgo === "15m" ||
-      timeAgo === "30m" ||
-      timeAgo === "1h"
-    ) {
-      fetchMonitor();
-      fetchLogData(range);
-      fetchIncidents();
-      console.log("Fetching latest data");
-    }
-  }, [timeAgo]);
+  const pollingData = () => {
+    fetchLogData(range);
+    fetchIncidents();
+    console.log("Fetching latest data");
+  };
+
+  const pollingLastCheckedAt = () => {
+    fetchMonitor();
+    console.log("Fetching lastCheckedAt");
+  };
 
   //update time ago every second
   useEffect(() => {
@@ -254,17 +261,6 @@ export default function ViewMonitor() {
     const interval = setInterval(updateTimeAgo, 1000); // Update every second
 
     return () => clearInterval(interval); // Cleanup
-  }, [monitor]);
-
-  useEffect(() => {
-    if (!monitor?.lastCheckedAt) {
-      setTimeout(() => {
-        fetchMonitor();
-        fetchLogData(range);
-        fetchIncidents();
-        console.log("Initial fetch after 30 seconds");
-      }, 31000);
-    }
   }, [monitor]);
 
   return (
@@ -339,7 +335,7 @@ export default function ViewMonitor() {
                   className={`text-${
                     monitor?.lastStatus === "UP" ? "green-400" : "red-400"
                   }`}
-                > 
+                >
                   {monitor?.lastStatus}
                 </p>
               ) : (
@@ -392,7 +388,7 @@ export default function ViewMonitor() {
                 name="time"
                 id=""
                 onChange={(e) => setRange(e.target.value)}
-                className="bg-[#2d3747] rounded-lg px-3 py-2 text-sm border-none cursor-pointer outline-none focus:outline-none focus:ring-0 flex-1 sm:flex-none sm:w-20"
+                className="bg-[#2d3747] rounded-lg px-2 py-2 text-sm border-none cursor-pointer outline-none focus:outline-none focus:ring-0 flex-1 sm:flex-none sm:w-20"
               >
                 <option value="5m">5m</option>
                 <option value="15m" selected>

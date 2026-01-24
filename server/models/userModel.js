@@ -12,7 +12,19 @@ const schema = new mongoose.Schema({
   },
   pwd: {
     type: String,
-    required: true,
+    required: false, // Optional for Google users
+  },
+  googleId: {
+    type: String,
+    default: null,
+  },
+  avatar: {
+    type: String,
+    default: null,
+  },
+  provider: {
+    type: String,
+    default: "local", // "local" for email/password, "google" for OAuth
   },
   lastEmailSentAt: {
     type: Date,
@@ -33,7 +45,7 @@ const schema = new mongoose.Schema({
   phoneNumber: {
     type: String,
     default: null,
-  }
+  },
 });
 
 const userModel = mongoose.model("userModel", schema);

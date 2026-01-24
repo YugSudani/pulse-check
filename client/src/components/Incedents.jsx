@@ -146,7 +146,7 @@ export default function Incidents() {
           </div>
           );
         })}
-        {incidents.length === 0 && <p className="text-center text-gray-400 py-6">No Incidents found</p>}
+        {incidents.length === 0 && !loading && <p className="text-center text-gray-400 py-6">No Incidents found</p>}
       </div>
 
     </div>

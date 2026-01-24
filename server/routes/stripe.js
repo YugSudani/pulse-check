@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const stripe = require("../config/stripe");
+const auth = require("../middlewares/auth");
 
-router.post("/create-checkout-session", async (req, res) => {
+router.post("/create-checkout-session", auth, async (req, res) => {
   try {
     const { plan } = req.body;
+    const userId = req.userId; // From auth middleware
 
     const PRICE_MAP = {
-      pro: 'price_1SsQMjQcnBP33XC0MuXZBqUn',      
-      business: 'price_1SsQNlQcnBP33XC0DE91i6dp', 
+      pro: "price_1SsQMjQcnBP33XC0MuXZBqUn",
+      business: "price_1SsQNlQcnBP33XC0DE91i6dp",
     };
 
     if (!PRICE_MAP[plan]) {
@@ -16,7 +18,7 @@ router.post("/create-checkout-session", async (req, res) => {
     }
 
     const session = await stripe.checkout.sessions.create({
-      mode: "subscription", 
+      mode: "subscription",
 
       //currency: "usd",
 
@@ -32,7 +34,7 @@ router.post("/create-checkout-session", async (req, res) => {
 
       metadata: {
         plan,
-        userId: "test-user-id",
+        userId: userId, // Real user ID from auth
       },
     });
 

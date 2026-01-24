@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import setOneSignalPlayerId from "./helpers/setOneSignalPlayerId";
 import Otp_manager from "./helpers/Otp_manager";
 import { toast } from "sonner";
+import GoogleLoginButton from "./Google.jsx/GoogleLoginButton";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -123,10 +124,10 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!notificationsEnabled) {
-      alert("Please enable notifications to login");
-      return;
-    }
+    // if (!notificationsEnabled) {
+    //   alert("Please enable notifications to login");
+    //   return;
+    // }
 
     setIsLoading(true);
     const finalOtp = otp.join("");
@@ -507,6 +508,9 @@ export default function Login() {
               >
                 Sign up
               </button>
+              <div className="mt-2">
+                <GoogleLoginButton />
+              </div>
             </p>
           </div>
         </div>

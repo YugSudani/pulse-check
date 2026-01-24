@@ -7,6 +7,9 @@ const PORT = process.env.PORT;
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const auth = require("./middlewares/auth");
+const passport = require("./config/passport");
+
+app.use(passport.initialize());
 
 app.use(
   cors({
@@ -33,6 +36,8 @@ app.use("/incident", auth, incidentRouter);
 app.use("/ai", auth, aiRouter);
 app.use("/stripe", stripe );
 app.use("/stripe", stripeW);
+app.use("/auth", require("./routes/auth"));
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

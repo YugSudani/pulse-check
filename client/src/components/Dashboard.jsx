@@ -250,7 +250,7 @@ export default function Dashboard() {
           {loading && (
             <span className="loader absolute left-1/2 top-1/4"></span>
           )}
-          {monitors?.length === 0 && (
+          {monitors?.length == 0 && !loading && (
             <div className="p-4 rounded-2xl border-gray-800 text-center">
               <p className="text-gray-400">No monitors found</p>
             </div>

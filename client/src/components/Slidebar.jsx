@@ -91,7 +91,7 @@ export default function Slidebar() {
               }}
               className="flex cursor-pointer cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              📡 Features
+              ✨ Features
             </button>
 
             <button
@@ -101,7 +101,7 @@ export default function Slidebar() {
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              🛠️ Pricing
+              💳 Pricing
             </button>
 
             <button
@@ -111,7 +111,7 @@ export default function Slidebar() {
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              👤 Solutions
+              💡 Solutions
             </button>
 
             <button
@@ -121,7 +121,7 @@ export default function Slidebar() {
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              🔗 resourses
+              📚 Resources
             </button>
           </nav>
           <InstallButton />
