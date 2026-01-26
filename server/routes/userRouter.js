@@ -37,7 +37,7 @@ router.post("/genOTP", async (req, res) => {
       });
     }
     const OTP = generateOTP();
-    //await sendOTPEmail_2(email, name, OTP);
+    await sendOTPEmail_2(email, name, OTP);
     await tokenModel.create({
       email,
       OTP,
