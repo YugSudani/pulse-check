@@ -162,7 +162,7 @@ export default function CreateNewMonitor() {
 
       if(user && !user.playerId){
         toast.error("in order to create monitor and receive alerts, please enable notifications.");
-        await handleNotificationToggle();
+        handleNotificationToggle();
         await checkAuth();
         setLoading(false);
         return;
