@@ -8,7 +8,7 @@ import setOneSignalPlayerId from "./helpers/setOneSignalPlayerId";
 
 export default function CreateNewMonitor() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, checkAuth } = useAuth();
 
   // Derive subscription plan from AuthContext user
   const subscriptionPlan = user?.subscriptionPlan || "starter";
@@ -163,6 +163,7 @@ export default function CreateNewMonitor() {
       if(user && !user.playerId){
         toast.error("in order to create monitor and receive alerts, please enable notifications.");
         handleNotificationToggle();
+        await checkAuth();
         setLoading(false);
         return;
       }
