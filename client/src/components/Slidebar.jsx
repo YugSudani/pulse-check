@@ -152,9 +152,18 @@ export default function Slidebar() {
             </p>
           </div>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm">
-              {userName?.split(" ")[0]?.charAt(0)?.toUpperCase()}
-            </div>
+            {
+              user?.avatar === null ? 
+              <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm">
+                  {userName?.split(" ")[0]?.charAt(0)?.toUpperCase()}
+              </div>
+              :
+              <img
+                src={user?.avatar}
+                alt="User Avatar"
+                className="w-10 h-10 rounded-full"
+              />
+            }
             <p className="font-semibold text-sm sm:text-base">
               {userName}'s Workspace
             </p>

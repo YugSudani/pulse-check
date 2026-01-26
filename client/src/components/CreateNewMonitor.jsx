@@ -160,7 +160,7 @@ export default function CreateNewMonitor() {
     try {
       setLoading(true);
 
-      if(user && !user.hasEnabledNotifications){
+      if(user && !user.playerId){
         toast.error("in order to create monitor and receive alerts, please enable notifications.");
         handleNotificationToggle();
         setLoading(false);
