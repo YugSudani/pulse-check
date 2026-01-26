@@ -7,6 +7,7 @@ import exportLogs from "./helpers/Logs_csv_generator";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
 import TextToSpeech from "./helpers/TextToSpeech";
+import { Bell, Mail, Phone } from "lucide-react";
 
 export default function ViewMonitor() {
   const navigate = useNavigate();
@@ -292,6 +293,51 @@ export default function ViewMonitor() {
                   {monitor?.url}
                 </a>
               </p>
+              {/* Notification Status Icons */}
+              <div className="flex gap-3 mt-2">
+                <div
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
+                    monitor?.alert?.push
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-gray-700/50 text-gray-500"
+                  }`}
+                  title={
+                    monitor?.alert?.push
+                      ? "Push notifications enabled"
+                      : "Push notifications disabled"
+                  }
+                >
+                  <Bell className="w-4 h-4" />
+                </div>
+                <div
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
+                    monitor?.alert?.email
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-gray-700/50 text-gray-500"
+                  }`}
+                  title={
+                    monitor?.alert?.email
+                      ? "Email notifications enabled"
+                      : "Email notifications disabled"
+                  }
+                >
+                  <Mail className="w-4 h-4" />
+                </div>
+                <div
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
+                    monitor?.alert?.call
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-gray-700/50 text-gray-500"
+                  }`}
+                  title={
+                    monitor?.alert?.call
+                      ? "Voice call alerts enabled"
+                      : "Voice call alerts disabled"
+                  }
+                >
+                  <Phone className="w-4 h-4" />
+                </div>
+              </div>
             </div>
             <div className="flex flex-col w-17 md:w-30 xs:flex-row items-stretch xs:items-center gap-2 flex-wrap">
               <button

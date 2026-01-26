@@ -13,10 +13,14 @@ app.use(passport.initialize());
 
 app.use(
   cors({
-    origin: process.env.frontend_url ,
+    origin: process.env.frontend_url,
     credentials: true,
-  })
+  }),
 );
+
+// Mount Stripe webhook BEFORE express.json() to preserve raw body for signature verification
+const stripeW = require("./routes/stripeWebhook");
+app.use("/stripe", stripeW);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -29,22 +33,25 @@ const monitorRouter = require("./routes/monitorRouter");
 const incidentRouter = require("./routes/incidentRouter");
 const aiRouter = require("./routes/AiRouter");
 const stripe = require("./routes/stripe"); //create checkout session
-const stripeW = require("./routes/stripeWebhook"); //webhook
-app.use("/user", userRouter);
-app.use("/monitor", auth, monitorRouter);
-app.use("/incident", auth, incidentRouter);
-app.use("/ai", auth, aiRouter);
-app.use("/stripe", stripe );
-app.use("/stripe", stripeW);
-app.use("/auth", require("./routes/auth"));
+const adminOnly = require("./middlewares/adminOnly");
+const isBlocked = require("./middlewares/isBlocked");
 
+app.use("/user", userRouter);
+app.use("/monitor", auth, isBlocked, monitorRouter);
+app.use("/incident", auth, isBlocked, incidentRouter);
+app.use("/ai", auth, isBlocked, aiRouter);
+app.use("/stripe", stripe);
+app.use("/auth", require("./routes/auth"));
+app.use("/admin", auth, adminOnly, require("./routes/adminRouter"));
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-require("./workers/monitorWorker")().then(() => {
-  console.log("Monitor Worker started");
-}).catch((err) => {
-  console.error("Error starting Monitor Worker:", err);
-});
+require("./workers/monitorWorker")()
+  .then(() => {
+    console.log("Monitor Worker started");
+  })
+  .catch((err) => {
+    console.error("Error starting Monitor Worker:", err);
+  });

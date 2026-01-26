@@ -117,6 +117,7 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, pwd, otp } = req.body;
+
     const user = await userModel.findOne({ email });
     if (!user) {
       return res
@@ -124,12 +125,14 @@ router.post("/login", async (req, res) => {
         .json({ message: "User not found", success: false });
     }
 
+
     if (user.isVerified === false) {
       //console.log("user : " + user.isVerified);
       return res
         .status(403)
         .json({ message: "User not verified", success: false });
     }
+
     if (!pwd) {
       const token = await tokenModel.findOne({
         email,
@@ -144,7 +147,18 @@ router.post("/login", async (req, res) => {
     }
 
     if (!otp) {
+
+      // Check if user has a password (not a Google OAuth user)
+      if (!user.pwd || user.provider === "google") {
+        return res.status(400).json({
+          message:
+            "This account uses Google sign-in. Please login with Google.",
+          success: false,
+        });
+      }
+
       const isMatch = await bcrypt.compare(pwd, user.pwd);
+      // console.log("isMatch : " + isMatch);
       if (!isMatch) {
         return res
           .status(401)
@@ -153,17 +167,17 @@ router.post("/login", async (req, res) => {
     }
 
     const token = setUser(user);
-
+    // console.log("token : " + token);
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
+    // console.log("Login successful");
     res.status(200).json({ message: "Login successful", success: true });
   } catch (error) {
-    console.log(error);
+    console.log("login error : " + error);
     res.status(500).json({ message: "Internal server error", success: false });
   }
 });
@@ -215,23 +229,28 @@ router.post("/logout", (req, res) => {
   res.status(200).json({ message: "Logout successful" });
 });
 
-
 router.get("/getMe", async (req, res) => {
   try {
     const token = req.cookies.token;
     const decoded = getUser(token); // Verify JWT first
-    
+
     if (!decoded || !decoded._id) {
-      return res.status(401).json({ message: "User not found", success: false });
+      return res
+        .status(401)
+        .json({ message: "User not found", success: false });
     }
-    
-    const user = await userModel.findById(decoded._id).select('-pwd');
-    
+
+    const user = await userModel.findById(decoded._id).select("-pwd");
+
     if (!user) {
-      return res.status(401).json({ message: "User not found", success: false });
+      return res
+        .status(401)
+        .json({ message: "User not found", success: false });
     }
-    
-    return res.status(200).json({ message: "user found true", success: true, user: user });
+
+    return res
+      .status(200)
+      .json({ message: "user found true", success: true, user: user });
   } catch (error) {
     return res.status(401).json({ message: "User not found", success: false });
   }

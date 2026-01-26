@@ -6,7 +6,7 @@ const monitorModel = require("../models/monitorModel");
 const MONGO_URI = process.env.MONGO_URI;
 const USER_ID = "6969d3ee284f0059a1eedeb3"; // Your user ID
 const MONITOR_URL = "https://pulse-check-6drk.onrender.com";
-const TOTAL_RECORDS = 1000;
+const TOTAL_RECORDS = 5000;
 
 async function seedMonitors() {
   try {
@@ -20,13 +20,13 @@ async function seedMonitors() {
         userId: new mongoose.Types.ObjectId(USER_ID),
         name: `Monitor ${i}`,
         url: MONITOR_URL,
-        interval: 60000,
+        interval: 600000,
         alert: {
           email: false,
           push: false,
         },
         isActive: true,
-        lastStatus: null,
+        lastStatus: "UP",
         lastCheckedAt: null,
         totalChecks: 0,
         currentUpDownTimeStart: null,

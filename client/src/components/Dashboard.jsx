@@ -2,9 +2,21 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { toast } from "sonner";
+import { useAuth } from "../context/AuthContext";
+import AdminBadge from "./staticComps/adminBadge";
+import {
+  Bell,
+  Mail,
+  Phone,
+  CircleCheck,
+  CircleX,
+  ArrowUp,
+  ArrowDown,
+} from "lucide-react";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [monitors, setMonitors] = useState([]);
   const [search, setSearch] = useState("");
@@ -17,15 +29,17 @@ export default function Dashboard() {
       const response = await api.get(`/monitor/getAllMonitors`, {
         withCredentials: true,
       });
-      // console.log("data : " + response.data.monitors);
       if (!response.data.success) {
-        // alert("Failed to get monitors");
+        toast.error("Failed to get monitors");
       } else {
         setMonitors(response.data.monitors);
       }
     } catch (error) {
-      // navigate("/login", { replace: true });
-      // alert("Failed to get monitors");
+      console.error("Error fetching monitors:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to load monitors. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -77,9 +91,13 @@ export default function Dashboard() {
       {/* ================ MAIN CONTENT ================ */}
       <main className="flex-1 overflow-y-auto h-full p-4 sm:p-6 md:p-8 mt-14 md:mt-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {/* Header */}
-        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">
-          Monitors<span className="text-green-500">.</span>
-        </h1>
+        {user?.role === "admin" ? (
+          <AdminBadge user={user} navigate={navigate} />
+        ) : (
+          <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">
+            Monitors<span className="text-green-500">.</span>
+          </h1>
+        )}
 
         {/* Controls Row */}
         <div className="relative flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 mb-6">
@@ -215,6 +233,7 @@ export default function Dashboard() {
                       />
                     </svg>
                   </div>
+                  {/* Notification Status Icons */}
                   {activeMenuId === monitor._id && (
                     <div className="absolute right-6 top-31 sm:top-24 w-auto h-auto z-10">
                       <div className="bg-[#121A28] border border-gray-700 p-3 rounded-xl flex flex-col gap-2 shadow-xl min-w-[140px]">
@@ -240,9 +259,85 @@ export default function Dashboard() {
                     </div>
                   )}
                 </div>
-                <div className="text-sm text-gray-400">
-                  {monitor.isActive ? "Active" : "Inactive"} /{" "}
-                  {monitor.lastStatus}
+                <div className="flex flex-row items-center pt-2 justify-between w-75">
+                  {/* Status Indicators */}
+                  <div className="flex items-center gap-2 text-md ">
+                    <div className="flex items-center gap-1">
+                      {monitor.isActive ? (
+                        <CircleCheck className="w-5 h-5 text-green-400" />
+                      ) : (
+                        <CircleX className="w-5 h-5 text-gray-500" />
+                      )}
+                      <span
+                        className={
+                          monitor.isActive ? "text-green-400" : "text-gray-500"
+                        }
+                      >
+                        {monitor.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+                    <span className="text-gray-600">/</span>
+                    <div className="flex items-center gap-1">
+                      {monitor.lastStatus === "UP" ? (
+                        <ArrowUp className="w-5 h-5 text-green-400" />
+                      ) : (
+                        <ArrowDown className="w-5 h-5 text-red-400" />
+                      )}
+                      <span
+                        className={
+                          monitor.lastStatus === "UP"
+                            ? "text-green-400"
+                            : "text-red-400"
+                        }
+                      >
+                        {monitor.lastStatus}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
+                        monitor?.alert?.push
+                          ? "bg-green-500/20 text-green-400"
+                          : "bg-gray-700/50 text-gray-500"
+                      }`}
+                      title={
+                        monitor?.alert?.push
+                          ? "Push notifications enabled"
+                          : "Push notifications disabled"
+                      }
+                    >
+                      <Bell className="w-4 h-4" />
+                    </div>
+                    <div
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
+                        monitor?.alert?.email
+                          ? "bg-green-500/20 text-green-400"
+                          : "bg-gray-700/50 text-gray-500"
+                      }`}
+                      title={
+                        monitor?.alert?.email
+                          ? "Email notifications enabled"
+                          : "Email notifications disabled"
+                      }
+                    >
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <div
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
+                        monitor?.alert?.call
+                          ? "bg-green-500/20 text-green-400"
+                          : "bg-gray-700/50 text-gray-500"
+                      }`}
+                      title={
+                        monitor?.alert?.call
+                          ? "Voice call alerts enabled"
+                          : "Voice call alerts disabled"
+                      }
+                    >
+                      <Phone className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
               </div>
             );

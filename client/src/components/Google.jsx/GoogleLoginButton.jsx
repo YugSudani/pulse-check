@@ -1,6 +1,6 @@
 export default function GoogleLoginButton() {
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:6001/auth/google";
+    window.location.href = "http://pulse-check-6drk.onrender.com/auth/google";
   };
 
   return (

@@ -21,6 +21,10 @@ import NotFound from "../components/NotFound";
 import PaymentSuccess from "../components/payment/Succsess";
 import PaymentCancel from "../components/payment/Payment-cancel";
 import AuthSuccess from "../components/Google.jsx/AuthSuccess";
+import AdminDashboard from "../components/admin/AdminDashboard";
+import AdminUsers from "../components/admin/AdminUsers";
+import AdminMonitors from "../components/admin/AdminMonitors";
+import AdminIncidents from "../components/admin/AdminIncidents";
 
 function Routes_() {
   return (
@@ -41,7 +45,7 @@ function Routes_() {
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-cancel" element={<PaymentCancel />} />
         <Route path="/auth-success" element={<AuthSuccess />} />
-        
+
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
             <Route path="/create-new-monitor" element={<CreateNewMonitor />} />
@@ -49,6 +53,10 @@ function Routes_() {
             <Route path="/edit-monitor/:id" element={<EditeMonitor />} />
             <Route path="/monitor/:id" element={<ViewMonitor />} />
             <Route path="/incidents" element={<Incedents />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/monitors" element={<AdminMonitors />} />
+            <Route path="/admin/incidents" element={<AdminIncidents />} />
           </Route>
         </Route>
         <Route path="*" element={<NotFound />} />

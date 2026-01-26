@@ -3,6 +3,17 @@ import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import InstallButton from "./staticComps/InstallButton";
 import { useAuth } from "../context/AuthContext";
+import {
+  Menu,
+  X,
+  Activity,
+  Shield,
+  Sparkles,
+  CreditCard,
+  Lightbulb,
+  BookOpen,
+  LogOut,
+} from "lucide-react";
 
 export default function Slidebar() {
   const { user, checkAuth } = useAuth();
@@ -21,7 +32,7 @@ export default function Slidebar() {
         className="md:hidden fixed top-4 left-4 z-5 bg-[linear-gradient(0deg,_rgba(59,215,113,0.05)_0%,_rgb(20,32,45)_75%)] px-3 py-2 rounded-lg hover:bg-[#1A2333] transition "
         onClick={() => setOpenSidebar(!openSidebar)}
       >
-        {openSidebar ? "✕" : "☰"}
+        {openSidebar ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
       {/* ================ MOBILE BACKDROP ================ */}
@@ -59,7 +70,7 @@ export default function Slidebar() {
             className="md:hidden fixed cursor-pointer top-6 right-5 z-50 bg-[linear-gradient(0deg,_rgba(59,215,113,0.2)_0%,_rgb(20,32,45)_75%)] px-3 py-2 rounded-md h-8 w-12 flex items-center justify-center hover:bg-[#393a3b] transition"
             onClick={() => setOpenSidebar(!openSidebar)}
           >
-            ✕
+            <X className="w-5 h-5" />
           </button>
 
           {/* Menu Items */}
@@ -71,7 +82,7 @@ export default function Slidebar() {
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              <span className="text-green-500">🟢</span> Monitoring
+              <Activity className="w-5 h-5 text-green-500" /> Monitoring
             </button>
 
             <button
@@ -81,7 +92,7 @@ export default function Slidebar() {
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              🛡️ Incidents
+              <Shield className="w-5 h-5 text-blue-400" /> Incidents
             </button>
 
             <button
@@ -91,7 +102,7 @@ export default function Slidebar() {
               }}
               className="flex cursor-pointer cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              ✨ Features
+              <Sparkles className="w-5 h-5 text-yellow-400" /> Features
             </button>
 
             <button
@@ -101,7 +112,7 @@ export default function Slidebar() {
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              💳 Pricing
+              <CreditCard className="w-5 h-5 text-purple-400" /> Pricing
             </button>
 
             <button
@@ -111,7 +122,7 @@ export default function Slidebar() {
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              💡 Solutions
+              <Lightbulb className="w-5 h-5 text-orange-400" /> Solutions
             </button>
 
             <button
@@ -121,7 +132,7 @@ export default function Slidebar() {
               }}
               className="flex cursor-pointer items-center gap-3 p-3 sm:p-3 hover:bg-[#121A28] rounded-lg transition w-full text-left min-h-[44px]"
             >
-              📚 Resources
+              <BookOpen className="w-5 h-5 text-cyan-400" /> Resources
             </button>
           </nav>
           <InstallButton />
@@ -156,12 +167,13 @@ export default function Slidebar() {
                 navigate("/login", { replace: true });
                 await checkAuth();
               }}
-              className="px-11 py-2 text-sm font-medium text-white 
+              className="px-11 flex items-center justify-center py-2 text-sm font-medium text-white 
                              bg-slate-800 rounded-md 
                             hover:bg-slate-700
                             focus:ring-2 focus:ring-slate-400 
                             transition cursor-pointer"
             >
+              <LogOut className="w-4 h-4 mr-2" />
               Logout
             </button>
           </div>

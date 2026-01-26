@@ -14,6 +14,14 @@ const schema = new mongoose.Schema({
     type: String,
     required: false, // Optional for Google users
   },
+  role: {
+    type: String,
+    default: "user",
+  },
+  isBlocked: {
+    type: Boolean,
+    default: false,
+  },
   googleId: {
     type: String,
     default: null,

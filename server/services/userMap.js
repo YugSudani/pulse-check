@@ -1,17 +1,10 @@
 const jwt = require("jsonwebtoken");
 
 function setUser(user) {
-  const _id = user._id;
-  const name = user.name;
-  const subscriptionPlan = user.subscriptionPlan;
-  const number = user.phoneNumber;
-
   return jwt.sign(
     {
-      _id,
-      name,
-      subscriptionPlan,
-      number,
+      _id: user._id,
+      role: user.role,
     },
     process.env.JWT_SECRET,
     {

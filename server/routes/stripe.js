@@ -6,7 +6,7 @@ const auth = require("../middlewares/auth");
 router.post("/create-checkout-session", auth, async (req, res) => {
   try {
     const { plan } = req.body;
-    const userId = req.userId; // From auth middleware
+    const userId = req.user._id;
 
     const PRICE_MAP = {
       pro: "price_1SsQMjQcnBP33XC0MuXZBqUn",

@@ -124,10 +124,10 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if (!notificationsEnabled) {
-    //   alert("Please enable notifications to login");
-    //   return;
-    // }
+    if (!notificationsEnabled) {
+      alert("Please enable notifications to login");
+      return;
+    }
 
     setIsLoading(true);
     const finalOtp = otp.join("");
@@ -154,6 +154,8 @@ export default function Login() {
         if (status === 404) {
           toast.error("User not found");
         } else if (status === 401) {
+          toast.error(error.response.data.message);
+        } else if (status === 400) {
           toast.error(error.response.data.message);
         } else if (status === 403) {
           toast.error(error.response.data.message);

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import api from "../../lib/api";
 
 function UpgradeButton({ plan, buttonText, isPopular }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,19 +17,9 @@ function UpgradeButton({ plan, buttonText, isPopular }) {
 
     setIsLoading(true);
     try {
-      const res = await fetch(
-        "https://pulse-check-6drk.onrender.com/stripe/create-checkout-session",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ plan }),
-        },
-      );
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data?.error || "Checkout session creation failed");
-      }
+      const { data } = await api.post("/stripe/create-checkout-session", {
+        plan,
+      });
 
       window.location.href = data.url;
     } catch (e) {
