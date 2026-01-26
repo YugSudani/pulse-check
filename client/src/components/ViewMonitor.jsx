@@ -430,22 +430,6 @@ export default function ViewMonitor() {
               Response time.
             </h2>
             <div className="flex items-center gap-2 w-full sm:w-auto">
-              <select
-                name="time"
-                id=""
-                onChange={(e) => setRange(e.target.value)}
-                className="bg-[#2d3747] rounded-lg px-2 py-2 text-sm border-none cursor-pointer outline-none focus:outline-none focus:ring-0 flex-1 sm:flex-none sm:w-20"
-              >
-                <option value="5m">5m</option>
-                <option value="15m" selected>
-                  15m
-                </option>
-                <option value="30m">30m</option>
-                <option value="2h">2h</option>
-                <option value="6h">6h</option>
-                <option value="12h">12h</option>
-                <option value="24h">24h</option>
-              </select>
               <button
                 onClick={async () => {
                   setAiLoading(true);
@@ -485,6 +469,22 @@ export default function ViewMonitor() {
                   </>
                 )}
               </button>
+              <select
+                name="time"
+                id=""
+                onChange={(e) => setRange(e.target.value)}
+                className="bg-[#2d3747] rounded-lg px-2 py-2 text-sm border-none cursor-pointer outline-none focus:outline-none focus:ring-0 flex-1 sm:flex-none sm:w-20"
+              >
+                <option value="5m">5m</option>
+                <option value="15m" selected>
+                  15m
+                </option>
+                <option value="30m">30m</option>
+                <option value="2h">2h</option>
+                <option value="6h">6h</option>
+                <option value="12h">12h</option>
+                <option value="24h">24h</option>
+              </select>
             </div>
           </div>
 

@@ -209,7 +209,7 @@ export default function Dashboard() {
                       e.stopPropagation();
                       toggleDeleteBox(monitor._id);
                     }}
-                    className="absolute bottom-4 right-4 h-10 w-10 flex items-center justify-center hover:bg-[#2A3444] rounded-lg transition"
+                    className="absolute bottom-14 sm:bottom-12  right-4 h-10 w-10 flex items-center justify-center hover:bg-[#2A3444] rounded-lg transition"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -235,7 +235,7 @@ export default function Dashboard() {
                   </div>
                   {/* Notification Status Icons */}
                   {activeMenuId === monitor._id && (
-                    <div className="absolute right-6 top-31 sm:top-24 w-auto h-auto z-10">
+                    <div className="absolute right-6 top-27 sm:top-20 w-auto h-auto z-10">
                       <div className="bg-[#121A28] border border-gray-700 p-3 rounded-xl flex flex-col gap-2 shadow-xl min-w-[140px]">
                         <button
                           onClick={(e) => {
@@ -259,7 +259,7 @@ export default function Dashboard() {
                     </div>
                   )}
                 </div>
-                <div className="flex flex-row items-center pt-2 justify-between w-75">
+                <div className="flex flex-row items-center pt-2 justify-between w-fit min-w-75 gap-4">
                   {/* Status Indicators */}
                   <div className="flex items-center gap-2 text-md ">
                     <div className="flex items-center gap-1">

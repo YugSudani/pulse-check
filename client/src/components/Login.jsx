@@ -125,7 +125,7 @@ export default function Login() {
     e.preventDefault();
 
     if (!notificationsEnabled) {
-      alert("Please enable notifications to login");
+      toast.error("in order to create monitor and receive alerts, please enable notifications.");
       return;
     }
 

@@ -42,6 +42,20 @@ export default function EditMonitor() {
     return true; // 5 min and above → all plans
   };
 
+  const validateUrl = (url) => {
+    if (!url) return "URL is required";
+    if (url.length < 8) return "URL must be at least 8 characters";
+    if (url.length > 300) return "URL must be at most 300 characters";
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'https:') return "URL must start with https://";
+      if (!parsed.hostname.includes('.')) return "Invalid domain";
+      return "";
+    } catch {
+      return "Invalid URL format";
+    }
+  };
+
   const { id } = useParams();
   const [newMonitor, setNewMonitor] = useState({
     name: "",
@@ -52,6 +66,7 @@ export default function EditMonitor() {
       call: false,
     },
   });
+  const [urlError, setUrlError] = useState("");
 
   const getMonitor = async () => {
     try {
@@ -112,6 +127,13 @@ export default function EditMonitor() {
   };
 
   const handleEditMonitor = async () => {
+    const error = validateUrl(newMonitor.url);
+    if (error) {
+      setUrlError(error);
+      toast.error(error);
+      return;
+    }
+
     const payload = {
       name: newMonitor.name,
       url: newMonitor.url,
@@ -165,8 +187,11 @@ export default function EditMonitor() {
             onChange={(e) =>
               setNewMonitor({ ...newMonitor, url: e.target.value })
             }
-            className="w-full px-4 py-3 bg-[#121A28] border border-gray-700 rounded-lg outline-none text-gray-200 text-sm sm:text-base"
+            onBlur={() => setUrlError(validateUrl(newMonitor.url))}
+            maxLength="300"
+            className={`w-full px-4 py-3 bg-[#121A28] border ${urlError ? 'border-red-500' : 'border-gray-700'} rounded-lg outline-none text-gray-200 text-sm sm:text-base`}
           />
+          {urlError && <p className="text-red-500 text-sm mt-1">{urlError}</p>}
         </section>
 
         {/* ================= GROUP + TAGS ================= */}

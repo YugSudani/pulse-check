@@ -4,6 +4,7 @@ import api from "../lib/api";
 import PhoneNumberDialog from "./staticComps/Phonenumberdialog ";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
+import setOneSignalPlayerId from "./helpers/setOneSignalPlayerId";
 
 export default function CreateNewMonitor() {
   const navigate = useNavigate();
@@ -23,12 +24,16 @@ export default function CreateNewMonitor() {
   }, [user]);
 
   const [url, setUrl] = useState("");
-  const [name, setName] = useState("New Monitor");
+  const [urlError, setUrlError] = useState("");
   const [emailAlert, setEmailAlert] = useState(false);
+  const [name, setName] = useState("New Monitor");
   const [pushAlert, setPushAlert] = useState(true);
   const [voiceCallAlert, setVoiceCallAlert] = useState(false);
   const [loading, setLoading] = useState(false);
   const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
+  const [notificationLoading, setNotificationLoading] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [playerId, setPlayerId] = useState(null);
 
   // Predefined interval options in seconds
   const intervalOptions = [
@@ -56,6 +61,86 @@ export default function CreateNewMonitor() {
     return true; // 5 min and above → all plans
   };
 
+  const validateUrl = (url) => {
+    if (!url) return "URL is required";    if (url.length < 8) return "URL must be at least 8 characters";
+    if (url.length > 300) return "URL must be at most 300 characters";    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return "URL must start with http:// or https://";
+      if (!parsed.hostname.includes('.')) return "Invalid domain";
+      return "";
+    } catch {
+      return "Invalid URL format";
+    }
+  };
+
+  const handleNotificationToggle = async () => {
+    if (notificationLoading) return;
+    setNotificationLoading(true);
+
+    if (notificationsEnabled) {
+      // User wants to disable notifications
+      window.OneSignalDeferred.push(async (OneSignal) => {
+        try {
+          await OneSignal.User.PushSubscription.optOut();
+          setNotificationsEnabled(false);
+          setPlayerId(null);
+          //console.log("Notifications disabled");
+        } catch (err) {
+          console.error("Error disabling notifications:", err);
+        } finally {
+          setNotificationLoading(false);
+        }
+      });
+    } else {
+      // User wants to enable notifications
+      window.OneSignalDeferred.push(async (OneSignal) => {
+        try {
+          // Listen for subscription changes
+          const handleSubscriptionChange = async (event) => {
+            if (event.current.id) {
+              setPlayerId(event.current.id);
+              setNotificationsEnabled(true);
+              //console.log("OneSignal Player ID:", event.current.id);
+              setNotificationLoading(false);
+              // Save to DB
+              await setOneSignalPlayerId(event.current.id);
+              // Remove listener after getting the ID
+              OneSignal.User.PushSubscription.removeEventListener(
+                "change",
+                handleSubscriptionChange,
+              );
+            }
+          };
+
+          // Add event listener before opting in
+          OneSignal.User.PushSubscription.addEventListener(
+            "change",
+            handleSubscriptionChange,
+          );
+
+          // Opt in to push notifications
+          await OneSignal.User.PushSubscription.optIn();
+
+          // Also check immediately in case ID is already available
+          const id = await OneSignal.User.PushSubscription.id;
+          if (id) {
+            setPlayerId(id);
+            setNotificationsEnabled(true);
+            setNotificationLoading(false);
+            setOneSignalPlayerId(id);
+            OneSignal.User.PushSubscription.removeEventListener(
+              "change",
+              handleSubscriptionChange,
+            );
+          }
+        } catch (err) {
+          console.error("Notification prompt error:", err);
+          setNotificationLoading(false);
+        }
+      });
+    }
+  };
+
   const handlePhoneNumberSave = (phoneNumber) => {
     // Phone number is saved in PhoneNumberDialog
     // Just update the local state
@@ -65,8 +150,23 @@ export default function CreateNewMonitor() {
   };
 
   const CreateMonitor = async () => {
+    const error = validateUrl(url);
+    if (error) {
+      setUrlError(error);
+      toast.error(error);
+      return;
+    }
+
     try {
       setLoading(true);
+
+      if(user && !user.hasEnabledNotifications){
+        toast.error("in order to create monitor and receive alerts, please enable notifications.");
+        handleNotificationToggle();
+        setLoading(false);
+        return;
+      }
+
       const alertConfig = {
         email: { emailAlert },
         push: { pushAlert },
@@ -147,8 +247,11 @@ export default function CreateNewMonitor() {
             required
             placeholder="https://example.com"
             onChange={(e) => setUrl(e.target.value)}
-            className="w-full px-4 py-3 bg-[#121A28] border border-gray-700 rounded-lg outline-none text-gray-200 text-sm sm:text-base"
+            onBlur={() => setUrlError(validateUrl(url))}
+            maxLength="300"
+            className={`w-full px-4 py-3 bg-[#121A28] border ${urlError ? 'border-red-500' : 'border-gray-700'} rounded-lg outline-none text-gray-200 text-sm sm:text-base`}
           />
+          {urlError && <p className="text-red-500 text-sm mt-1">{urlError}</p>}
         </section>
 
         {/* Tags */}
