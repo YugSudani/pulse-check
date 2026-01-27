@@ -4,7 +4,7 @@ import api from "../lib/api";
 import PhoneNumberDialog from "./staticComps/Phonenumberdialog ";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
-import setOneSignalPlayerId from "./helpers/setOneSignalPlayerId";
+import PlayerIdVerification from "./helpers/PlayerIdVerification";
 
 export default function CreateNewMonitor() {
   const navigate = useNavigate();
@@ -31,9 +31,7 @@ export default function CreateNewMonitor() {
   const [voiceCallAlert, setVoiceCallAlert] = useState(false);
   const [loading, setLoading] = useState(false);
   const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
-  const [notificationLoading, setNotificationLoading] = useState(false);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [playerId, setPlayerId] = useState(null);
+  const [showPlayerIdVerification, setShowPlayerIdVerification] = useState(false);
 
   // Predefined interval options in seconds
   const intervalOptions = [
@@ -62,82 +60,17 @@ export default function CreateNewMonitor() {
   };
 
   const validateUrl = (url) => {
-    if (!url) return "URL is required";    if (url.length < 8) return "URL must be at least 8 characters";
-    if (url.length > 300) return "URL must be at most 300 characters";    try {
+    if (!url) return "URL is required";
+    if (url.length < 8) return "URL must be at least 8 characters";
+    if (url.length > 300) return "URL must be at most 300 characters";
+    try {
       const parsed = new URL(url);
-      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return "URL must start with http:// or https://";
-      if (!parsed.hostname.includes('.')) return "Invalid domain";
+      if (parsed.protocol !== "http:" && parsed.protocol !== "https:")
+        return "URL must start with http:// or https://";
+      if (!parsed.hostname.includes(".")) return "Invalid domain";
       return "";
     } catch {
       return "Invalid URL format";
-    }
-  };
-
-  const handleNotificationToggle = async () => {
-    if (notificationLoading) return;
-    setNotificationLoading(true);
-
-    if (notificationsEnabled) {
-      // User wants to disable notifications
-      window.OneSignalDeferred.push(async (OneSignal) => {
-        try {
-          await OneSignal.User.PushSubscription.optOut();
-          setNotificationsEnabled(false);
-          setPlayerId(null);
-          //console.log("Notifications disabled");
-        } catch (err) {
-          console.error("Error disabling notifications:", err);
-        } finally {
-          setNotificationLoading(false);
-        }
-      });
-    } else {
-      // User wants to enable notifications
-      window.OneSignalDeferred.push(async (OneSignal) => {
-        try {
-          // Listen for subscription changes
-          const handleSubscriptionChange = async (event) => {
-            if (event.current.id) {
-              setPlayerId(event.current.id);
-              setNotificationsEnabled(true);
-              //console.log("OneSignal Player ID:", event.current.id);
-              setNotificationLoading(false);
-              // Save to DB
-              await setOneSignalPlayerId(event.current.id);
-              // Remove listener after getting the ID
-              OneSignal.User.PushSubscription.removeEventListener(
-                "change",
-                handleSubscriptionChange,
-              );
-            }
-          };
-
-          // Add event listener before opting in
-          OneSignal.User.PushSubscription.addEventListener(
-            "change",
-            handleSubscriptionChange,
-          );
-
-          // Opt in to push notifications
-          await OneSignal.User.PushSubscription.optIn();
-
-          // Also check immediately in case ID is already available
-          const id = await OneSignal.User.PushSubscription.id;
-          if (id) {
-            setPlayerId(id);
-            setNotificationsEnabled(true);
-            setNotificationLoading(false);
-            setOneSignalPlayerId(id);
-            OneSignal.User.PushSubscription.removeEventListener(
-              "change",
-              handleSubscriptionChange,
-            );
-          }
-        } catch (err) {
-          console.error("Notification prompt error:", err);
-          setNotificationLoading(false);
-        }
-      });
     }
   };
 
@@ -160,9 +93,11 @@ export default function CreateNewMonitor() {
     try {
       setLoading(true);
 
-      if(user && !user.playerId){
-        toast.error("in order to create monitor and receive alerts, please enable notifications.");
-        handleNotificationToggle();
+      if (user && !user.playerId) {
+        toast.error(
+          "in order to create monitor and receive alerts, please enable notifications.",
+        );
+        setShowPlayerIdVerification(true);
         await checkAuth();
         setLoading(false);
         return;
@@ -203,10 +138,12 @@ export default function CreateNewMonitor() {
 
   return (
     <div className="flex-1 overflow-y-auto p-3 sm:p-6 md:p-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      {showPlayerIdVerification && <PlayerIdVerification />}
       <button
         onClick={() => navigate("/dashboard", { replace: true })}
         className="mt-0 ml-1 md:ml-0 inline-block bg-[#121A28] px-4 py-2 rounded-lg mb-4 sm:mb-6 hover:bg-[#172235] cursor-pointer font-bold text-base sm:text-lg transition"
       >
+
         ← Monitoring
       </button>
 
@@ -250,7 +187,7 @@ export default function CreateNewMonitor() {
             onChange={(e) => setUrl(e.target.value)}
             onBlur={() => setUrlError(validateUrl(url))}
             maxLength="300"
-            className={`w-full px-4 py-3 bg-[#121A28] border ${urlError ? 'border-red-500' : 'border-gray-700'} rounded-lg outline-none text-gray-200 text-sm sm:text-base`}
+            className={`w-full px-4 py-3 bg-[#121A28] border ${urlError ? "border-red-500" : "border-gray-700"} rounded-lg outline-none text-gray-200 text-sm sm:text-base`}
           />
           {urlError && <p className="text-red-500 text-sm mt-1">{urlError}</p>}
         </section>
