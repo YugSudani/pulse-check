@@ -23,6 +23,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [loading, setLoading] = useState(false);
+  const [deletingMonitorId, setDeletingMonitorId] = useState(null);
 
   const getMonitors = async () => {
     try {
@@ -52,6 +53,7 @@ export default function Dashboard() {
 
   const deleteMonitor = async (id) => {
     try {
+      setDeletingMonitorId(id);
       const { data } = await api.delete(`/monitor/deleteMonitor/${id}`, {
         withCredentials: true,
       });
@@ -65,6 +67,8 @@ export default function Dashboard() {
     } catch (error) {
       console.error(error);
       toast.error("Failed to delete monitor");
+    } finally {
+      setDeletingMonitorId(null);
     }
   };
 
@@ -257,9 +261,17 @@ export default function Dashboard() {
                               e.stopPropagation();
                               deleteMonitor(monitor._id);
                             }}
-                            className="bg-[#b83710] hover:bg-[#962d0d] text-center py-1 rounded-lg transition cursor-pointer"
+                            disabled={deletingMonitorId === monitor._id}
+                            className="bg-[#b83710] hover:bg-[#962d0d] text-center py-1 rounded-lg transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                           >
-                            Delete
+                            {deletingMonitorId === monitor._id ? (
+                              <>
+                                <div className="w-4 h-4 border-2 border-gray-400 border-t-white rounded-full animate-spin"></div>
+                                Deleting...
+                              </>
+                            ) : (
+                              "Delete"
+                            )}
                           </button>
                         </div>
                       </div>

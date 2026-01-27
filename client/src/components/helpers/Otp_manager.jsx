@@ -1,8 +1,12 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 export default function Otp_manager({ otp, setOtp, errors = {} }) {
   const OTP_LENGTH = 6;
   const inputsRef = useRef([]);
+
+  useEffect(() => {
+    inputsRef.current[0]?.focus();
+  }, []);
 
   // Handle typing
   const handleOtpChange = (e, index) => {

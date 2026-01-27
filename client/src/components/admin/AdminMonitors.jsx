@@ -294,7 +294,7 @@ export default function AdminMonitors() {
                   handlePauseMonitor(monitor._id, monitor.isActive)
                 }
                 disabled={pausingMonitorId === monitor._id}
-                className={`w-full py-2 rounded-lg font-semibold transition text-sm ${
+                className={`w-full py-2 rounded-lg font-semibold transition text-sm cursor-pointer ${
                   pausingMonitorId === monitor._id
                     ? "bg-gray-700 text-gray-500 cursor-not-allowed"
                     : monitor.isActive

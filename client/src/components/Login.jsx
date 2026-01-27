@@ -137,13 +137,13 @@ export default function Login() {
       otp: finalOtp,
     };
     try {
-      // Login
-      await api.post("/user/login", payload, { withCredentials: true });
-
-      await checkAuth();
-
       // Send player ID to backend if user enabled notifications
       await setOneSignalPlayerId(playerId);
+
+      // Login
+      await api.post("/user/login", payload, { withCredentials: true });
+      
+      await checkAuth();
 
       toast.success("Login successful!");
       navigate("/dashboard", { replace: true });
@@ -230,7 +230,7 @@ export default function Login() {
                     setLoginMethod("password");
                     setShowOtpField(false);
                   }}
-                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${
+                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 cursor-pointer ${
                     loginMethod === "password"
                       ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
                       : "text-gray-400 hover:text-gray-200"
@@ -256,7 +256,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setLoginMethod("otp")}
-                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${
+                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 cursor-pointer ${
                     loginMethod === "otp"
                       ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
                       : "text-gray-400 hover:text-gray-200"
@@ -371,7 +371,7 @@ export default function Login() {
                     <button
                       type="button"
                       onClick={handleSendOtp}
-                      className="text-green-500 hover:text-green-400 text-xs mt-3 mx-auto block transition-colors"
+                      className="text-green-500 hover:text-green-400 text-xs mt-3 mx-auto block transition-colors cursor-pointer"
                     >
                       Resend OTP
                     </button>
@@ -494,7 +494,7 @@ export default function Login() {
             {/* LOGIN BUTTON */}
             <button
               type="submit"
-              className="w-full bg-green-500 py-3.5 rounded-xl text-black font-semibold text-base sm:text-lg hover:bg-green-400 active:scale-[0.98] transition-all min-h-[52px] shadow-lg shadow-green-500/20"
+              className="cursor-pointer w-full bg-green-500 py-3.5 rounded-xl text-black font-semibold text-base sm:text-lg hover:bg-green-400 active:scale-[0.98] transition-all min-h-[52px] shadow-lg shadow-green-500/20"
             >
               Login
             </button>
@@ -505,7 +505,7 @@ export default function Login() {
             <p className="text-gray-400 text-sm sm:text-base">
               Don't have an account?{" "}
               <button
-                className="text-green-500 font-medium hover:text-green-400 hover:underline transition-colors"
+                className="cursor-pointer text-green-500 font-medium hover:text-green-400 hover:underline transition-colors"
                 onClick={() => navigate("/register")}
               >
                 Sign up

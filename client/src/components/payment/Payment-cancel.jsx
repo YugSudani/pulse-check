@@ -278,7 +278,7 @@ export default function PaymentCancel() {
 
         {/* Footer info */}
         <div className="mt-8 text-center text-gray-500 text-xs sm:text-sm">
-          <p>Need immediate assistance? <button onClick={() => navigate("/contact")} className="text-green-500 hover:text-green-400 transition">Contact our support team</button></p>
+          <p>Need immediate assistance? <button onClick={() => navigate("/contact")} className="text-green-500 hover:text-green-400 transition cursor-pointer">Contact our support team</button></p>
         </div>
       </div>
     </div>

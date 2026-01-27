@@ -22,8 +22,9 @@ export default function ViewMonitor() {
   const [showIncidentCount, setShowIncidentCount] = useState(3);
   const [incidents, setIncidents] = useState([]);
   const [stat, setStat] = useState({});
-  const [timeAgo, setTimeAgo] = useState("");
+  const [timeAgo,setTimeAgo ] = useState("");
   const { user } = useAuth();
+  const [testingAlerts, setTestingAlerts] = useState(false);
 
   // AI Summary states
   const [aiSummary, setAiSummary] = useState("");
@@ -211,14 +212,17 @@ export default function ViewMonitor() {
 
   const handleTestAlerts = async (monitorId) => {
     try {
+      setTestingAlerts(true);
       const response = await api.post("/monitor/test_alert", {
         monitorId,
         phoneNumber: user.phoneNumber,
       });
       toast.success("Test alert initiated");
     } catch (error) {
-      toast.error("Failed to send test alert");
+      toast.error(error.response?.data?.message || "Failed to send test alert");
       console.error(error);
+    } finally {
+      setTestingAlerts(false);
     }
   };
 
@@ -361,9 +365,17 @@ export default function ViewMonitor() {
               </button>
               <button
                 onClick={() => handleTestAlerts(monitor._id)}
-                className="bg-[#131e30] px-4 py-2 w-17 md:w-30 rounded-lg text-xs sm:text-sm hover:bg-[#1A2333] cursor-pointer transition whitespace-nowrap"
+                disabled={testingAlerts}
+                className="bg-[#131e30] px-4 py-2 w-17 md:w-30 rounded-lg text-xs sm:text-sm hover:bg-[#1A2333] cursor-pointer transition whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Test
+                {testingAlerts ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-gray-400 border-t-green-500 rounded-full animate-spin"></div>
+                    Testing...
+                  </>
+                ) : (
+                  "Test"
+                )}
               </button>
             </div>
           </div>

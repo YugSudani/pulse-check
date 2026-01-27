@@ -142,14 +142,14 @@ export default function PlayerIdVerification() {
             <button
               onClick={handleDismiss}
               disabled={isLoading}
-              className="flex-1 px-4 py-3 bg-[#121A28] text-gray-300 rounded-xl font-medium hover:bg-[#1A2333] transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-3 bg-[#121A28] text-gray-300 rounded-xl font-medium hover:bg-[#1A2333] transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               Later
             </button>
             <button
               onClick={handleEnableNotifications}
               disabled={isLoading}
-              className="flex-1 px-4 py-3 bg-green-500 text-black rounded-xl font-semibold hover:bg-green-400 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-3 bg-green-500 text-black rounded-xl font-semibold hover:bg-green-400 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>

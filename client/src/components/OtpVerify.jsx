@@ -94,7 +94,7 @@ export default function OtpVerification() {
             {/* SIGNUP BUTTON */}
             <button
               type="submit"
-              className="w-full bg-green-500 py-3.5 rounded-xl text-black font-semibold text-base sm:text-lg hover:bg-green-400 active:scale-[0.98] transition-all min-h-[52px] shadow-lg shadow-green-500/20"
+              className="w-full cursor-pointer bg-green-500 py-3.5 rounded-xl text-black font-semibold text-base sm:text-lg hover:bg-green-400 active:scale-[0.98] transition-all min-h-[52px] shadow-lg shadow-green-500/20"
             >
               Verify OTP
             </button>
@@ -106,7 +106,7 @@ export default function OtpVerification() {
               Didn't Received Email ?{" "}
               <button
                 onClick={() => navigate("/login", { replace: true })}
-                className="text-green-500 font-medium hover:text-green-400 hover:underline transition-colors"
+                className="text-green-500 font-medium hover:text-green-400 hover:underline transition-colors cursor-pointer"
               >
                 Resend OTP
               </button>
@@ -115,7 +115,7 @@ export default function OtpVerification() {
           <div className="mt-2 text-center">
             <button
               onClick={() => navigate("/register", { replace: true })}
-              className="text-green-500 font-medium hover:text-green-400 hover:underline transition-colors"
+              className="text-green-500 font-medium hover:text-green-400 hover:underline transition-colors cursor-pointer"
             >
               Go Back & Change Email
             </button>

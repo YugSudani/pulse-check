@@ -191,7 +191,7 @@ router.post("/test_alert", async (req, res) => {
     // console.log(phoneNumber);
     const monitor = await monitorModel.findById(monitorId);
     if (!monitor) {
-      return res.status(404).json({ success: false, msg: "Monitor not found" });
+      return res.status(404).json({ success: false, message: "Monitor not found" });
     }
     if (monitor.alert.email) {
       sendAlertEmail_2("DOWN", monitor, "down");
@@ -205,7 +205,7 @@ router.post("/test_alert", async (req, res) => {
     res.status(200).json({ success: true });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, msg: "Failed to test monitor" });
+    res.status(500).json({ success: false, message: "Failed to test monitor" });
   }
 });
 
