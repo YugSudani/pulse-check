@@ -2,15 +2,43 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import api from "../../lib/api";
+import { useAuth } from "../../context/AuthContext";
+import e from "express";
 
 function UpgradeButton({ plan, buttonText, isPopular }) {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+    const { user } = useAuth();
+
 
   const handleUpgrade = async () => {
     // Handle Starter plan - show toast and redirect to dashboard
     if (plan === "starter") {
       toast.success("🎉 Enjoy your free plan!");
+      navigate("/dashboard");
+      return;
+    }else if(plan === "starter" && user.subscriptionPlan !== "starter")
+    {
+      toast.error("You are already on a higher plan!");
+      navigate("/dashboard");
+      return;
+    }
+
+    if (plan === "pro" && user.subscriptionPlan === "pro")
+    {
+      toast.success("You Alredy have Pro plan!");
+      navigate("/dashboard");
+      return;
+    }else if(plan === "pro" && user.subscriptionPlan === "business")
+    {
+      toast.error("You are already on a higher plan!");
+      navigate("/dashboard");
+      return;
+    }
+
+    if (plan === "business" && user.subscriptionPlan === "business")
+    {
+      toast.success("You Alredy have Business plan!");
       navigate("/dashboard");
       return;
     }
