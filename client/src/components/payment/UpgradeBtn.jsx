@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import api from "../../lib/api";
 import { useAuth } from "../../context/AuthContext";
-import e from "express";
 
 function UpgradeButton({ plan, buttonText, isPopular }) {
   const [isLoading, setIsLoading] = useState(false);
