@@ -3,6 +3,7 @@ const router = express.Router();
 const userModel = require("../models/userModel");
 const monitorModel = require("../models/monitorModel");
 const incidentModel = require("../models/incidentModel");
+const adminModel = require("../models/adminModel");
 
 // Statistics endpoint
 router.get("/getStats", async (req, res) => {
@@ -188,6 +189,49 @@ router.get("/getIncidents", async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal Server Error", success: false });
+  }
+});
+
+router.get("/getNotifications", async (req,res) =>{
+  try{
+    const response = await adminModel.find()
+
+    if (response) {
+      res.status(200).json({
+        sets:response
+      });
+    }
+  }catch(err){
+    console.log(err)
+  }
+})
+
+
+router.post("/setNotifications", async (req, res) => {
+  try {
+    const { push, email, call } = req.body;
+    console.log(req.body);
+
+    const response = await adminModel.updateMany(
+      { _id : "697cda23ea16b1f9f588d483"},
+      {
+      notificationSetting: {
+        push:push,
+        email:email,
+        call:call,
+      },
+    });
+    console.log(response);
+    if (response) {
+      res.status(200).json({
+        msg: "successfully updated notification settings",
+        success: true,
+      });
+    }
+  } catch (err) {
+    res
+      .status(500)
+      .json({ msg: "failed to update notification settings", success: false });
   }
 });
 

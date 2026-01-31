@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../lib/api";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "sonner";
 import {
   Users,
   Monitor,
@@ -31,18 +32,43 @@ export default function AdminDashboard() {
 
   const [statsLoading, setStatsLoading] = useState(false);
 
-  // Global notification settings
-  const [notificationSettings, setNotificationSettings] = useState({
+
+
+
+  const [notificationData, setNotificationData] = useState({
     pushEnabled: true,
-    emailEnabled: true,
+    emailEnabled:true,
     callEnabled: true,
   });
+  const handleGetNotificationData = async () => {
+    console.log("fired");
+
+    try {
+      const response = await api.get("/admin/getNotifications")
+      setNotificationData(response.data.sets);
+      console.log("sets recieved : " + response.data.sets);
+    } catch (err) {
+      toast.success(response.data.msg);
+    }
+  }
+  useEffect(() => {
+  if (notificationData?.[0]?.notificationSetting) {
+    setNotificationSettings({
+      pushEnabled: notificationData[0].notificationSetting.push,
+      emailEnabled: notificationData[0].notificationSetting.email,
+      callEnabled: notificationData[0].notificationSetting.call,
+    });
+  }
+}, [notificationData]);
+
+
 
   useEffect(() => {
     if (user.role !== "admin") {
       navigate("/dashboard");
     }
     fetchStats();
+    handleGetNotificationData();
   }, []);
 
   const fetchStats = async () => {
@@ -56,6 +82,28 @@ export default function AdminDashboard() {
       setStatsLoading(false);
     }
   };
+
+  // Global notification settings
+  const [notificationSettings, setNotificationSettings] = useState({
+    pushEnabled:"",
+    emailEnabled: "",
+    callEnabled: ""
+  });
+  console.log("data : " + notificationData[0]?.notificationSetting?.push);
+  console.log("data : " + notificationData);
+
+  const handleNotificationToggle = async () => {
+    console.log("clicked");
+
+    try {
+      const response = await api.post("/admin/setNotifications",
+        notificationSettings
+      )
+      toast.success(response.data.msg);
+    } catch (err) {
+      toast.success(response.data.msg);
+    }
+  }
 
   const navigationCards = [
     {
@@ -308,18 +356,16 @@ export default function AdminDashboard() {
                           pushEnabled: !prev.pushEnabled,
                         }))
                       }
-                      className={`relative w-11 h-6 rounded-full transition-colors ${
-                        notificationSettings.pushEnabled
+                      className={`relative w-11 h-6 rounded-full transition-colors ${notificationSettings.pushEnabled
                           ? "bg-green-500"
                           : "bg-gray-600"
-                      }`}
+                        }`}
                     >
                       <span
-                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
-                          notificationSettings.pushEnabled
+                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${notificationSettings.pushEnabled
                             ? "translate-x-5"
                             : "translate-x-0"
-                        }`}
+                          }`}
                       />
                     </button>
                   </div>
@@ -337,18 +383,16 @@ export default function AdminDashboard() {
                           emailEnabled: !prev.emailEnabled,
                         }))
                       }
-                      className={`relative w-11 h-6 rounded-full transition-colors ${
-                        notificationSettings.emailEnabled
+                      className={`relative w-11 h-6 rounded-full transition-colors ${notificationSettings.emailEnabled
                           ? "bg-green-500"
                           : "bg-gray-600"
-                      }`}
+                        }`}
                     >
                       <span
-                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
-                          notificationSettings.emailEnabled
+                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${notificationSettings.emailEnabled
                             ? "translate-x-5"
                             : "translate-x-0"
-                        }`}
+                          }`}
                       />
                     </button>
                   </div>
@@ -366,21 +410,20 @@ export default function AdminDashboard() {
                           callEnabled: !prev.callEnabled,
                         }))
                       }
-                      className={`relative w-11 h-6 rounded-full transition-colors ${
-                        notificationSettings.callEnabled
+                      className={`relative w-11 h-6 rounded-full transition-colors ${notificationSettings.callEnabled
                           ? "bg-green-500"
                           : "bg-gray-600"
-                      }`}
+                        }`}
                     >
                       <span
-                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
-                          notificationSettings.callEnabled
+                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${notificationSettings.callEnabled
                             ? "translate-x-5"
                             : "translate-x-0"
-                        }`}
+                          }`}
                       />
                     </button>
                   </div>
+                  <button onClick={() => handleNotificationToggle()} className="bg-green-500 hover:bg-green-600 cursor-pointer rounded-[10px] h-8 w-30">Apply</button>
                 </div>
               </div>
 
