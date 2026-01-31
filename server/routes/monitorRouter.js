@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const monitorModel = require("../models/monitorModel");
 const incidentModel = require("../models/incidentModel");
+const adminModel = require("../models/adminModel");
 const logModel = require("../models/logModel");
 const { sendAlertNotification } = require("../helpers/sendPushNotification");
 const { sendAlertEmail_2 } = require("../helpers/sendMail");
@@ -189,10 +190,36 @@ router.post("/test_alert", async (req, res) => {
   try {
     const { monitorId, phoneNumber } = req.body;
     // console.log(phoneNumber);
+
+    const enabled = await adminModel.findOne({});
+    console.log("admin enabled alerts : " + enabled.call);
+
     const monitor = await monitorModel.findById(monitorId);
     if (!monitor) {
-      return res.status(404).json({ success: false, message: "Monitor not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Monitor not found" });
     }
+
+    if (monitor.alert.email) {
+      if (!enabled.email) {
+        res.status(401).json({
+          success: false,
+          message: "Email services are restricted by Admin",
+        });
+        return;
+      }
+    }
+    if (monitor.alert.call) {
+      if (!enabled.call) {
+        res.status(401).json({
+          success: false,
+          message: "Call services are restricted by Admin",
+        });
+        return;
+      }
+    }
+
     if (monitor.alert.email) {
       sendAlertEmail_2("DOWN", monitor, "down");
     }

@@ -35,33 +35,28 @@ export default function AdminDashboard() {
 
 
 
-  const [notificationData, setNotificationData] = useState({
-    pushEnabled: true,
-    emailEnabled:true,
-    callEnabled: true,
+  const [notificationSettings, setNotificationSettings ] = useState({
+    pushEnabled: false,
+    emailEnabled: false,
+    callEnabled: false,
   });
   const handleGetNotificationData = async () => {
     console.log("fired");
 
     try {
       const response = await api.get("/admin/getNotifications")
-      setNotificationData(response.data.sets);
+      const sets = response.data.sets[0]
+      setNotificationSettings({
+        pushEnabled:sets.push,
+        emailEnabled:sets.email,
+        callEnabled:sets.call,
+      });
+
       console.log("sets recieved : " + response.data.sets);
     } catch (err) {
       toast.success(response.data.msg);
     }
   }
-  useEffect(() => {
-  if (notificationData?.[0]?.notificationSetting) {
-    setNotificationSettings({
-      pushEnabled: notificationData[0].notificationSetting.push,
-      emailEnabled: notificationData[0].notificationSetting.email,
-      callEnabled: notificationData[0].notificationSetting.call,
-    });
-  }
-}, [notificationData]);
-
-
 
   useEffect(() => {
     if (user.role !== "admin") {
@@ -82,15 +77,6 @@ export default function AdminDashboard() {
       setStatsLoading(false);
     }
   };
-
-  // Global notification settings
-  const [notificationSettings, setNotificationSettings] = useState({
-    pushEnabled:"",
-    emailEnabled: "",
-    callEnabled: ""
-  });
-  console.log("data : " + notificationData[0]?.notificationSetting?.push);
-  console.log("data : " + notificationData);
 
   const handleNotificationToggle = async () => {
     console.log("clicked");

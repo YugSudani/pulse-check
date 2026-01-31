@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const adminSchema = new mongoose.Schema({
-    notificationSetting:{
         push:{
             type:Boolean,
             default:true
@@ -9,13 +8,11 @@ const adminSchema = new mongoose.Schema({
         email:{
             type:Boolean,
             default:true
-
         },
         call:{
             type:Boolean,
             default:true
         }
-    }
 })
 
 const adminModel = mongoose.model("adminModel", adminSchema);

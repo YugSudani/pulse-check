@@ -192,42 +192,44 @@ router.get("/getIncidents", async (req, res) => {
   }
 });
 
-router.get("/getNotifications", async (req,res) =>{
-  try{
-    const response = await adminModel.find()
+router.get("/getNotifications", async (req, res) => {
+  try {
+    const response = await adminModel.find();
 
     if (response) {
       res.status(200).json({
-        sets:response
+        sets: response,
       });
     }
-  }catch(err){
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-})
-
+});
 
 router.post("/setNotifications", async (req, res) => {
   try {
-    const { push, email, call } = req.body;
+    const { pushEnabled, emailEnabled, callEnabled } = req.body;
     console.log(req.body);
 
     const response = await adminModel.updateMany(
-      { _id : "697cda23ea16b1f9f588d483"},
+      {},
       {
-      notificationSetting: {
-        push:push,
-        email:email,
-        call:call,
+        $set: {
+          push:pushEnabled,
+          email:emailEnabled,
+          call:callEnabled,
+        },
       },
-    });
+      {
+        new: true,
+        upsert: true,
+      },
+    );
     console.log(response);
-    if (response) {
-      res.status(200).json({
-        msg: "successfully updated notification settings",
-        success: true,
-      });
-    }
+    res.status(200).json({
+      msg: "successfully updated notification settings",
+      success: true,
+    });
   } catch (err) {
     res
       .status(500)
