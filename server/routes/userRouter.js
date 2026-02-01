@@ -208,7 +208,14 @@ router.post("/saveCallNumber", auth, async (req, res) => {
     const { phoneNumber } = req.body;
     const user = req.user;
 
-    await userModel.updateOne({ _id: user._id }, { phoneNumber });
+    await userModel.updateOne({ _id: user._id }, { 
+      $set:{
+        "phoneNumber.number":phoneNumber ,
+        "phoneNumber.isVerified":false
+      },
+      });
+      console.log("num updated : "+phoneNumber);
+      
     res
       .status(200)
       .json({ success: true, message: "Phone number saved successfully" });

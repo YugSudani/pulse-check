@@ -15,7 +15,7 @@ export default function EditMonitor() {
 
   // Voice call states
   const [voiceCallAlert, setVoiceCallAlert] = useState(false);
-  const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState("");
+  const [userCallNumber, setUserCallNumber] = useState("");
   const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
 
   const intervalOptions = [
@@ -89,8 +89,8 @@ export default function EditMonitor() {
       setVoiceCallAlert(monitor.alert?.call ?? false);
 
       // Set phone number from user data
-      if (user?.phoneNumber) {
-        setVerifiedPhoneNumber(user.phoneNumber);
+      if (user?.phoneNumber.number) {
+        setUserCallNumber(user.phoneNumber.number);
       }
 
       const idx = intervalOptions.findIndex(
@@ -108,13 +108,13 @@ export default function EditMonitor() {
 
   // Update phone number when user data loads
   useEffect(() => {
-    if (user?.phoneNumber) {
-      setVerifiedPhoneNumber(user.phoneNumber);
+    if (user?.phoneNumber.number) {
+      setUserCallNumber(user.phoneNumber.number);
     }
   }, [user]);
 
   const handlePhoneNumberSave = (phoneNumber) => {
-    setVerifiedPhoneNumber(phoneNumber);
+    setUserCallNumber(phoneNumber);
     setVoiceCallAlert(true);
     setNewMonitor((prev) => ({
       ...prev,
@@ -124,6 +124,8 @@ export default function EditMonitor() {
       },
     }));
     setPhoneDialogOpen(false);
+    toast.success("Phone Number Updated! we will let You know once verified")
+
   };
 
   const handleEditMonitor = async () => {
@@ -326,7 +328,7 @@ export default function EditMonitor() {
                   checked={voiceCallAlert}
                   onChange={(e) => {
                     if (subscriptionPlan === "business") {
-                      if (e.target.checked && !verifiedPhoneNumber) {
+                      if (e.target.checked && !userCallNumber) {
                         setPhoneDialogOpen(true);
                       } else {
                         setVoiceCallAlert(e.target.checked);
@@ -369,12 +371,12 @@ export default function EditMonitor() {
                 </div>
               )}
 
-              {verifiedPhoneNumber && (
+              {userCallNumber && (
                 <div className="text-sm text-green-400 mb-2 flex items-center gap-2">
-                  ✓ Verified: {verifiedPhoneNumber}
+                  {user.phoneNumber.isVerified ? "✓ Verified" : "Not Verified"}: {userCallNumber}
                   <button
                     onClick={() => {
-                      setVerifiedPhoneNumber("");
+                      setUserCallNumber("");
                       setVoiceCallAlert(false);
                       setNewMonitor((prev) => ({
                         ...prev,
@@ -392,7 +394,7 @@ export default function EditMonitor() {
                 </div>
               )}
 
-              {subscriptionPlan === "business" && !verifiedPhoneNumber && (
+              {subscriptionPlan === "business" && !userCallNumber && (
                 <button
                   onClick={() => setPhoneDialogOpen(true)}
                   className="w-full text-sm text-gray-400 hover:text-green-400 transition border border-gray-700 hover:border-green-500/50 rounded py-1 px-2 mb-3"

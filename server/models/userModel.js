@@ -51,8 +51,14 @@ const schema = new mongoose.Schema({
     default: "starter",
   },
   phoneNumber: {
-    type: String,
-    default: null,
+    number: {
+      type: String,
+      default: null,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
 });
 

@@ -14,12 +14,12 @@ export default function CreateNewMonitor() {
   const subscriptionPlan = user?.subscriptionPlan || "starter";
 
   // State for verified phone number - initialized from user data
-  const [verifiedPhoneNumber, setVerifiedPhoneNumber] = useState("");
+  const [userCallNumber, setUserCallNumber] = useState("");
 
   // Set verified phone number from user data when available
   useEffect(() => {
-    if (user?.phoneNumber) {
-      setVerifiedPhoneNumber(user.phoneNumber);
+    if (user?.phoneNumber.number) {
+      setUserCallNumber(user.phoneNumber.number);
     }
   }, [user]);
 
@@ -77,7 +77,7 @@ export default function CreateNewMonitor() {
   const handlePhoneNumberSave = (phoneNumber) => {
     // Phone number is saved in PhoneNumberDialog
     // Just update the local state
-    setVerifiedPhoneNumber(phoneNumber);
+    setUserCallNumber(phoneNumber);
     setVoiceCallAlert(true);
     setPhoneDialogOpen(false);
   };
@@ -109,10 +109,10 @@ export default function CreateNewMonitor() {
       };
 
       // Include voice call config if enabled
-      if (voiceCallAlert && verifiedPhoneNumber) {
+      if (voiceCallAlert && userCallNumber) {
         alertConfig.voiceCall = {
           voiceCallAlert,
-          phoneNumber: `${verifiedPhoneNumber}`,
+          phoneNumber: `${userCallNumber}`,
         };
       }
 
@@ -299,7 +299,7 @@ export default function CreateNewMonitor() {
                   checked={voiceCallAlert}
                   onChange={(e) => {
                     if (subscriptionPlan === "business") {
-                      if (e.target.checked && !verifiedPhoneNumber) {
+                      if (e.target.checked && !userCallNumber) {
                         setPhoneDialogOpen(true);
                       } else {
                         setVoiceCallAlert(e.target.checked);
@@ -335,12 +335,12 @@ export default function CreateNewMonitor() {
                 </div>
               )}
 
-              {verifiedPhoneNumber && (
+              {userCallNumber && (
                 <div className="text-sm text-green-400 mb-2 flex items-center gap-2">
-                  ✓ Verified: {verifiedPhoneNumber}
+                  {user.phoneNumber.isVerified ? "✓ Verified":"Not Verified"}: {userCallNumber}
                   <button
                     onClick={() => {
-                      setVerifiedPhoneNumber("");
+                      setUserCallNumber("");
                       setVoiceCallAlert(false);
                       setPhoneDialogOpen(true);
                     }}
@@ -351,7 +351,7 @@ export default function CreateNewMonitor() {
                 </div>
               )}
 
-              {subscriptionPlan === "business" && !verifiedPhoneNumber && (
+              {subscriptionPlan === "business" && !userCallNumber && (
                 <button
                   onClick={() => setPhoneDialogOpen(true)}
                   className="w-full text-sm text-gray-400 hover:text-green-400 transition border border-gray-700 hover:border-green-500/50 rounded py-1 px-2 mb-3"

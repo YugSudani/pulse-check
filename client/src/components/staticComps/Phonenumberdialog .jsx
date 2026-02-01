@@ -35,6 +35,7 @@ export default function PhoneNumberDialog({
       // Save phone number to backend
       const response = await api.post("/user/saveCallNumber", {
         phoneNumber: `+91${phoneNumber}`,
+        isVerified: false
       });
 
       if (response.status !== 200) {
@@ -45,6 +46,7 @@ export default function PhoneNumberDialog({
 
       // Phone saved successfully, call parent's save function
       onSave(phoneNumber);
+      await checkAuth();
     } catch (error) {
       console.error("Error saving phone number:", error);
       setPhoneError("Failed to save phone number. Please try again.");
