@@ -324,7 +324,8 @@ export default function EditMonitor() {
               <label className="flex items-center gap-2 mb-2 cursor-pointer">
                 <input
                   type="checkbox"
-                  disabled={subscriptionPlan !== "business"}
+                  disabled={subscriptionPlan !== "business" || !user.phoneNumber.isVerified
+                  }
                   checked={voiceCallAlert}
                   onChange={(e) => {
                     if (subscriptionPlan === "business") {
