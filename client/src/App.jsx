@@ -30,7 +30,7 @@ function App() {
 
   return (
     <>
-      <Toaster position="bottom-right" richColors />
+      <Toaster position="top-right" richColors />
       <AuthProvider>
         <Routes_ />
       </AuthProvider>

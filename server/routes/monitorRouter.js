@@ -192,7 +192,7 @@ router.post("/test_alert", async (req, res) => {
     // console.log(phoneNumber);
 
     const enabled = await adminModel.findOne({});
-    console.log("admin enabled alerts : " + enabled.call);
+    console.log("admin enabled alerts : " + enabled);
 
     const monitor = await monitorModel.findById(monitorId);
     if (!monitor) {
