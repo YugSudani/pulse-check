@@ -151,11 +151,10 @@ export default function AdminUsers() {
           <button
             key={page}
             onClick={() => onPageChange(page)}
-            className={`cursor-pointer px-3 py-2 rounded-lg transition text-sm ${
-              currentPage === page
-                ? "bg-green-500 text-black font-semibold"
-                : "bg-[#131e30] border border-gray-800 hover:bg-[#1A2333]"
-            }`}
+            className={`cursor-pointer px-3 py-2 rounded-lg transition text-sm ${currentPage === page
+              ? "bg-green-500 text-black font-semibold"
+              : "bg-[#131e30] border border-gray-800 hover:bg-[#1A2333]"
+              }`}
           >
             {page}
           </button>
@@ -256,23 +255,28 @@ export default function AdminUsers() {
           {filteredUsers.map((user) => (
             <div
               key={user._id}
-              className="bg-[#131e30] border border-gray-800 rounded-xl p-5 space-y-3 hover:border-gray-700 transition"
+              className="bg-[radial-gradient(circle_at_top,#1b2b45_0%,#131e30_40%,#0b1220_100%)] border border-gray-800 rounded-xl p-5 space-y-3 hover:border-gray-700 transition"
             >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg">{user.name}</h3>
-                  <p className="text-sm text-gray-400 break-all">
-                    {user.email}
-                  </p>
-                </div>
+              <div className="flex items-center justify-between">
+                <div className="flex w-auto items-center justify-between">
+                <h3 className="font-semibold text-lg">{user.name}</h3>
                 <span
-                  className={`text-xs px-2 py-1 rounded-full ${
-                    user.role === "admin"
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-gray-700 text-gray-300"
-                  }`}
+                  className={`m-2 text-xs px-2 py-1 rounded-full ${user.role === "admin"
+                    ? "bg-green-500/20 text-green-400"
+                    : "bg-gray-700 text-gray-300"
+                    }`}
                 >
                   {user.role || "user"}
+                </span>
+                </div>
+                {user.avatar && <img src={user?.avatar} alt="DP" className="rounded-full h-15 w-15 ml-2" />}
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-400">Email :</span>
+                <span
+                  className={`text-sm font-medium text-green-400`}
+                >
+                  {user.email}
                 </span>
               </div>
 
@@ -286,24 +290,41 @@ export default function AdminUsers() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-400">Status:</span>
                 <span
-                  className={`text-sm font-medium ${
-                    user.isBlocked ? "text-red-400" : "text-green-400"
-                  }`}
+                  className={`text-sm font-medium ${user.isBlocked ? "text-red-400" : "text-green-400"
+                    }`}
                 >
                   {user.isBlocked ? "Blocked" : "Active"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-400">playerId:</span>
+                <span
+                  className={`text-sm font-medium ${user.playerId ? "text-red-400" : "text-green-400"
+                    }`}
+                >
+                  {user.playerId ? user.playerId : "- - - -"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-400">provider :</span>
+                <span
+                  className="text-sm font-medium text-green-400"
+                >
+                  {user.provider}
                 </span>
               </div>
 
               <button
                 onClick={() => handleBlockUser(user._id, user.isBlocked)}
                 disabled={user.role === "admin" || blockingUserId === user._id}
-                className={`cursor-pointer w-full py-2 rounded-lg font-semibold transition text-sm ${
-                  user.role === "admin" || blockingUserId === user._id
-                    ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                    : user.isBlocked
-                      ? "bg-green-500 hover:bg-green-400 text-black"
-                      : "bg-red-500 hover:bg-red-400 text-white"
-                }`}
+                className={`cursor-pointer w-full py-2 rounded-lg font-semibold transition text-sm ${user.role === "admin" || blockingUserId === user._id
+                  ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                  : user.isBlocked
+                    ? "bg-green-500 hover:bg-green-400 text-black"
+                    : "bg-red-500 hover:bg-red-400 text-white"
+                  }`}
               >
                 {blockingUserId === user._id
                   ? "Processing..."
