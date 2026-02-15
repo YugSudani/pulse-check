@@ -300,8 +300,7 @@ export default function AdminUsers() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-400">playerId:</span>
                 <span
-                  className={`text-sm font-medium ${user.playerId ? "text-red-400" : "text-green-400"
-                    }`}
+                  className="text-sm font-medium text-green-400"
                 >
                   {user.playerId ? user.playerId : "- - - -"}
                 </span>
