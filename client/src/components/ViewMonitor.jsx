@@ -276,7 +276,7 @@ export default function ViewMonitor() {
         <div className="w-[93vw] md:w-[60vw]">
           <button
             onClick={() => navigate("/dashboard", { replace: true })}
-            className="inline-flex items-center gap-2 ml-11 md:ml-0 mt-[2px] md:mt-0 sm:gap-4 bg-[#131e30] px-4 sm:px-8 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333] cursor-pointer transition"
+            className="inline-flex items-center gap-2 ml-13 md:ml-0 mt-[1px] md:mt-0 sm:gap-4 bg-[#131e30] px-4 sm:px-8 py-2 rounded-lg text-sm mb-4 hover:bg-[#1A2333] cursor-pointer transition"
           >
             ← Monitoring
           </button>
