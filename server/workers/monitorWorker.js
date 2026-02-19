@@ -9,6 +9,9 @@ const { sendAlertNotification } = require("../helpers/sendPushNotification");
 const connectDB = require("../helpers/connectWorkerDB");
 const getActive_Eligible_Monitors = require("../helpers/fetchMonitor");
 const pingIt = require("../helpers/ping-it");
+const { makeTestCall } = require("../services/Call");
+const getPhoneNumber = require("../helpers/getPhoneNumber");
+
 
 //db connection
 connectDB();
@@ -97,8 +100,13 @@ const processMonitor = async (monitor) => {
       if (monitor.alert.push) {
         sendAlertNotification("DOWN", monitor);
       }
+      if (monitor.alert.call) {
+        const number = await getPhoneNumber(monitor.userId);
+        makeTestCall(number, "DOWN", monitor);
+      }
     }
 
+    //send up alert
     if (
       monitor.lastStatus !== "UP" &&
       monitor.lastStatus !== null &&
@@ -109,6 +117,10 @@ const processMonitor = async (monitor) => {
       }
       if (monitor.alert.push) {
         sendAlertNotification("RECOVERED", monitor);
+      }
+      if (monitor.alert.call) {
+        const number = await getPhoneNumber(monitor.userId);
+        makeTestCall(number, "RECOVERED", monitor);
       }
     }
   } catch (error) {

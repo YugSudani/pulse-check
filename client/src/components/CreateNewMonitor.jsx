@@ -18,7 +18,7 @@ export default function CreateNewMonitor() {
 
   // Set verified phone number from user data when available
   useEffect(() => {
-    if (user?.phoneNumber.number) {
+    if (user?.phoneNumber?.number) {
       setUserCallNumber(user.phoneNumber.number);
     }
   }, [user]);
@@ -80,6 +80,7 @@ export default function CreateNewMonitor() {
     setUserCallNumber(phoneNumber);
     setVoiceCallAlert(true);
     setPhoneDialogOpen(false);
+    toast.info("Phone Number Updated! we will let You know once verified")
   };
 
   const CreateMonitor = async () => {
@@ -295,7 +296,7 @@ export default function CreateNewMonitor() {
               <label className="flex items-center gap-2 mb-2 cursor-pointer">
                 <input
                   type="checkbox"
-                  disabled={subscriptionPlan !== "business" || !user.phoneNumber.isVerified}
+                  disabled={subscriptionPlan !== "business" || !user.phoneNumber?.isVerified}
                   checked={voiceCallAlert}
                   onChange={(e) => {
                     if (subscriptionPlan === "business") {
@@ -337,7 +338,7 @@ export default function CreateNewMonitor() {
 
               {userCallNumber && (
                 <div className="text-sm text-green-400 mb-2 flex items-center gap-2">
-                  {user.phoneNumber.isVerified ? "✓ Verified":"Not Verified"}: {userCallNumber}
+                  {user.phoneNumber?.isVerified ? "✓ Verified":"Not Verified"}: {userCallNumber}
                   <button
                     onClick={() => {
                       setUserCallNumber("");
@@ -416,7 +417,7 @@ export default function CreateNewMonitor() {
           {subscriptionPlan !== "pro" && (
             <div className="text-sm text-gray-400 mb-2">
               <span className="text-green-500 ml-2 cursor-pointer">
-                ⚡ Faster intervals available on Pro & Business plans
+                ⚡ Faster intervals available only on Pro & Business plans
               </span>
             </div>
           )}
@@ -432,24 +433,7 @@ export default function CreateNewMonitor() {
           </div>
         </section>
 
-        {/* ================= REGION ================= */}
-        <section>
-          <h2 className="text-xl font-semibold mb-2">Region to monitor from</h2>
-
-          <div className="text-sm text-gray-400 mb-2">
-            🔒 Available only in Pro & Business plan.
-            <button
-              onClick={() => navigate("/pricing")}
-              className="text-green-500 ml-2 cursor-pointer"
-            >
-              Upgrade Now
-            </button>
-          </div>
-
-          <select className="w-full bg-[#121A28] px-2 py-3 rounded-lg border border-gray-800 text-gray-300">
-            <option>India</option>
-          </select>
-        </section>
+  
 
         {/* ================= SUBMIT BUTTON ================= */}
         <div className="pt-6">

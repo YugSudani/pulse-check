@@ -22,7 +22,7 @@ export default function ViewMonitor() {
   const [showIncidentCount, setShowIncidentCount] = useState(3);
   const [incidents, setIncidents] = useState([]);
   const [stat, setStat] = useState({});
-  const [timeAgo,setTimeAgo ] = useState("");
+  const [timeAgo, setTimeAgo] = useState("");
   const { user } = useAuth();
   const [testingAlerts, setTestingAlerts] = useState(false);
 
@@ -72,6 +72,10 @@ export default function ViewMonitor() {
       console.error("Error fetching log data:", error);
     }
   };
+
+  useEffect(() => {
+    fetchLogData(range);
+  }, [range]);
 
   const fetchMonitor = async () => {
     try {
@@ -447,6 +451,7 @@ export default function ViewMonitor() {
                   setAiLoading(true);
                   setAiSummary("");
                   try {
+                    console.log("Log count:", logData.length);
                     const response = await api.post("/ai/summarizeText", {
                       text: JSON.stringify(logData),
                     });
@@ -502,7 +507,14 @@ export default function ViewMonitor() {
 
           {/*  graph placeholder */}
           <div className="h-48 sm:h-55 bg-[#0D121C] rounded-lg p-2 mb-4 overflow-hidden">
-            <ResponseTimeChart data={logData} range={range} />
+            <ResponseTimeChart
+              data={logData}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+              }}
+              range={range}
+            />
           </div>
 
           <div className="grid grid-cols-3 text-center text-xs sm:text-sm gap-2">

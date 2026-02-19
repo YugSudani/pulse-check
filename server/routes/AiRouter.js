@@ -31,13 +31,11 @@ router.post("/summarizeText", async (req, res) => {
             {
               role: "user",
               content: `You are analyzing server uptime monitoring logs. Each entry contains: responseTime (ms), status (UP/DOWN), and checkedAt timestamp.
-
 Analyze this data and provide a plain text summary (NO markdown, NO bullet symbols, NO asterisks):
 - Overall health summary with uptime percentage and average response time
 - Any performance issues or downtime incidents detected
 - Quick recommendation if needed
-
-Keep response under 100 words. Use points. Data:
+Keep response under 100 words. Use points. give min,max,avg response time. Data:
 ${text}`,
             },
           ],

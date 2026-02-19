@@ -227,7 +227,7 @@ router.post("/test_alert", async (req, res) => {
       sendAlertNotification("DOWN", monitor);
     }
     if (monitor.alert.call) {
-      makeTestCall(phoneNumber, monitor);
+      makeTestCall(phoneNumber, "DOWN", monitor);
     }
     res.status(200).json({ success: true });
   } catch (error) {
