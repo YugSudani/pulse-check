@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import CookingLoader from "../../routes/CookingLoader";
 
 export default function AuthSuccess() {
   const navigate = useNavigate();
@@ -14,5 +15,6 @@ export default function AuthSuccess() {
     navigate("/dashboard");
   }, [navigate]);
 
-  return <p>Logging you in...</p>;
+  return <CookingLoader />;
+
 }
