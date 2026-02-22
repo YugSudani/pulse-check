@@ -3,7 +3,12 @@ const mongoose = require("mongoose");
 const schema = new mongoose.Schema({
     email: {
         type: String,
-        required: true
+    },
+    phoneNumber: {
+        number: {
+            type: String,
+            default: null,
+        },
     },
     OTP: {
         type: String,

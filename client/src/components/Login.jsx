@@ -19,6 +19,7 @@ export default function Login() {
   const [playerId, setPlayerId] = useState(null);
   const [loginMethod, setLoginMethod] = useState("password");
   const [showPassword, setShowPassword] = useState(false);
+  const [loginType, setLoginType] = useState("email"); 
 
   const handleNotificationToggle = async () => {
     if (notificationLoading) return;
@@ -86,6 +87,7 @@ export default function Login() {
   };
 
   const [form, setForm] = useState({
+    phone: "",
     email: "",
     pwd: "",
   });
@@ -152,7 +154,7 @@ export default function Login() {
         const status = error.response.status;
 
         if (status === 404) {
-          toast.error("User not found");
+          toast.error(error.response.data.message);
         } else if (status === 401) {
           toast.error(error.response.data.message);
         } else if (status === 400) {
@@ -188,38 +190,67 @@ export default function Login() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* LOGIN TYPE TOGGLE */}
+<div>
+  <div className="flex gap-2 p-1 bg-[#121A28]/60 rounded-xl border border-gray-700/50">
+    <button
+      type="button"
+      onClick={() => setLoginType("email")}
+      className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${
+        loginType === "email"
+          ? "bg-green-500 text-black"
+          : "text-gray-400 hover:text-gray-200"
+      }`}
+    >
+      Email
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setLoginType("phone")}
+      className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${
+        loginType === "phone"
+          ? "bg-green-500 text-black"
+          : "text-gray-400 hover:text-gray-200"
+      }`}
+    >
+      Phone
+    </button>
+  </div>
+</div>
             {/* EMAIL FIELD */}
-            <div>
-              <label className="text-gray-300 block mb-2 text-sm sm:text-base font-medium">
-                Email
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
-                  <svg
-                    className="w-5 h-5 text-gray-400 peer-focus:text-green-500 transition-colors"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter email"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                  className="peer w-full pl-12 pr-4 py-3.5 bg-[#121A28]/60 backdrop-blur-sm border border-gray-700/50 rounded-xl text-gray-200 placeholder-gray-500 outline-none focus:bg-[#121A28] focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all text-sm sm:text-base min-h-[48px]"
-                />
-              </div>
-            </div>
+           {/* EMAIL OR PHONE FIELD */}
+{loginType === "email" ? (
+  <div>
+    <label className="text-gray-300 block mb-2 font-medium">
+      Email
+    </label>
+    <input
+      type="email"
+      name="email"
+      placeholder="Enter email"
+      value={form.email}
+      onChange={handleChange}
+      required
+      className="w-full px-4 py-3 rounded-xl bg-[#121A28]/60 border border-gray-700/50 text-gray-200"
+    />
+  </div>
+) : (
+  <div>
+    <label className="text-gray-300 block mb-2 font-medium">
+      Phone Number
+    </label>
+    <input
+      type="tel"
+      name="phone"
+      placeholder="Enter phone number"
+      value={form.phone}
+      onChange={handleChange}
+      required
+      className="w-full px-4 py-3 rounded-xl bg-[#121A28]/60 border border-gray-700/50 text-gray-200"
+    />
+  </div>
+)}
 
             {/* LOGIN METHOD TOGGLE */}
             <div>
@@ -334,7 +365,7 @@ export default function Login() {
                   {!showOtpField && (
                     <button
                       type="button"
-                      disabled={!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)}
+                      disabled={!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) && !/^\d{10}$/.test(form.phone)}
                       onClick={handleSendOtp}
                       className="disabled:bg-gray-600 disabled:cursor-not-allowed text-gray-900 bg-green-500 hover:bg-green-400 font-semibold cursor-pointer px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all"
                     >

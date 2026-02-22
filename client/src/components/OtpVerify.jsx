@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 export default function OtpVerification() {
   const navigate = useNavigate();
-  const { email } = useParams();
+  const { slug } = useParams();
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [isLoading, setIsLoading] = useState(false);
 
@@ -25,7 +25,7 @@ export default function OtpVerification() {
     }
 
     const payload = {
-      email,
+      slug,
       otp: finalOtp,
     };
 
@@ -34,7 +34,7 @@ export default function OtpVerification() {
       if (!response.data.success) {
         toast.error("Failed to verify OTP");
       } else {
-        toast.success("Email verified successfully!");
+        toast.success("Account verified successfully!");
         navigate("/login", { replace: true });
       }
     } catch (error) {
@@ -56,12 +56,12 @@ export default function OtpVerification() {
           {/* Title */}
           <div className="text-center mb-8">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-              Verify Your Email
+              Verify Account
             </h2>
             <p className="text-gray-400 text-sm sm:text-base">
-              We Have sent you OTP on below email
+              We Have sent you OTP on 
             </p>
-            <h3 className="text-green-600">{email}</h3>
+            <h3 className="text-green-600">{slug}</h3>
             <span className="text-sm text-white">
               ( Check Spam section if needed )
             </span>
@@ -103,7 +103,7 @@ export default function OtpVerification() {
           {/* Bottom text */}
           <div className="mt-8 text-center">
             <p className="text-gray-400 text-sm sm:text-base">
-              Didn't Received Email ?{" "}
+              Didn't Received OTP ?{" "}
               <button
                 onClick={() => navigate("/login", { replace: true })}
                 className="text-green-500 font-medium hover:text-green-400 hover:underline transition-colors cursor-pointer"
@@ -117,7 +117,7 @@ export default function OtpVerification() {
               onClick={() => navigate("/register", { replace: true })}
               className="text-green-500 font-medium hover:text-green-400 hover:underline transition-colors cursor-pointer"
             >
-              Go Back & Change Email
+              Go Back 
             </button>
           </div>
         </div>

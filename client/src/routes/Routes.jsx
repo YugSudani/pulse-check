@@ -34,7 +34,7 @@ function Routes_() {
         <Route element={<PublicRouter />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/otpverification/:email" element={<OtpVerification />} />
+          <Route path="/otpverification/:slug" element={<OtpVerification />} />
         </Route>
 
         <Route path="/" element={<Home />} />

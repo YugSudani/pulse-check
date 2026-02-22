@@ -7,13 +7,23 @@ const tokenModel = require("../models/tokenModel");
 const { generateOTP } = require("../helpers/generateOTP");
 const { sendOTPEmail_2 } = require("../helpers/sendMail");
 const auth = require("../middlewares/auth");
+const { sendOTPsms } = require("../helpers/sendSMS");
 
 router.post("/genOTP", async (req, res) => {
   try {
-    const { email, name, isForSignup } = req.body;
+    const { email, name, phone, isForSignup } = req.body;
+
+    // console.log("Received request body:", req.body);
+
+    let l_query = {};
+    if (email) {
+      l_query = { email };
+    } else if (phone) {
+      l_query = { "phoneNumber.number": phone };
+    }
 
     if (!isForSignup) {
-      const user = await userModel.findOne({ email });
+      const user = await userModel.findOne(l_query);
       if (!user) {
         return res.status(404).json({
           message: "User not found. Please sign up first.",
@@ -23,10 +33,18 @@ router.post("/genOTP", async (req, res) => {
     }
 
     // Check if OTP was recently sent
-    const recentToken = await tokenModel.findOne({
-      email,
+    const query = {
       expiryTime: { $gt: Date.now() },
-    });
+    };
+    if (email) {
+      query.email = email;
+    }
+    if (phone) {
+      query["phoneNumber.number"] = phone;
+    }
+
+    const recentToken = await tokenModel.findOne(query);
+
     if (recentToken) {
       const timeLeft = Math.ceil(
         (recentToken.expiryTime - Date.now()) / 1000 / 60,
@@ -36,10 +54,17 @@ router.post("/genOTP", async (req, res) => {
         success: false,
       });
     }
+
+    // Generate and send new OTP
     const OTP = generateOTP();
-    await sendOTPEmail_2(email, name, OTP);
+    if (email) {
+      await sendOTPEmail_2(email, name, OTP);
+    } else if (phone) {
+      await sendOTPsms(phone, name, OTP);
+    }
     await tokenModel.create({
       email,
+      phoneNumber: { number: phone },
       OTP,
       expiryTime: new Date(Date.now() + 300000),
     });
@@ -47,21 +72,36 @@ router.post("/genOTP", async (req, res) => {
     res.status(200).json({ message: "OTP sent successfully", success: true });
   } catch (error) {
     console.log("Failed to send OTP : ", error);
+    // Detect Twilio trial error
+    if (error.code === 21608) {
+      return res.status(400).json({
+        message: "Currently SMS verification is not available. Please use Email or Google Signup.", //can not send sms to unverified number in twilio trial account
+        success: false,
+      });
+    }
     res.status(500).json({ message: "Internal server error", success: false });
   }
 });
 
 router.post("/verifyOtp", async (req, res) => {
-  const { email, otp } = req.body;
-  //console.log(email + " : " + " : " + otp);
+  const { slug, otp } = req.body;
+  console.log(slug + " : " + " : " + otp);
+
+  let query = {};
+
+  if (slug.includes("@")) {
+    query = { email: slug };
+  } else {
+    query = { "phoneNumber.number": slug };
+  }
 
   try {
     const token = await tokenModel.findOne({
-      email,
+      ...query,
       OTP: otp,
       expiryTime: { $gt: Date.now() },
     });
-    //console.log("token : " + token);
+    console.log("token : " + token);
 
     if (!token) {
       return res
@@ -69,13 +109,10 @@ router.post("/verifyOtp", async (req, res) => {
         .json({ message: "Token not found or Expired", success: false });
     }
 
-    const res1 = await userModel.findOneAndUpdate(
-      { email },
-      { $set: { isVerified: true } },
-    ); // set if not verified true in login
+    await userModel.findOneAndUpdate(query, { $set: { isVerified: true } }); // set if not verified true in login
     //console.log("r1 : " + res1);
 
-    const res2 = await tokenModel.deleteMany({ email });
+    await tokenModel.deleteMany({ ...query }); // delete all tokens of that email or phone
     // console.log("r2 : " + res2);
 
     res.json({ message: "OTP verified successfully", success: true });
@@ -90,11 +127,23 @@ router.post("/verifyOtp", async (req, res) => {
 
 router.post("/signup", async (req, res) => {
   try {
-    const { name, email, pwd } = req.body;
-    // console.log(req.body);
+    const { name, phone, email, pwd } = req.body;
+    console.log(req.body);
+
+    let l_query = {};
+    if (email) {
+      l_query = { email };
+    } else if (phone) {
+      l_query = { "phoneNumber.number": phone };
+    }
+
     try {
       const hashedPwd = await bcrypt.hash(pwd, 11);
-      await userModel.create({ name, email, pwd: hashedPwd });
+      await userModel.create({
+        ...l_query,
+        name,
+        pwd: hashedPwd,
+      });
       res
         .status(201)
         .json({ message: "User created successfully", success: true });
@@ -116,15 +165,23 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const { email, pwd, otp } = req.body;
+    const { phone, email, pwd, otp } = req.body;
+    console.log(req.body);
 
-    const user = await userModel.findOne({ email });
+    const query = {};
+    if (email) {
+      query.email = email;
+    } else if (phone) {
+      query["phoneNumber.number"] = phone;
+    }
+
+    const user = await userModel.findOne(query);
+    console.log("user : " + user);
     if (!user) {
       return res
         .status(404)
         .json({ message: "User not found", success: false });
     }
-
 
     if (user.isVerified === false) {
       //console.log("user : " + user.isVerified);
@@ -135,7 +192,7 @@ router.post("/login", async (req, res) => {
 
     if (!pwd) {
       const token = await tokenModel.findOne({
-        email,
+        ...query,
         OTP: otp,
         expiryTime: { $gt: Date.now() },
       });
@@ -147,7 +204,6 @@ router.post("/login", async (req, res) => {
     }
 
     if (!otp) {
-
       // Check if user has a password (not a Google OAuth user)
       if (!user.pwd || user.provider === "google") {
         return res.status(400).json({
@@ -208,14 +264,17 @@ router.post("/saveCallNumber", auth, async (req, res) => {
     const { phoneNumber } = req.body;
     const user = req.user;
 
-    await userModel.updateOne({ _id: user._id }, { 
-      $set:{
-        "phoneNumber.number":phoneNumber ,
-        "phoneNumber.isVerified":false
+    await userModel.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          "phoneNumber.number": phoneNumber,
+          "phoneNumber.isVerified": false,
+        },
       },
-      });
-      console.log("num updated : "+phoneNumber);
-      
+    );
+    console.log("num updated : " + phoneNumber);
+
     res
       .status(200)
       .json({ success: true, message: "Phone number saved successfully" });
