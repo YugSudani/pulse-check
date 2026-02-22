@@ -19,7 +19,7 @@ export default function Login() {
   const [playerId, setPlayerId] = useState(null);
   const [loginMethod, setLoginMethod] = useState("password");
   const [showPassword, setShowPassword] = useState(false);
-  const [loginType, setLoginType] = useState("email"); 
+  const [loginType, setLoginType] = useState("email");
 
   const handleNotificationToggle = async () => {
     if (notificationLoading) return;
@@ -127,7 +127,9 @@ export default function Login() {
     e.preventDefault();
 
     if (!notificationsEnabled) {
-      toast.error("in order to create monitor and receive alerts, please enable notifications.");
+      toast.error(
+        "in order to create monitor and receive alerts, please enable notifications.",
+      );
       return;
     }
 
@@ -144,7 +146,7 @@ export default function Login() {
 
       // Login
       await api.post("/user/login", payload, { withCredentials: true });
-      
+
       await checkAuth();
 
       toast.success("Login successful!");
@@ -190,67 +192,63 @@ export default function Login() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* LOGIN TYPE TOGGLE */}
-<div>
-  <div className="flex gap-2 p-1 bg-[#121A28]/60 rounded-xl border border-gray-700/50">
-    <button
-      type="button"
-      onClick={() => setLoginType("email")}
-      className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${
-        loginType === "email"
-          ? "bg-green-500 text-black"
-          : "text-gray-400 hover:text-gray-200"
-      }`}
-    >
-      Email
-    </button>
 
-    <button
-      type="button"
-      onClick={() => setLoginType("phone")}
-      className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${
-        loginType === "phone"
-          ? "bg-green-500 text-black"
-          : "text-gray-400 hover:text-gray-200"
-      }`}
-    >
-      Phone
-    </button>
-  </div>
-</div>
-            {/* EMAIL FIELD */}
-           {/* EMAIL OR PHONE FIELD */}
-{loginType === "email" ? (
-  <div>
-    <label className="text-gray-300 block mb-2 font-medium">
-      Email
-    </label>
-    <input
-      type="email"
-      name="email"
-      placeholder="Enter email"
-      value={form.email}
-      onChange={handleChange}
-      required
-      className="w-full px-4 py-3 rounded-xl bg-[#121A28]/60 border border-gray-700/50 text-gray-200"
-    />
-  </div>
-) : (
-  <div>
-    <label className="text-gray-300 block mb-2 font-medium">
-      Phone Number
-    </label>
-    <input
-      type="tel"
-      name="phone"
-      placeholder="Enter phone number"
-      value={form.phone}
-      onChange={handleChange}
-      required
-      className="w-full px-4 py-3 rounded-xl bg-[#121A28]/60 border border-gray-700/50 text-gray-200"
-    />
-  </div>
-)}
+
+            {/* EMAIL OR PHONE FIELD */}
+            {/* EMAIL OR PHONE FIELD */}
+            {loginType === "email" ? (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-gray-300 font-medium">
+                    Email
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={() => setLoginType("phone")}
+                    className="text-xs sm:text-sm text-green-400 transition-colors cursor-pointer "
+                  >
+                    Use phone Number
+                  </button>
+                </div>
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 rounded-xl bg-[#121A28]/60 border border-gray-700/50 text-gray-200"
+                />
+              </div>
+            ) : (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-gray-300 font-medium">
+                    Phone Number
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={() => setLoginType("email")}
+                    className="text-xs sm:text-sm text-gray-400 hover:text-green-400 transition-colors"
+                  >
+                    Use email address
+                  </button>
+                </div>
+
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Enter phone number"
+                  value={form.phone}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 rounded-xl bg-[#121A28]/60 border border-gray-700/50 text-gray-200"
+                />
+              </div>
+            )}
 
             {/* LOGIN METHOD TOGGLE */}
             <div>
@@ -261,11 +259,10 @@ export default function Login() {
                     setLoginMethod("password");
                     setShowOtpField(false);
                   }}
-                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 cursor-pointer ${
-                    loginMethod === "password"
-                      ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
-                      : "text-gray-400 hover:text-gray-200"
-                  }`}
+                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 cursor-pointer ${loginMethod === "password"
+                    ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
+                    : "text-gray-400 hover:text-gray-200"
+                    }`}
                 >
                   <div className="flex items-center justify-center gap-2">
                     <svg
@@ -287,11 +284,10 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setLoginMethod("otp")}
-                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 cursor-pointer ${
-                    loginMethod === "otp"
-                      ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
-                      : "text-gray-400 hover:text-gray-200"
-                  }`}
+                  className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-300 cursor-pointer ${loginMethod === "otp"
+                    ? "bg-green-500 text-black shadow-lg shadow-green-500/20"
+                    : "text-gray-400 hover:text-gray-200"
+                    }`}
                 >
                   <div className="flex items-center justify-center gap-2">
                     <svg
@@ -365,7 +361,10 @@ export default function Login() {
                   {!showOtpField && (
                     <button
                       type="button"
-                      disabled={!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) && !/^\d{10}$/.test(form.phone)}
+                      disabled={
+                        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) &&
+                        !/^\d{10}$/.test(form.phone)
+                      }
                       onClick={handleSendOtp}
                       className="disabled:bg-gray-600 disabled:cursor-not-allowed text-gray-900 bg-green-500 hover:bg-green-400 font-semibold cursor-pointer px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all"
                     >
@@ -418,29 +417,25 @@ export default function Login() {
             {/* NOTIFICATIONS TOGGLE */}
             <div
               onClick={handleNotificationToggle}
-              className={`relative cursor-pointer p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 ${
-                notificationLoading ? "opacity-75 cursor-wait" : ""
-              } ${
-                notificationsEnabled
+              className={`relative cursor-pointer p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 ${notificationLoading ? "opacity-75 cursor-wait" : ""
+                } ${notificationsEnabled
                   ? "bg-green-500/10 border-green-500/50"
                   : "bg-[#121A28]/60 border-gray-700/50 hover:bg-[#121A28] hover:border-gray-700"
-              }`}
+                }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div
-                    className={`p-2.5 rounded-lg transition-all duration-300 ${
-                      notificationsEnabled
-                        ? "bg-green-500/20"
-                        : "bg-gray-700/50"
-                    }`}
+                    className={`p-2.5 rounded-lg transition-all duration-300 ${notificationsEnabled
+                      ? "bg-green-500/20"
+                      : "bg-gray-700/50"
+                      }`}
                   >
                     <svg
-                      className={`w-5 h-5 transition-colors duration-300 ${
-                        notificationsEnabled
-                          ? "text-green-500"
-                          : "text-gray-400"
-                      }`}
+                      className={`w-5 h-5 transition-colors duration-300 ${notificationsEnabled
+                        ? "text-green-500"
+                        : "text-gray-400"
+                        }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -455,11 +450,10 @@ export default function Login() {
                   </div>
                   <div>
                     <p
-                      className={`text-sm sm:text-base font-medium transition-colors duration-300 ${
-                        notificationsEnabled
-                          ? "text-green-400"
-                          : "text-gray-300"
-                      }`}
+                      className={`text-sm sm:text-base font-medium transition-colors duration-300 ${notificationsEnabled
+                        ? "text-green-400"
+                        : "text-gray-300"
+                        }`}
                     >
                       Push Notifications
                     </p>
@@ -472,14 +466,12 @@ export default function Login() {
                 </div>
 
                 <div
-                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
-                    notificationsEnabled ? "bg-green-500" : "bg-gray-600"
-                  }`}
+                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${notificationsEnabled ? "bg-green-500" : "bg-gray-600"
+                    }`}
                 >
                   <div
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-md transform transition-transform duration-300 flex items-center justify-center ${
-                      notificationsEnabled ? "translate-x-6" : "translate-x-0"
-                    }`}
+                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-md transform transition-transform duration-300 flex items-center justify-center ${notificationsEnabled ? "translate-x-6" : "translate-x-0"
+                      }`}
                   >
                     {notificationLoading ? (
                       <svg
