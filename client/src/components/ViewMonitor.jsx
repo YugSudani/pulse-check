@@ -217,7 +217,7 @@ export default function ViewMonitor() {
   const handleTestAlerts = async (monitorId) => {
     try {
       setTestingAlerts(true);
-      const response = await api.post("/monitor/test_alert", {
+      await api.post("/monitor/test_alert", {
         monitorId,
         phoneNumber: user.phoneNumber,
       });
@@ -249,7 +249,7 @@ export default function ViewMonitor() {
       clearInterval(interval);
       clearInterval(interval2);
     };
-  }, []);
+  }, [range]);
 
   const pollingData = () => {
     fetchLogData(range);
