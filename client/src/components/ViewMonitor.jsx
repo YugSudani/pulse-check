@@ -160,40 +160,91 @@ export default function ViewMonitor() {
     setUpDownTime(diffHoursTime.trim());
   };
 
-  const get24hStat = (incidents) => {
-    const now = Date.now();
-    const last24HoursStart = now - 24 * 60 * 60 * 1000; // 24h ago
-    const incidentCount = incidents.length;
-    let totalDowntimeMs = 0;
+  // const get24hStat = (incidents) => {
+  //   const now = Date.now();
+  //   const last24HoursStart = now - 24 * 60 * 60 * 1000; // 24h ago
+  //   const incidentCount = incidents.length;
+  //   let totalDowntimeMs = 0;
 
-    incidents.forEach((incident) => {
-      const start = new Date(incident.incidentStartTime).getTime();
-      const end = incident.incidentEndTime
-        ? new Date(incident.incidentEndTime).getTime()
-        : now;
+  //   incidents.forEach((incident) => {
+  //     const start = new Date(incident.incidentStartTime).getTime();
+  //     const end = incident.incidentEndTime
+  //       ? new Date(incident.incidentEndTime).getTime()
+  //       : now;
 
-      // Clamp to 24h range
+  //     // Clamp to 24h range
+  //     const effectiveStart = Math.max(start, last24HoursStart);
+  //     const effectiveEnd = Math.min(end, now);
+
+  //     if (effectiveEnd > effectiveStart) {
+  //       totalDowntimeMs += effectiveEnd - effectiveStart;
+  //     }
+  //   });
+  //   const downtimeMinutes = Math.round(totalDowntimeMs / (1000 * 60));
+  //   const totalTimeMs = 24 * 60 * 60 * 1000;
+  //   const uptimePercentage =
+  //     ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
+  //   const uptime = uptimePercentage.toFixed(2);
+
+  //   setStat({
+  //     incidentCount,
+  //     downtimeMinutes,
+  //     uptime,
+  //   });
+  // };
+
+  // Live updating time ago
+
+const get24hStat = (incidents) => {
+  const now = Date.now();
+  const last24HoursStart = now - 24 * 60 * 60 * 1000;
+  const totalTimeMs = 24 * 60 * 60 * 1000;
+
+  let totalDowntimeMs = 0;
+  let incidentCount = 0;
+
+  incidents.forEach((incident) => {
+    if (!incident.incidentStartTime) return;
+
+    const start = new Date(incident.incidentStartTime).getTime();
+    const end = incident.incidentEndTime
+      ? new Date(incident.incidentEndTime).getTime()
+      : now;
+
+    // Skip invalid dates
+    if (isNaN(start) || isNaN(end)) return;
+
+    // Check if incident overlaps last 24h window
+    if (end > last24HoursStart && start < now) {
+      incidentCount++;
+
       const effectiveStart = Math.max(start, last24HoursStart);
       const effectiveEnd = Math.min(end, now);
 
       if (effectiveEnd > effectiveStart) {
         totalDowntimeMs += effectiveEnd - effectiveStart;
       }
-    });
-    const downtimeMinutes = Math.round(totalDowntimeMs / (1000 * 60));
-    const totalTimeMs = 24 * 60 * 60 * 1000;
-    const uptimePercentage =
-      ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
-    const uptime = uptimePercentage.toFixed(2);
+    }
+  });
 
-    setStat({
-      incidentCount,
-      downtimeMinutes,
-      uptime,
-    });
-  };
+  // Prevent negative or overflow
+  totalDowntimeMs = Math.max(0, Math.min(totalDowntimeMs, totalTimeMs));
 
-  // Live updating time ago
+  const downtimeMinutes = Math.ceil(totalDowntimeMs / (1000 * 60));
+
+  let uptimePercentage =
+    ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
+
+  // Clamp between 0–100
+  uptimePercentage = Math.max(0, Math.min(100, uptimePercentage));
+
+  setStat({
+    incidentCount,
+    downtimeMinutes,
+    uptime: uptimePercentage.toFixed(2),
+  });
+};
+
   const updateTimeAgo = () => {
     if (!monitor?.lastCheckedAt) {
       return;
