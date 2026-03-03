@@ -1,67 +1,27 @@
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    sparse: true,
-    unique: true,
-  },
-  pwd: {
-    type: String,
-    required: false, 
-  },
-  role: {
-    type: String,
-    default: "user",
-  },
-  isBlocked: {
-    type: Boolean,
-    default: false,
-  },
-  googleId: {
-    type: String,
-    default: null,
-  },
-  avatar: {
-    type: String,
-    default: null,
-  },
-  provider: {
-    type: String,
-    default: "local", // "local" for email/password, "google" for OAuth
-  },
-  lastEmailSentAt: {
-    type: Date,
-    default: null,
-  },
-  playerId: {
-    type: String,
-    default: null,
-  },
-  isVerified: {
-    type: Boolean,
-    default: false,
-  },
-  subscriptionPlan: {
-    type: String,
-    default: "starter",
-  },
-  phoneNumber: {
-    number: {
-      type: String,
-      unique:true,
-      sparse: true,
+    name: {
+        type: String,
+        required: true
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
+    email: {
+        type: String,
+        required: true
     },
-  },
-});
+    pwd: {
+        type: String,
+        required: true
+    },
+    lastEmailSentAt: {
+        type: Date,
+        default: null
+    },
+    playerId: {
+        type: String,
+        default: null
+    }
+})
 
 const userModel = mongoose.model("userModel", schema);
 
