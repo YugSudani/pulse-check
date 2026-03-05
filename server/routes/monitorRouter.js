@@ -77,11 +77,14 @@ router.delete("/deleteMonitor/:id", async (req, res) => {
   const { id: monitorId } = req.params;
   const userId = req.user._id;
 
+  const session = await monitorModel.startSession();
+
   try {
+    await session.startTransaction();
     const monitor = await monitorModel.findOneAndDelete({
       _id: monitorId,
       userId,
-    });
+    },{ session });
 
     if (!monitor) {
       return res.status(404).json({
@@ -90,23 +93,24 @@ router.delete("/deleteMonitor/:id", async (req, res) => {
       });
     }
 
-    const result = await Promise.allSettled([
-      logModel.deleteMany({ monitorId }),
-      incidentModel.deleteMany({ monitorId }), // not deleting
-    ]);
+      await logModel.deleteMany({ monitorId },{ session }) // not deleting
+      await incidentModel.deleteMany({ monitorId },{ session }) // not deleting
 
-    // result.forEach((item) => {
-    //   console.log(item);
-    // });
+  
+      await session.commitTransaction();
+      
     const allMonitor = await monitorModel.find({ userId });
 
     res.status(200).json({ success: true, monitors: allMonitor });
   } catch (error) {
+    await session.abortTransaction();
     console.error(error);
     res.status(500).json({
       success: false,
       msg: "Failed to delete monitor",
     });
+  }finally {
+    await session.endSession();
   }
 });
 
