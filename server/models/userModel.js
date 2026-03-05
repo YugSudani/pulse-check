@@ -7,12 +7,12 @@ const schema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    sparse: true,
     unique: true,
   },
   pwd: {
     type: String,
-    required: false, // Optional for Google users
+    required: false, 
   },
   role: {
     type: String,
@@ -51,8 +51,15 @@ const schema = new mongoose.Schema({
     default: "starter",
   },
   phoneNumber: {
-    type: String,
-    default: null,
+    number: {
+      type: String,
+      unique:true,
+      sparse: true,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
 });
 
