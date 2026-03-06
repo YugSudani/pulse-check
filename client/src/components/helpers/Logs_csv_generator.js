@@ -1,6 +1,6 @@
 const exportLogs = (incidents,monitor) => {
     if (!incidents.length) {
-        alert("No incidents to export");
+        toast.error("No incidents to export");
         return;
     }
 

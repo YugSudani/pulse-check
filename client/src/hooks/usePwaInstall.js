@@ -7,7 +7,6 @@ export function usePwaInstall() {
   useEffect(() => {
     // console.log("[PWA] usePwaInstall hook mounted");
 
-    // ✅ Check if app is already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
       // console.log("[PWA] App is already installed");
       return;
