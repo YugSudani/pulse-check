@@ -270,7 +270,6 @@ const get24hStat = (incidents) => {
       setTestingAlerts(true);
       await api.post("/monitor/test_alert", {
         monitorId,
-        phoneNumber: user.phoneNumber,
       });
       toast.success("Test alert initiated");
     } catch (error) {

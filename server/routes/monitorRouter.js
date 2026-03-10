@@ -7,6 +7,7 @@ const logModel = require("../models/logModel");
 const { sendAlertNotification } = require("../helpers/sendPushNotification");
 const { sendAlertEmail_2 } = require("../helpers/sendMail");
 const { makeTestCall } = require("../services/Call");
+const getPhoneNumber = require("../helpers/getPhoneNumber");
 
 router.post("/createMonitor", async (req, res) => {
   try {
@@ -192,8 +193,7 @@ router.put("/editeMonitor/:monitorId", async (req, res) => {
 
 router.post("/test_alert", async (req, res) => {
   try {
-    const { monitorId, phoneNumber } = req.body;
-    // console.log(phoneNumber);
+    const { monitorId} = req.body;
 
     const enabled = await adminModel.findOne({});
     console.log("admin enabled alerts : " + enabled);
@@ -225,13 +225,14 @@ router.post("/test_alert", async (req, res) => {
     }
 
     if (monitor.alert.email) {
-      sendAlertEmail_2("DOWN", monitor, "down");
+      await sendAlertEmail_2("DOWN", monitor, "down");
     }
     if (monitor.alert.push) {
-      sendAlertNotification("DOWN", monitor);
+      await sendAlertNotification("DOWN", monitor);
     }
     if (monitor.alert.call) {
-      makeTestCall(phoneNumber, "DOWN", monitor);
+      let phoneNumber = await getPhoneNumber(monitor.userId);
+      await makeTestCall(phoneNumber, "DOWN", monitor);
     }
     res.status(200).json({ success: true });
   } catch (error) {
