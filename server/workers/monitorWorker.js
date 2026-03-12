@@ -2,7 +2,6 @@ const dotenv = require("dotenv");
 const path = require("path");
 dotenv.config({ path: path.join(__dirname, "../.env") });
 const monitorModel = require("../models/monitorModel");
-const logsModel = require("../models/logModel");
 const incidentModel = require("../models/incidentModel");
 const { sendAlertEmail_2 } = require("../helpers/sendMail");
 const { sendAlertNotification } = require("../helpers/sendPushNotification");
@@ -11,6 +10,7 @@ const getActive_Eligible_Monitors = require("../helpers/fetchMonitor");
 const pingIt = require("../helpers/ping-it");
 const { makeTestCall } = require("../services/Call");
 const getPhoneNumber = require("../helpers/getPhoneNumber");
+const createLogs = require("../helpers/createLogs");
 
 
 //db connection
@@ -81,13 +81,8 @@ const processMonitor = async (monitor) => {
     );
 
     // create log
-    await logsModel.create({
-      monitorId: monitor._id,
-      statusCode,
-      responseTime,
-      isUp: status === "UP",
-      checkedAt: new Date(),
-    });
+    await createLogs(monitor._id, statusCode, responseTime, status, monitor.userId);
+
 
     // send alert mail and push on down or recovered (fire and forget)
     if (

@@ -177,7 +177,7 @@ export default function PaymentSuccess() {
       doc.save(`payment-receipt-${sessionId ? sessionId.substring(0, 15) : "receipt"}.pdf`);
     } catch (error) {
       console.error("Error generating PDF:", error);
-      alert("Failed to download receipt. Please try again.");
+      toast.error("Failed to download receipt. Please try again.");
     } finally {
       setIsDownloading(false);
     }

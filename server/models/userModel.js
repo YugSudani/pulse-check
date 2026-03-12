@@ -46,10 +46,11 @@ const schema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  subscriptionPlan: {
+ subscriptionPlan: {
     type: String,
+    enum: ["starter", "pro", "business"],
     default: "starter",
-  },
+},
   phoneNumber: {
     number: {
       type: String,

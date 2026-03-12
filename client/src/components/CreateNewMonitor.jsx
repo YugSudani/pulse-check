@@ -406,7 +406,7 @@ export default function CreateNewMonitor() {
               const selectedInterval = intervalOptions[newIndex].value;
 
               if (!isIntervalAllowed(selectedInterval)) {
-                alert("Upgrade Your plan to use this features");
+                toast.error("Upgrade Your plan to use this features");
                 return;
               }
 

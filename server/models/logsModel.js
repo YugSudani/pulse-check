@@ -27,7 +27,10 @@ const logSchema = new mongoose.Schema(
             type: Date,
             default: Date.now,
             index: true,
-            expires: 60 * 60 * 24, // 24 hours in seconds
+        },
+        expiresAt: {
+            type: Date,
+            index: { expires: 0 }, // MongoDB auto-deletes when this date is reached
         },
     }
 )
