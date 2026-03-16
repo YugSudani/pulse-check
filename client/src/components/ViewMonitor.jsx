@@ -551,6 +551,8 @@ const get24hStat = (incidents) => {
                 <option value="6h">6h</option>
                 <option value="12h">12h</option>
                 <option value="24h">24h</option>
+                <option value="3d">3d</option>
+                <option value="7d">7d</option>
               </select>
             </div>
           </div>

@@ -128,6 +128,8 @@ router.get("/:monitorId/response-history", async (req, res) => {
     "6h": 6 * 60 * 60 * 1000,
     "12h": 12 * 60 * 60 * 1000,
     "24h": 24 * 60 * 60 * 1000,
+    "3d": 3 * 24 * 60 * 60 * 1000,
+    "7d": 7 * 24 * 60 * 60 * 1000,
   };
 
   const from = new Date(now - ranges[range]);
