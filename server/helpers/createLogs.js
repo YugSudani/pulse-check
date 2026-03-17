@@ -21,7 +21,8 @@ const createLogs = async (monitorId, statusCode, responseTime, status, userId) =
 
     try {
         const user = await getUser(userId);
-        const plan = user ? user.plan : "starter";
+        const plan = user ? user.subscriptionPlan : "starter";
+        console.log("plan : "+plan);
 
         await logsModel.create({
             monitorId,
