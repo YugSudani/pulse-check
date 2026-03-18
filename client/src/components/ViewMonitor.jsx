@@ -89,6 +89,7 @@ export default function ViewMonitor() {
     } catch (error) {
       toast.error("Failed to load monitor data");
       console.error("Error fetching monitor data:", error);
+      navigate("/dashboard", { replace: true });
     }
   };
 
@@ -102,6 +103,7 @@ export default function ViewMonitor() {
     } catch (error) {
       toast.error("Failed to load incident data");
       console.error("Error fetching incident data:", error);
+      navigate("/dashboard", { replace: true });
     }
   };
 

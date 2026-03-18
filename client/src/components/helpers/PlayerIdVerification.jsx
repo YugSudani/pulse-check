@@ -10,7 +10,7 @@ export default function PlayerIdVerification() {
 
   useEffect(() => {
     // Only check if user is logged in
-    if (!user) return;
+    if (!user){ console.log("Want to check player id but user not found !!! Returning"); return; }
 
     const checkPlayerIdMatch = async () => {
       try {
