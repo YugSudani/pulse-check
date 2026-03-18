@@ -49,8 +49,13 @@ router.get("/getAllMonitors", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   const monitorId = req.params.id;
+  const UID = req.user._id;
+
   try {
-    const monitor = await monitorModel.findById(monitorId);
+    const monitor = await monitorModel.findOne({ _id: monitorId, userId: UID });
+    if (!monitor) {
+      return res.status(404).json({ success: false, msg: "Monitor not found" });
+    }
     res.status(200).json({ success: true, monitor });
   } catch (error) {
     // console.log(error);
