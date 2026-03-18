@@ -251,7 +251,7 @@ router.post("/saveOneSignalPlayerId", auth, async (req, res) => {
     }
     await userModel.updateOne(
       { _id: user._id },
-      { $addToSet: { playerIds: { $each: playerIds } } }
+      { $addToSet: { playerIds } } 
     );
     res
       .status(201)
