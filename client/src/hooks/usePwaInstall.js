@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 export function usePwaInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState(
     () => window.__pwaInstallPrompt ?? null  // ← grab already-captured event
