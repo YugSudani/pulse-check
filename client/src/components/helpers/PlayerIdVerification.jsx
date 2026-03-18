@@ -20,7 +20,7 @@ export default function PlayerIdVerification() {
           setCurrentPlayerId(id);
 
           // Check if player IDs match or if user has no player ID
-          const userPlayerId = user.playerId;
+          const userPlayerId = user.playerIds.length > 0 ? user.playerIds.join(", ") : null;
 
           // If no player ID in DB or IDs don't match, show modal
           if (!userPlayerId || (id && userPlayerId !== id)) {
@@ -124,7 +124,7 @@ export default function PlayerIdVerification() {
 
           {/* Message */}
           <p className="text-gray-400 mb-6 text-sm sm:text-base">
-            {!user?.playerId ? (
+            {!user?.playerIds.length > 0 ? (
               <>
                 To receive alerts for your monitors, please enable push
                 notifications.

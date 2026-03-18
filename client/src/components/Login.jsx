@@ -16,7 +16,7 @@ export default function Login() {
   const [showOtpField, setShowOtpField] = useState(false);
   const [notificationLoading, setNotificationLoading] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [playerId, setPlayerId] = useState(null);
+  const [playerIds, setPlayerIds] = useState([]);
   const [loginMethod, setLoginMethod] = useState("password");
   const [showPassword, setShowPassword] = useState(false);
   const [loginType, setLoginType] = useState("email");
@@ -31,7 +31,7 @@ export default function Login() {
         try {
           await OneSignal.User.PushSubscription.optOut();
           setNotificationsEnabled(false);
-          setPlayerId(null);
+          setPlayerIds([]);
           //console.log("Notifications disabled");
         } catch (err) {
           console.error("Error disabling notifications:", err);
@@ -46,7 +46,7 @@ export default function Login() {
           // Listen for subscription changes
           const handleSubscriptionChange = async (event) => {
             if (event.current.id) {
-              setPlayerId(event.current.id);
+              setPlayerIds([...playerIds, event.current.id]);
               setNotificationsEnabled(true);
               //console.log("OneSignal Player ID:", event.current.id);
               setNotificationLoading(false);
@@ -70,7 +70,7 @@ export default function Login() {
           // Also check immediately in case ID is already available
           const id = await OneSignal.User.PushSubscription.id;
           if (id) {
-            setPlayerId(id);
+            setPlayerIds([...playerIds, id]);
             setNotificationsEnabled(true);
             setNotificationLoading(false);
             OneSignal.User.PushSubscription.removeEventListener(
@@ -142,7 +142,7 @@ export default function Login() {
     };
     try {
       // Send player ID to backend if user enabled notifications
-      await setOneSignalPlayerId(playerId);
+      await setOneSignalPlayerId(playerIds);
 
       // Login
       await api.post("/user/login", payload, { withCredentials: true });

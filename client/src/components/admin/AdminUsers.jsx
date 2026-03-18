@@ -298,11 +298,11 @@ export default function AdminUsers() {
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">playerId:</span>
+                <span className="text-sm text-gray-400">playerIds:</span>
                 <span
                   className="text-sm font-medium text-green-400"
                 >
-                  {user.playerId ? user.playerId : "- - - -"}
+                  {user.playerIds.length > 0 ? user.playerIds.join(", ") : "- - - -"}
                 </span>
               </div>
 

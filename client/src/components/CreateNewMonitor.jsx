@@ -94,11 +94,11 @@ export default function CreateNewMonitor() {
     try {
       setLoading(true);
 
-      if (user && !user.playerId) {
+      if (user && user.playerIds.length === 0) {
         toast.error(
           "in order to create monitor and receive alerts, please enable notifications.",
         );
-        // setShowPlayerIdVerification(true);
+        setShowPlayerIdVerification(true);
         await checkAuth();
         setLoading(false);
         return;
