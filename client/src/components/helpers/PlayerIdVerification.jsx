@@ -17,28 +17,40 @@ export default function PlayerIdVerification() {
     const checkPlayerIdMatch = async () => {
       try {
         window.OneSignalDeferred.push(async (OneSignal) => {
-          // ✅ STEP 1: Check notification permission
-          const permission = await OneSignal.Notifications.permission;
+          // ✅ WAIT until OneSignal is fully ready
+          await OneSignal.init();
   
-          // ❌ If not granted → show modal directly
+          // ✅ EXTRA SAFE: small delay (important fix)
+          await new Promise((res) => setTimeout(res, 300));
+  
+          // ✅ STEP 1: Check permission (NOW reliable)
+          const permission = OneSignal.Notifications.permission;
+  
+          console.log("Permission status:", permission);
+  
           if (permission !== "granted") {
+            console.log("Notification permission not granted → showing modal");
             setShowModal(true);
-            console.log("Notification permission not granted in browser!!! Showing modal");
             return;
           }
   
-          // ✅ STEP 2: Now safely get Player ID
+          // ✅ STEP 2: Get Player ID
           const id = await OneSignal.User.PushSubscription.id;
-          console.log("Player ID found in browser");
+  
+          if (!id) {
+            console.log("Player ID not ready yet → skip check");
+            return; // ⚠️ IMPORTANT: don't show modal yet
+          }
+  
+          console.log("Player ID found:", id);
           setCurrentPlayerId(id);
   
           const userPlayerId = user.playerId;
-          console.log("User player ID found in database");
   
-          // ✅ STEP 3: Compare IDs
-          if (!userPlayerId || (id && userPlayerId !== id)) {
+          // ✅ STEP 3: Compare
+          if (!userPlayerId || userPlayerId !== id) {
+            console.log("Player IDs do not match → showing modal");
             setShowModal(true);
-            console.log("Player IDs do not match!!! Showing modal");
           }
         });
       } catch (error) {
@@ -48,6 +60,8 @@ export default function PlayerIdVerification() {
   
     checkPlayerIdMatch();
   }, [user]);
+
+
   const handleEnableNotifications = async () => {
     if (isLoading) return;
     setIsLoading(true);
