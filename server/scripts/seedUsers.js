@@ -25,7 +25,7 @@ async function seedUsers() {
         avatar: null,
         provider: "local",
         lastEmailSentAt: null,
-        playerId: null,
+        playerIds: [],
         isVerified: true,
         subscriptionPlan: "pro",
         phoneNumber: null,

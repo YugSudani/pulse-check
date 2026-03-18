@@ -15,21 +15,21 @@ module.exports.sendAlertNotification = async function sendAlertNotification(
 ) {
   try {
     const user = await userModel.findById(monitor.userId);
-    if (!user?.playerId) {
+    if (!user?.playerIds.length > 0) {
       console.warn(
-        `⚠️ No playerId found for user ${monitor.userId}, skipping notification`,
+        `⚠️ No playerIds found for user ${monitor.userId}, skipping notification`,
       );
       return;
     }
 
-    console.log(`📤 Sending notification to player: ${user.playerId}`);
+    console.log(`📤 Sending notification to players: ${user.playerIds.join(", ")}`);
     console.log(`📋 Monitor: ${monitor.name} - Status: ${reason}`);
 
     const response = await axios.post(
       "https://onesignal.com/api/v1/notifications",
       {
         app_id: ONESIGNAL_APP_ID,
-        include_player_ids: [user.playerId],
+        include_player_ids: user.playerIds,
         headings: {
           en: "Server Monitoring Alert",
         },

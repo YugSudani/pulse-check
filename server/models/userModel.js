@@ -38,9 +38,9 @@ const schema = new mongoose.Schema({
     type: Date,
     default: null,
   },
-  playerId: {
-    type: String,
-    default: null,
+  playerIds: {
+    type: [String],
+    default: [],
   },
   isVerified: {
     type: Boolean,

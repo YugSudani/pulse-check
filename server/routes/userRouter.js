@@ -240,8 +240,8 @@ router.post("/login", async (req, res) => {
 
 router.post("/saveOneSignalPlayerId", auth, async (req, res) => {
   try {
-    const { playerId } = req.body;
-    //console.log(playerId);
+    const { playerIds } = req.body;
+    //console.log(playerIds);
     const user = req.user;
     //console.log(user);
     if (!user) {
@@ -249,7 +249,7 @@ router.post("/saveOneSignalPlayerId", auth, async (req, res) => {
         .status(401)
         .json({ message: "User not found", success: false });
     }
-    await userModel.updateOne({ _id: user._id }, { playerId });
+    await userModel.updateOne({ _id: user._id }, { playerIds });
     res
       .status(201)
       .json({ message: "Player ID saved successfully", success: true });
