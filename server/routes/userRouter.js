@@ -249,7 +249,10 @@ router.post("/saveOneSignalPlayerId", auth, async (req, res) => {
         .status(401)
         .json({ message: "User not found", success: false });
     }
-    await userModel.updateOne({ _id: user._id }, { playerIds });
+    await userModel.updateOne(
+      { _id: user._id },
+      { $addToSet: { playerIds: { $each: playerIds } } }
+    );
     res
       .status(201)
       .json({ message: "Player ID saved successfully", success: true });

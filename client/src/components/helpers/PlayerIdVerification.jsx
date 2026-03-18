@@ -17,13 +17,17 @@ export default function PlayerIdVerification() {
         // Get current device's OneSignal player ID
         window.OneSignalDeferred.push(async (OneSignal) => {
           const id = await OneSignal.User.PushSubscription.id;
+        
+          if (!id) {
+            // ⛔ ID not ready yet → don't show modal
+            return;
+          }
+        
           setCurrentPlayerId(id);
-
-          // Check if player IDs match or if user has no player ID
-          const userPlayerId = user.playerIds.length > 0 ? user.playerIds.join(", ") : null;
-
-          // If no player ID in DB or IDs don't match, show modal
-          if (!userPlayerId || (id && userPlayerId !== id)) {
+        
+          const userPlayerIds = user.playerIds || [];
+        
+          if (userPlayerIds.length === 0 || !userPlayerIds.includes(id)) {
             setShowModal(true);
           }
         });
@@ -124,7 +128,7 @@ export default function PlayerIdVerification() {
 
           {/* Message */}
           <p className="text-gray-400 mb-6 text-sm sm:text-base">
-            {!user?.playerIds.length > 0 ? (
+            {user?.playerIds?.length === 0 ? (
               <>
                 To receive alerts for your monitors, please enable push
                 notifications.
