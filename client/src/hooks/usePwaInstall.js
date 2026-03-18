@@ -1,47 +1,34 @@
-import { useEffect, useState } from "react";
-
 export function usePwaInstall() {
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [isInstallable, setIsInstallable] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(
+    () => window.__pwaInstallPrompt ?? null  // ← grab already-captured event
+  );
+  const [isInstallable, setIsInstallable] = useState(
+    () => !!window.__pwaInstallPrompt
+  );
 
   useEffect(() => {
-    // console.log("[PWA] usePwaInstall hook mounted");
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
 
-    // ✅ Check if app is already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      // console.log("[PWA] App is already installed");
-      return;
-    }
-
+    // Still listen for future fires (e.g. after dismissal)
     const handler = (e) => {
-      // console.log("[PWA] beforeinstallprompt event fired");
       e.preventDefault();
+      window.__pwaInstallPrompt = e;
       setDeferredPrompt(e);
       setIsInstallable(true);
-      // console.log("[PWA] App is now installable");
     };
 
     window.addEventListener("beforeinstallprompt", handler);
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handler);
-    };
+    return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
   const installApp = async () => {
-    // console.log("[PWA] Install button clicked");
+    const prompt = deferredPrompt ?? window.__pwaInstallPrompt;
+    if (!prompt) return;
 
-    if (!deferredPrompt) {
-      // console.warn("[PWA] No deferredPrompt available");
-      return;
-    }
+    prompt.prompt();
+    const { outcome } = await prompt.userChoice;
 
-    // console.log("[PWA] Showing install prompt");
-    deferredPrompt.prompt();
-
-    const choiceResult = await deferredPrompt.userChoice;
-    // console.log("[PWA] User choice:", choiceResult.outcome);
-
+    window.__pwaInstallPrompt = null;
     setDeferredPrompt(null);
     setIsInstallable(false);
   };
