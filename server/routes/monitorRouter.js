@@ -203,7 +203,7 @@ router.post("/test_alert", async (req, res) => {
     const { monitorId} = req.body;
 
     const enabled = await adminModel.findOne({});
-    console.log("admin enabled alerts : " + enabled);
+    // console.log("admin enabled alerts : " + enabled);
 
     const monitor = await monitorModel.findById(monitorId);
     if (!monitor) {

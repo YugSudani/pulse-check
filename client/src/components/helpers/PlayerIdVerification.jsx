@@ -9,32 +9,45 @@ export default function PlayerIdVerification() {
   const [currentPlayerId, setCurrentPlayerId] = useState(null);
 
   useEffect(() => {
-    // Only check if user is logged in
-    if (!user){ console.log("Want to check player id but user not found !!! Returning"); return; }
-
+    if (!user) {
+      console.log("Want to check player id but user not found !!! Returning");
+      return;
+    }
+  
     const checkPlayerIdMatch = async () => {
       try {
-        // Get current device's OneSignal player ID
         window.OneSignalDeferred.push(async (OneSignal) => {
+          // ✅ STEP 1: Check notification permission
+          const permission = await OneSignal.Notifications.permission;
+  
+          // ❌ If not granted → show modal directly
+          if (permission !== "granted") {
+            setShowModal(true);
+            console.log("Notification permission not granted in browser!!! Showing modal");
+            return;
+          }
+  
+          // ✅ STEP 2: Now safely get Player ID
           const id = await OneSignal.User.PushSubscription.id;
+          console.log("Player ID found in browser");
           setCurrentPlayerId(id);
-
-          // Check if player IDs match or if user has no player ID
+  
           const userPlayerId = user.playerId;
-
-          // If no player ID in DB or IDs don't match, show modal
+          console.log("User player ID found in database");
+  
+          // ✅ STEP 3: Compare IDs
           if (!userPlayerId || (id && userPlayerId !== id)) {
             setShowModal(true);
+            console.log("Player IDs do not match!!! Showing modal");
           }
         });
       } catch (error) {
         console.error("Error checking player ID:", error);
       }
     };
-
+  
     checkPlayerIdMatch();
   }, [user]);
-
   const handleEnableNotifications = async () => {
     if (isLoading) return;
     setIsLoading(true);
