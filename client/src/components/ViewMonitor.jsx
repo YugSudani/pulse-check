@@ -306,12 +306,12 @@ const get24hStat = (incidents) => {
   const pollingData = () => {
     fetchLogData(range);
     fetchIncidents();
-    console.log("Fetching latest data");
+    // console.log("Fetching latest data");
   };
 
   const pollingLastCheckedAt = () => {
     fetchMonitor();
-    console.log("Fetching lastCheckedAt");
+    // console.log("Fetching lastCheckedAt");
   };
 
   //update time ago every second
