@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const auth = require("./middlewares/auth");
 const passport = require("./config/passport");
+const logger = require("./config/logger");
 
 app.use(passport.initialize());
 
@@ -45,13 +46,13 @@ app.use("/auth", require("./routes/auth"));
 app.use("/admin", auth, adminOnly, require("./routes/adminRouter"));
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
 });
 
 require("./workers/monitorWorker")()
   .then(() => {
-    console.log("Monitor Worker started");
+    logger.info("Monitor Worker started");
   })
   .catch((err) => {
-    console.error("Error starting Monitor Worker:", err);
+    logger.error("Error starting Monitor Worker:", { error: err });
   });

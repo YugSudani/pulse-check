@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
+const logger = require("./config/logger");
 
 module.exports = async function connectDB(URI) {
     try {
         await mongoose.connect(URI);
-        console.log("MongoDB connected");
+        logger.info("MongoDB connected");
     } catch (error) {
-        console.log("MongoDB connection error", error);
+        logger.error("MongoDB connection error", { error });
     }
 }

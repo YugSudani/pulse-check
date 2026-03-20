@@ -8,6 +8,7 @@ const { generateOTP } = require("../helpers/generateOTP");
 const { sendOTPEmail_2 } = require("../helpers/sendMail");
 const auth = require("../middlewares/auth");
 const { sendOTPsms } = require("../helpers/sendSMS");
+const logger = require("../config/logger");
 
 router.post("/genOTP", async (req, res) => {
   try {
@@ -71,7 +72,7 @@ router.post("/genOTP", async (req, res) => {
 
     res.status(200).json({ message: "OTP sent successfully", success: true });
   } catch (error) {
-    console.log("Failed to send OTP : ", error);
+    logger.error("Failed to send OTP : ", { error });
     // Detect Twilio trial error
     if (error.code === 21608) {
       return res.status(400).json({
@@ -85,7 +86,7 @@ router.post("/genOTP", async (req, res) => {
 
 router.post("/verifyOtp", async (req, res) => {
   const { slug, otp } = req.body;
-  console.log(slug + " : " + " : " + otp);
+  // console.log(slug + " : " + " : " + otp);
 
   let query = {};
 
@@ -101,7 +102,7 @@ router.post("/verifyOtp", async (req, res) => {
       OTP: otp,
       expiryTime: { $gt: Date.now() },
     });
-    console.log("token : " + token);
+    // console.log("token : " + token);
 
     if (!token) {
       return res
@@ -117,7 +118,7 @@ router.post("/verifyOtp", async (req, res) => {
 
     res.json({ message: "OTP verified successfully", success: true });
   } catch (error) {
-    console.log("Failed to find token : ", error);
+    logger.error("Failed to find token : ", { error });
     return res.status(500).json({
       message: "Internal server error while finding token",
       success: false,
@@ -128,7 +129,7 @@ router.post("/verifyOtp", async (req, res) => {
 router.post("/signup", async (req, res) => {
   try {
     const { name, phone, email, pwd } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
 
     let l_query = {};
     if (email) {
@@ -148,14 +149,14 @@ router.post("/signup", async (req, res) => {
         .status(201)
         .json({ message: "User created successfully", success: true });
     } catch (error) {
-      console.log("Failed to create user : ", error);
+      logger.error("Failed to create user : ", { error });
       res.status(500).json({
         message: "User Alredy exists",
         success: false,
       });
     }
   } catch (error) {
-    console.log("Failed to create user : ", error);
+    logger.error("Failed to create user : ", { error });
     res.status(500).json({
       message: "Internal server error while Registering user",
       success: false,
@@ -166,7 +167,7 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { phone, email, pwd, otp } = req.body;
-    console.log(req.body);
+    logger.info("Login request received:", { body: req.body });
 
     const query = {};
     if (email) {
@@ -176,7 +177,7 @@ router.post("/login", async (req, res) => {
     }
 
     const user = await userModel.findOne(query);
-    console.log("user : " + user);
+    logger.info("User found:", { user });
     if (!user) {
       return res
         .status(404)
@@ -233,7 +234,7 @@ router.post("/login", async (req, res) => {
     // console.log("Login successful");
     res.status(200).json({ message: "Login successful", success: true });
   } catch (error) {
-    console.log("login error : " + error);
+    logger.error("login error : " + error);
     res.status(500).json({ message: "Internal server error", success: false });
   }
 });
@@ -257,7 +258,7 @@ router.post("/saveOneSignalPlayerId", auth, async (req, res) => {
       .status(201)
       .json({ message: "Player ID saved successfully", success: true });
   } catch (error) {
-    console.log(error);
+    logger.error("Failed to save player ID : ", { error });
     res.status(500).json({ message: "Internal server error", success: false });
   }
 });
@@ -276,13 +277,13 @@ router.post("/saveCallNumber", auth, async (req, res) => {
         },
       },
     );
-    console.log("num updated : " + phoneNumber);
+    logger.info("Phone number updated from " + user.phoneNumber.number + " to " + phoneNumber);
 
     res
       .status(200)
       .json({ success: true, message: "Phone number saved successfully" });
   } catch (error) {
-    console.error("Phone number save failed:", error);
+    logger.error("Phone number save failed:", { error });
     res
       .status(500)
       .json({ success: false, message: "Phone number save failed" });
@@ -321,6 +322,7 @@ router.get("/getMe", async (req, res) => {
       .status(200)
       .json({ message: "user found true", success: true, user: user });
   } catch (error) {
+    logger.error("Failed to get user : ", { error });
     return res.status(401).json({ message: "User not found", success: false });
   }
 });

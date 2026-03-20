@@ -4,6 +4,7 @@ const userModel = require("../models/userModel");
 const monitorModel = require("../models/monitorModel");
 const incidentModel = require("../models/incidentModel");
 const adminModel = require("../models/adminModel");
+const logger = require("../config/logger");
 
 // Statistics endpoint
 router.get("/getStats", async (req, res) => {
@@ -53,7 +54,7 @@ router.get("/getStats", async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
+    logger.error("Error fetching statistics:", { error: err });
     res.status(500).json({ message: "Internal Server Error", success: false });
   }
 });
@@ -77,7 +78,7 @@ router.get("/getAllUsers", async (req, res) => {
       success: true,
     });
   } catch (err) {
-    console.log(err);
+    logger.error("Error fetching users:", { error: err });
     res.status(500).json({ message: "Internal Server Error", success: false });
   }
 });
@@ -93,7 +94,7 @@ router.post("/blockUser", async (req, res) => {
       .status(200)
       .json({ message: "User blocked successfully", success: true });
   } catch (err) {
-    console.log(err);
+    logger.error("Error blocking user:", { error: err });
     res.status(500).json({ message: "Internal Server Error", success: false });
   }
 });
@@ -109,7 +110,7 @@ router.post("/unblockUser", async (req, res) => {
       .status(200)
       .json({ message: "User unblocked successfully", success: true });
   } catch (err) {
-    console.log(err);
+    logger.error("Error unblocking user:", { error: err });
     res.status(500).json({ message: "Internal Server Error", success: false });
   }
 });
@@ -133,7 +134,7 @@ router.get("/getAllMonitors", async (req, res) => {
       success: true,
     });
   } catch (err) {
-    console.log(err);
+    logger.error("Error fetching monitors:", { error: err });
     res.status(500).json({ message: "Internal Server Error", success: false });
   }
 });
@@ -148,7 +149,7 @@ router.post("/pauseMonitor", async (req, res) => {
       .status(200)
       .json({ message: "Monitor paused successfully", success: true });
   } catch (err) {
-    console.log(err);
+    logger.error("Error pausing monitor:", { error: err });
     res.status(500).json({ message: "Internal Server Error", success: false });
   }
 });
@@ -163,7 +164,7 @@ router.post("/resumeMonitor", async (req, res) => {
       .status(200)
       .json({ message: "Monitor resumed successfully", success: true });
   } catch (err) {
-    console.log(err);
+    logger.error("Error resuming monitor:", { error: err });
     res.status(500).json({ message: "Internal Server Error", success: false });
   }
 });
@@ -187,7 +188,7 @@ router.get("/getIncidents", async (req, res) => {
       success: true,
     });
   } catch (err) {
-    console.log(err);
+    logger.error("Error fetching incidents:", { error: err });
     res.status(500).json({ message: "Internal Server Error", success: false });
   }
 });
@@ -202,14 +203,14 @@ router.get("/getNotifications", async (req, res) => {
       });
     }
   } catch (err) {
-    console.log(err);
+    logger.error("Error fetching notifications:", { error: err });
   }
 });
 
 router.post("/setNotifications", async (req, res) => {
   try {
     const { pushEnabled, emailEnabled, callEnabled } = req.body;
-    console.log(req.body);
+    logger.info("Updating notification settings:", { body: req.body });
 
     const response = await adminModel.updateMany(
       {},
@@ -225,12 +226,13 @@ router.post("/setNotifications", async (req, res) => {
         upsert: true,
       },
     );
-    console.log(response);
+    logger.info("Notification settings updated:", { response });
     res.status(200).json({
       msg: "successfully updated notification settings",
       success: true,
     });
   } catch (err) {
+    logger.error("Error updating notification settings:", { error: err });
     res
       .status(500)
       .json({ msg: "failed to update notification settings", success: false });

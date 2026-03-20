@@ -1,4 +1,5 @@
 const { getUser } = require("../services/userMap");
+const logger = require("../config/logger");
 
 const auth = (req, res, next) => {
   try {
@@ -17,7 +18,7 @@ const auth = (req, res, next) => {
 
     next();
   } catch (err) {
-    console.log("JWT error:", err.name, err.message);
+    logger.error("JWT error:", { error: err });
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 };

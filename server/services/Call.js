@@ -3,12 +3,13 @@ const twilio = require("twilio");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const fromNumber = process.env.TW_phnum;
+const logger = require("../config/logger");
 
 const client = twilio(accountSid, authToken);
 
 async function makeTestCall(number, status, monitor) {
   const user = await userModel.findById(monitor.userId);
-  console.log("Calling alert to : ", user.name + "for : " + monitor.name);
+  logger.info("Calling alert to : ", user.name + " On Number: " + number + " for : " + monitor.name);
   try {
     const call = await client.calls.create({
       to: number,
@@ -80,7 +81,7 @@ async function makeTestCall(number, status, monitor) {
 
     return call.sid;
   } catch (error) {
-    console.error("❌ Twilio Call Error:", error.message);
+    logger.error("❌ Twilio Call Error:", { error });
     throw error;
   }
 }

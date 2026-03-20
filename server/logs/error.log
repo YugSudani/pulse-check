@@ -1,0 +1,1 @@
+{"error":{"message":"invalid signature","name":"JsonWebTokenError"},"level":"error","message":"Failed to get user : ","service":"monitor-service","timestamp":"2026-03-20T10:43:02.595Z"}

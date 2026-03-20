@@ -6,7 +6,7 @@ async function setOneSignalPlayerId(playerIds) {
   //console.log("playerIds saved : ", playerIds);
   try {
     await api.post("/user/saveOneSignalPlayerId", { playerIds });
-    console.log("Player ID saved successfully");
+    // console.log("Player ID saved successfully");
   } catch (err) {
     console.error("Failed to save player ID:", err);
     // Don't block login if saving player ID fails

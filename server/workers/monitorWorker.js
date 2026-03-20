@@ -11,6 +11,7 @@ const pingIt = require("../helpers/ping-it");
 const { makeTestCall } = require("../services/Call");
 const getPhoneNumber = require("../helpers/getPhoneNumber");
 const createLogs = require("../helpers/createLogs");
+const logger = require("../config/logger");
 
 
 //db connection
@@ -119,7 +120,7 @@ const processMonitor = async (monitor) => {
       }
     }
   } catch (error) {
-    console.error("Error processing monitor:", monitor._id, error);
+    logger.error("Error processing monitor:", { monitorId: monitor._id, error });
   }
 };
 
@@ -137,7 +138,7 @@ const monitorWorker = async () => {
       processMonitor(monitor);
     });
   } catch (error) {
-    console.error("Monitor worker error:", error);
+    logger.error("Monitor worker error:", { error });
   } finally {
     isRunning = false;
   }

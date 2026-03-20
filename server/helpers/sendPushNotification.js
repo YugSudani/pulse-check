@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 const path = require("path");
 dotenv.config({ path: path.join(__dirname, "../.env") });
+const logger = require("../config/logger");
 
 const userModel = require("../models/userModel");
 const axios = require("axios");
@@ -16,14 +17,14 @@ module.exports.sendAlertNotification = async function sendAlertNotification(
   try {
     const user = await userModel.findById(monitor.userId);
     if (!user?.playerIds.length > 0) {
-      console.warn(
+      logger.warn(
         `⚠️ No playerIds found for user ${monitor.userId}, skipping notification`,
       );
       return;
     }
 
-    console.log(`📤 Sending notification to players: ${user.playerIds.join(", ")}`);
-    console.log(`📋 Monitor: ${monitor.name} - Status: ${reason}`);
+    logger.info(`📤 Sending notification to players: ${user.playerIds.join(", ")}`);
+    logger.info(`📋 Monitor: ${monitor.name} - Status: ${reason}`);
 
     const response = await axios.post(
       "https://onesignal.com/api/v1/notifications",
@@ -61,7 +62,7 @@ module.exports.sendAlertNotification = async function sendAlertNotification(
       },
     );
 
-    console.log("Notification sent successfully:", response.data);
+    logger.info("Notification sent successfully:", { data: response.data });
     return response.data;
   } catch (error) {
     console.error(

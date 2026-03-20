@@ -8,6 +8,7 @@ const { sendAlertNotification } = require("../helpers/sendPushNotification");
 const { sendAlertEmail_2 } = require("../helpers/sendMail");
 const { makeTestCall } = require("../services/Call");
 const getPhoneNumber = require("../helpers/getPhoneNumber");
+const logger = require("../config/logger");
 
 router.post("/createMonitor", async (req, res) => {
   try {
@@ -15,7 +16,7 @@ router.post("/createMonitor", async (req, res) => {
     const user = req.user;
     const UID = user._id;
 
-    console.log(alert);
+    // console.log(alert);
 
     const monitor = await monitorModel.create({
       userId: UID,
@@ -30,7 +31,7 @@ router.post("/createMonitor", async (req, res) => {
 
     res.status(201).json({ success: true, monitor });
   } catch (error) {
-    console.log(error);
+    logger.error("Error creating monitor:", { error });
     res.status(500).json({ success: false, msg: "Failed to create monitor" });
   }
 });
@@ -42,7 +43,7 @@ router.get("/getAllMonitors", async (req, res) => {
     // console.log(user);
     res.status(200).json({ success: true, monitors });
   } catch (error) {
-    console.log(error);
+    logger.error("Error fetching monitors:", { error });
     res.status(500).json({ success: false, msg: "Failed to get monitors" });
   }
 });
@@ -58,7 +59,7 @@ router.get("/:id", async (req, res) => {
     }
     res.status(200).json({ success: true, monitor });
   } catch (error) {
-    // console.log(error);
+    logger.error("Error fetching monitor:", { error });
     res.status(500).json({ success: false, msg: "Failed to get monitor" });
   }
 });
@@ -74,7 +75,7 @@ router.patch("/pause/:id", async (req, res) => {
     await monitor.save();
     res.status(200).json({ success: true });
   } catch (error) {
-    console.log(error);
+    logger.error("Error pausing monitor:", { error });
     res.status(500).json({ success: false, msg: "Failed to pause monitor" });
   }
 });
@@ -110,7 +111,7 @@ router.delete("/deleteMonitor/:id", async (req, res) => {
     res.status(200).json({ success: true, monitors: allMonitor });
   } catch (error) {
     await session.abortTransaction();
-    console.error(error);
+    logger.error("Error deleting monitor:", { error });
     res.status(500).json({
       success: false,
       msg: "Failed to delete monitor",
@@ -193,7 +194,7 @@ router.put("/editeMonitor/:monitorId", async (req, res) => {
     await monitor.save();
     res.status(200).json({ success: true });
   } catch (error) {
-    console.log(error);
+    logger.error("Error editing monitor:", { error });
     res.status(500).json({ success: false, msg: "Failed to edit monitor" });
   }
 });
@@ -243,7 +244,7 @@ router.post("/test_alert", async (req, res) => {
     }
     res.status(200).json({ success: true });
   } catch (error) {
-    console.log(error);
+    logger.error("Error testing monitor:", { error });
     res.status(500).json({ success: false, message: "Failed to test monitor" });
   }
 });

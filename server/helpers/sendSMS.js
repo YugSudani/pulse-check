@@ -3,6 +3,7 @@ const axios = require("axios");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const fromNumber = process.env.TW_phnum;
+const logger = require("../config/logger");
 
 const sendOTPsms = async (phone, name, otp) => {
   const message = `Dear ${name}, your OTP is ${otp}. Please use this OTP to verify your account.`;
@@ -26,16 +27,16 @@ const sendOTPsms = async (phone, name, otp) => {
       }
     );
 
-    console.log("SMS sent successfully:", response.data.sid);
+    logger.info("SMS sent successfully:", { sid: response.data.sid });
   } catch (error) {
-    console.log(
+    logger.error(
       "Error sending SMS:",
       error.response?.data || error.message
     );
      // Throw structured error
   const twilioError = error.response?.data || error;
 
-    console.log("Twilio Full Error:", twilioError);
+    logger.error("Twilio Full Error:", { error: twilioError });
 
     // Throw structured error
     throw {

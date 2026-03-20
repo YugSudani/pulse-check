@@ -1,4 +1,5 @@
 const emailjs = require("@emailjs/nodejs");
+const logger = require("../config/logger");
 
 const sendAlertEmail = async ({
   toEmail,
@@ -29,7 +30,7 @@ const sendAlertEmail = async ({
 
     //console.log("Alert email sent:", monitorName, status);
   } catch (err) {
-    console.error("❌ EmailJS error:", err);
+    logger.error("❌ EmailJS error while sending alert:", { error: err });
   }
 };
 
@@ -53,7 +54,7 @@ const sendOTPEmail = async ({ toEmail, userName, otp }) => {
 
     //console.log("OTP Email Send to:", toEmail);
   } catch (err) {
-    console.error("❌ EmailJS error:", err);
+    logger.error("❌ EmailJS error while sending OTP:", { error: err });
   }
 };
 

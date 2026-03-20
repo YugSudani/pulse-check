@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const stripe = require("../config/stripe");
 const auth = require("../middlewares/auth");
+const logger = require("../config/logger");
 
 router.post("/create-checkout-session", auth, async (req, res) => {
   try {
@@ -40,7 +41,7 @@ router.post("/create-checkout-session", auth, async (req, res) => {
 
     res.json({ url: session.url });
   } catch (err) {
-    console.error(err);
+    logger.error("❌ Error creating checkout session:", { error: err });
     res.status(500).json({
       error: err?.raw?.message || err.message,
     });

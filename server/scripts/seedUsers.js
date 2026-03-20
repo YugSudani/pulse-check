@@ -1,5 +1,6 @@
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
+const logger = require("../config/logger");
 
 const mongoose = require("mongoose");
 const userModel = require("../models/userModel");
@@ -10,7 +11,7 @@ const TOTAL_RECORDS = 1000; // change to 1000 if needed
 async function seedUsers() {
   try {
     await mongoose.connect(MONGO_URI);
-    console.log("Connected to MongoDB");
+    logger.info("Connected to MongoDB");
 
     const users = [];
 
@@ -32,14 +33,14 @@ async function seedUsers() {
       });
     }
 
-    console.log(`Inserting ${TOTAL_RECORDS} users...`);
+    logger.info(`Inserting ${TOTAL_RECORDS} users...`);
     await userModel.insertMany(users);
-    console.log(`✅ Successfully inserted ${TOTAL_RECORDS} users!`);
+    logger.info(`✅ Successfully inserted ${TOTAL_RECORDS} users!`);
   } catch (error) {
-    console.error("Error seeding users:", error);
+    logger.error("Error seeding users:", { error });
   } finally {
     await mongoose.disconnect();
-    console.log("Disconnected from MongoDB");
+    logger.info("Disconnected from MongoDB");
   }
 }
 

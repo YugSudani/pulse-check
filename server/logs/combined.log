@@ -1,0 +1,9 @@
+{"level":"info","message":"Server is running on port 6001","service":"monitor-service","timestamp":"2026-03-20T10:39:23.246Z"}
+{"level":"info","message":"=> MongoDB connected from worker","service":"monitor-service","timestamp":"2026-03-20T10:39:23.250Z"}
+{"level":"info","message":"MongoDB connected","service":"monitor-service","timestamp":"2026-03-20T10:39:23.774Z"}
+{"level":"info","message":"Monitor Worker started","service":"monitor-service","timestamp":"2026-03-20T10:39:24.000Z"}
+{"level":"info","message":"Server is running on port 6001","service":"monitor-service","timestamp":"2026-03-20T10:39:50.156Z"}
+{"level":"info","message":"=> MongoDB connected from worker","service":"monitor-service","timestamp":"2026-03-20T10:39:50.160Z"}
+{"level":"info","message":"MongoDB connected","service":"monitor-service","timestamp":"2026-03-20T10:39:51.362Z"}
+{"level":"info","message":"Monitor Worker started","service":"monitor-service","timestamp":"2026-03-20T10:39:51.567Z"}
+{"error":{"message":"invalid signature","name":"JsonWebTokenError"},"level":"error","message":"Failed to get user : ","service":"monitor-service","timestamp":"2026-03-20T10:43:02.595Z"}

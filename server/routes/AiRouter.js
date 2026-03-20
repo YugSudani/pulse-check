@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const logger = require("../config/logger");
 
 // Groq API - Free, fast, 30 requests/minute
 // Get your free API key at: https://console.groq.com/keys
@@ -46,7 +47,7 @@ ${text}`,
     );
 
     const data = await response.json();
-    console.log("🤖 Groq Response received");
+    logger.info("🤖 Groq Response received");
 
     if (data.choices && data.choices[0]) {
       res.json({ status: "ok", output_summary: data });

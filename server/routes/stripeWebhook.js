@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const stripe = require("../config/stripe");
 const userModel = require("../models/userModel");
+const logger = require("../config/logger");
 
 router.post(
   "/webhook",
@@ -17,7 +18,7 @@ router.post(
         process.env.STRIPE_WEBHOOK_SECRET,
       );
     } catch (err) {
-      console.error("Webhook error:", err.message);
+      logger.error("Webhook error:", { error: err });
       return res.status(400).send(`Webhook Error`);
     }
 
@@ -25,7 +26,7 @@ router.post(
       const session = event.data.object;
       const { plan, userId } = session.metadata;
 
-      console.log("✅ Payment confirmed for user:", userId, "Plan:", plan);
+      logger.info("✅ Payment confirmed for user:", { userId, plan });
 
       try {
         // Update user's subscription plan in database
@@ -36,20 +37,17 @@ router.post(
         );
 
         if (updatedUser) {
-          console.log(
+          logger.info(
             "✅ User subscription updated:",
             updatedUser.email,
             "->",
             plan,
           );
         } else {
-          console.error("❌ User not found with ID:", userId);
+          logger.error("❌ User not found with ID:", { userId });
         }
       } catch (dbError) {
-        console.error(
-          "❌ Database error updating subscription:",
-          dbError.message,
-        );
+        logger.error("❌ Database error updating subscription:", { error: dbError });
       }
     }
 
