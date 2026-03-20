@@ -7,3 +7,47 @@
 {"level":"info","message":"MongoDB connected","service":"monitor-service","timestamp":"2026-03-20T10:39:51.362Z"}
 {"level":"info","message":"Monitor Worker started","service":"monitor-service","timestamp":"2026-03-20T10:39:51.567Z"}
 {"error":{"message":"invalid signature","name":"JsonWebTokenError"},"level":"error","message":"Failed to get user : ","service":"monitor-service","timestamp":"2026-03-20T10:43:02.595Z"}
+{"level":"info","message":"Server is running on port 6001","service":"monitor-service","timestamp":"2026-03-20T10:45:14.285Z"}
+{"level":"info","message":"=> MongoDB connected from worker","service":"monitor-service","timestamp":"2026-03-20T10:45:14.290Z"}
+{"level":"info","message":"MongoDB connected","service":"monitor-service","timestamp":"2026-03-20T10:45:14.788Z"}
+{"level":"info","message":"Monitor Worker started","service":"monitor-service","timestamp":"2026-03-20T10:45:15.023Z"}
+{"level":"info","message":"Server is running on port 6001","service":"monitor-service","timestamp":"2026-03-20T11:09:20.232Z"}
+{"level":"info","message":"=> MongoDB connected from worker","service":"monitor-service","timestamp":"2026-03-20T11:09:20.236Z"}
+{"level":"info","message":"MongoDB connected","service":"monitor-service","timestamp":"2026-03-20T11:09:20.485Z"}
+{"level":"info","message":"Monitor Worker started","service":"monitor-service","timestamp":"2026-03-20T11:09:20.595Z"}
+{"error":{"message":"invalid signature","name":"JsonWebTokenError"},"level":"error","message":"JWT error:","service":"monitor-service","timestamp":"2026-03-20T11:52:47.229Z"}
+{"body":{"email":"aitoolsyug@gmail.com","otp":"","phone":"","pwd":"123@Aa"},"level":"info","message":"Login request received:","service":"monitor-service","timestamp":"2026-03-20T11:52:47.245Z"}
+{"level":"info","message":"User found:","service":"monitor-service","timestamp":"2026-03-20T11:52:47.258Z","user":{"__v":0,"_id":"69997756b8a88f3197537ef4","avatar":null,"email":"aitoolsyug@gmail.com","googleId":null,"isBlocked":false,"isVerified":true,"lastEmailSentAt":null,"name":"karan","phoneNumber":{"isVerified":false,"number":null},"playerIds":["eb100562-c4cd-4b62-855a-1e9c80e8f9d8"],"provider":"local","pwd":"$2b$11$/i.T0Pgp88lj3UTIz2qhy.xuhJR4.K7JO6NQKWPaWztDFuX.Vvvk.","role":"user","subscriptionPlan":"business"}}
+{"level":"info","message":"Server is running on port 6001","service":"monitor-service","timestamp":"2026-03-20T11:53:06.720Z"}
+{"level":"info","message":"=> MongoDB connected from worker","service":"monitor-service","timestamp":"2026-03-20T11:53:06.726Z"}
+{"level":"info","message":"MongoDB connected","service":"monitor-service","timestamp":"2026-03-20T11:53:06.988Z"}
+{"level":"info","message":"Monitor Worker started","service":"monitor-service","timestamp":"2026-03-20T11:53:07.249Z"}
+{"error":{"message":"jwt must be provided","name":"JsonWebTokenError"},"level":"error","message":"Failed to get user : ","service":"monitor-service","timestamp":"2026-03-20T11:53:08.466Z"}
+{"body":{"email":"aitoolsyug@gmail.com","otp":"","phone":"","pwd":"123@Aa"},"level":"info","message":"Login request received:","service":"monitor-service","timestamp":"2026-03-20T11:53:23.220Z"}
+{"level":"info","message":"User found:","service":"monitor-service","timestamp":"2026-03-20T11:53:23.232Z","user":{"__v":0,"_id":"69997756b8a88f3197537ef4","avatar":null,"email":"aitoolsyug@gmail.com","googleId":null,"isBlocked":false,"isVerified":true,"lastEmailSentAt":null,"name":"karan","phoneNumber":{"isVerified":false,"number":null},"playerIds":["eb100562-c4cd-4b62-855a-1e9c80e8f9d8"],"provider":"local","pwd":"$2b$11$/i.T0Pgp88lj3UTIz2qhy.xuhJR4.K7JO6NQKWPaWztDFuX.Vvvk.","role":"user","subscriptionPlan":"business"}}
+{"level":"info","message":"Server is running on port 6001","service":"monitor-service","timestamp":"2026-03-20T11:53:42.298Z"}
+{"level":"info","message":"=> MongoDB connected from worker","service":"monitor-service","timestamp":"2026-03-20T11:53:42.301Z"}
+{"level":"info","message":"MongoDB connected","service":"monitor-service","timestamp":"2026-03-20T11:53:42.541Z"}
+{"level":"info","message":"Monitor Worker started","service":"monitor-service","timestamp":"2026-03-20T11:53:42.657Z"}
+{"error":{"message":"jwt must be provided","name":"JsonWebTokenError"},"level":"error","message":"Failed to get user : ","service":"monitor-service","timestamp":"2026-03-20T11:53:45.646Z"}
+{"level":"info","message":"Server is running on port 6001","service":"monitor-service","timestamp":"2026-03-20T11:53:57.728Z"}
+{"level":"info","message":"=> MongoDB connected from worker","service":"monitor-service","timestamp":"2026-03-20T11:53:57.732Z"}
+{"level":"info","message":"MongoDB connected","service":"monitor-service","timestamp":"2026-03-20T11:53:58.195Z"}
+{"level":"info","message":"Monitor Worker started","service":"monitor-service","timestamp":"2026-03-20T11:53:58.295Z"}
+{"error":{"message":"jwt must be provided","name":"JsonWebTokenError"},"level":"error","message":"Failed to get user : ","service":"monitor-service","timestamp":"2026-03-20T11:54:03.160Z"}
+{"level":"info","message":"Server is running on port 6001","service":"monitor-service","timestamp":"2026-03-20T11:54:15.246Z"}
+{"level":"info","message":"=> MongoDB connected from worker","service":"monitor-service","timestamp":"2026-03-20T11:54:15.249Z"}
+{"level":"info","message":"MongoDB connected","service":"monitor-service","timestamp":"2026-03-20T11:54:15.501Z"}
+{"level":"info","message":"Monitor Worker started","service":"monitor-service","timestamp":"2026-03-20T11:54:15.617Z"}
+{"body":{"email":"aitoolsyug@gmail.com","otp":"","phone":"","pwd":"123@aA"},"level":"info","message":"Login request received:","service":"monitor-service","timestamp":"2026-03-20T11:54:24.060Z"}
+{"level":"info","message":"User found:","service":"monitor-service","timestamp":"2026-03-20T11:54:24.073Z","user":{"__v":0,"_id":"69997756b8a88f3197537ef4","avatar":null,"email":"aitoolsyug@gmail.com","googleId":null,"isBlocked":false,"isVerified":true,"lastEmailSentAt":null,"name":"karan","phoneNumber":{"isVerified":false,"number":null},"playerIds":["eb100562-c4cd-4b62-855a-1e9c80e8f9d8"],"provider":"local","pwd":"$2b$11$/i.T0Pgp88lj3UTIz2qhy.xuhJR4.K7JO6NQKWPaWztDFuX.Vvvk.","role":"user","subscriptionPlan":"business"}}
+{"level":"info","message":"Server is running on port 6001","service":"monitor-service","timestamp":"2026-03-20T11:54:39.889Z"}
+{"level":"info","message":"=> MongoDB connected from worker","service":"monitor-service","timestamp":"2026-03-20T11:54:39.893Z"}
+{"body":{"email":"aitoolsyug@gmail.com","otp":"","phone":"","pwd":"123@Aa"},"level":"info","message":"Login request received:","service":"monitor-service","timestamp":"2026-03-20T11:54:40.040Z"}
+{"level":"info","message":"MongoDB connected","service":"monitor-service","timestamp":"2026-03-20T11:54:40.218Z"}
+{"level":"info","message":"User found:","service":"monitor-service","timestamp":"2026-03-20T11:54:40.323Z","user":{"__v":0,"_id":"69997756b8a88f3197537ef4","avatar":null,"email":"aitoolsyug@gmail.com","googleId":null,"isBlocked":false,"isVerified":true,"lastEmailSentAt":null,"name":"karan","phoneNumber":{"isVerified":false,"number":null},"playerIds":["eb100562-c4cd-4b62-855a-1e9c80e8f9d8"],"provider":"local","pwd":"$2b$11$/i.T0Pgp88lj3UTIz2qhy.xuhJR4.K7JO6NQKWPaWztDFuX.Vvvk.","role":"user","subscriptionPlan":"business"}}
+{"level":"info","message":"Monitor Worker started","service":"monitor-service","timestamp":"2026-03-20T11:54:40.428Z"}
+{"level":"info","message":"Server is running on port 6001","timestamp":"2026-03-20T11:56:05.515Z"}
+{"level":"info","message":"=> MongoDB connected from worker","timestamp":"2026-03-20T11:56:05.519Z"}
+{"level":"info","message":"MongoDB connected","timestamp":"2026-03-20T11:56:05.777Z"}
+{"level":"info","message":"Monitor Worker started","timestamp":"2026-03-20T11:56:05.993Z"}

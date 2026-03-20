@@ -2,37 +2,34 @@ const { createLogger, format, transports } = require("winston");
 
 const { combine, timestamp, errors, printf, json } = format;
 
-// Custom format (for dev readability)
-const logFormat = printf(({ level, message, timestamp, stack, ...meta }) => {
+// Pretty format for dev
+const devFormat = printf(({ level, message, timestamp, stack, ...meta }) => {
   return `${timestamp} [${level}]: ${stack || message} ${
     Object.keys(meta).length ? JSON.stringify(meta) : ""
   }`;
 });
 
+const isProd = process.env.NODE_ENV === "production";
+
 const logger = createLogger({
   level: "info",
   format: combine(
     timestamp(),
-    errors({ stack: true }), // log stack traces
-    json() // use JSON for production
+    errors({ stack: true }),
+    isProd ? json() : devFormat
   ),
-  defaultMeta: { service: "monitor-service" },
   transports: [
-    // Save errors separately
-    new transports.File({ filename: "logs/error.log", level: "error" }),
+    // ✅ ALWAYS required for Render
+    new transports.Console(),
 
-    // Save all logs
-    new transports.File({ filename: "logs/combined.log" }),
+    // ✅ Only in development
+    ...(!isProd
+      ? [
+          new transports.File({ filename: "logs/error.log", level: "error" }),
+          new transports.File({ filename: "logs/combined.log" }),
+        ]
+      : []),
   ],
 });
-
-// 👇 Console logging (only in dev)
-if (process.env.NODE_ENV !== "production") {
-  logger.add(
-    new transports.Console({
-      format: combine(timestamp(), logFormat),
-    })
-  );
-}
 
 module.exports = logger;

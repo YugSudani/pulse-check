@@ -1,1 +1,5 @@
 {"error":{"message":"invalid signature","name":"JsonWebTokenError"},"level":"error","message":"Failed to get user : ","service":"monitor-service","timestamp":"2026-03-20T10:43:02.595Z"}
+{"error":{"message":"invalid signature","name":"JsonWebTokenError"},"level":"error","message":"JWT error:","service":"monitor-service","timestamp":"2026-03-20T11:52:47.229Z"}
+{"error":{"message":"jwt must be provided","name":"JsonWebTokenError"},"level":"error","message":"Failed to get user : ","service":"monitor-service","timestamp":"2026-03-20T11:53:08.466Z"}
+{"error":{"message":"jwt must be provided","name":"JsonWebTokenError"},"level":"error","message":"Failed to get user : ","service":"monitor-service","timestamp":"2026-03-20T11:53:45.646Z"}
+{"error":{"message":"jwt must be provided","name":"JsonWebTokenError"},"level":"error","message":"Failed to get user : ","service":"monitor-service","timestamp":"2026-03-20T11:54:03.160Z"}
