@@ -173,8 +173,8 @@ export default function Slidebar() {
               onClick={async () => {
                 setOpenSidebar(false);
                 await api.post("/user/logout");
-                navigate("/login", { replace: true });
                 await checkAuth();
+                navigate("/login", { replace: true });
               }}
               className="px-11 flex items-center justify-center py-2 text-sm font-medium text-white 
                              bg-slate-800 rounded-md 
