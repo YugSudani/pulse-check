@@ -4,7 +4,6 @@ import api from "../lib/api";
 import ResponseTimeChart from "./ResponseTimeChart";
 import { useNavigate } from "react-router-dom";
 import exportLogs from "./helpers/Logs_csv_generator";
-import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
 import TextToSpeech from "./helpers/TextToSpeech";
 import { Bell, Mail, Phone } from "lucide-react";
@@ -23,7 +22,6 @@ export default function ViewMonitor() {
   const [incidents, setIncidents] = useState([]);
   const [stat, setStat] = useState({});
   const [timeAgo, setTimeAgo] = useState("");
-  const { user } = useAuth();
   const [testingAlerts, setTestingAlerts] = useState(false);
 
   // AI Summary states
@@ -143,100 +141,41 @@ export default function ViewMonitor() {
     setUpDownTime(diffHoursTime.trim());
   };
 
-  // const get24hStat = (incidents) => {
-  //   const now = Date.now();
-  //   const last24HoursStart = now - 24 * 60 * 60 * 1000; // 24h ago
-  //   const incidentCount = incidents.length;
-  //   let totalDowntimeMs = 0;
+  const calculateOverallStats = (incidents) => {
+    const monitorStart = monitor?.createdAt
+      ? new Date(monitor.createdAt).getTime()
+      : NaN;
+    const now = Date.now();
+    const totalTimeMs =
+      !isNaN(monitorStart) && monitorStart < now
+        ? now - monitorStart
+        : 24 * 60 * 60 * 1000;
 
-  //   incidents.forEach((incident) => {
-  //     const start = new Date(incident.incidentStartTime).getTime();
-  //     const end = incident.incidentEndTime
-  //       ? new Date(incident.incidentEndTime).getTime()
-  //       : now;
+    let totalDowntimeMs = 0;
+    let incidentCount = 0;
 
-  //     // Clamp to 24h range
-  //     const effectiveStart = Math.max(start, last24HoursStart);
-  //     const effectiveEnd = Math.min(end, now);
+    incidents.forEach((incident) => {
+      if (!incident.incidentStartTime || !incident.incidentEndTime) return;
 
-  //     if (effectiveEnd > effectiveStart) {
-  //       totalDowntimeMs += effectiveEnd - effectiveStart;
-  //     }
-  //   });
-  //   const downtimeMinutes = Math.round(totalDowntimeMs / (1000 * 60));
-  //   const totalTimeMs = 24 * 60 * 60 * 1000;
-  //   const uptimePercentage =
-  //     ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
-  //   const uptime = uptimePercentage.toFixed(2);
+      const start = new Date(incident.incidentStartTime).getTime();
+      const end = new Date(incident.incidentEndTime).getTime();
 
-  //   setStat({
-  //     incidentCount,
-  //     downtimeMinutes,
-  //     uptime,
-  //   });
-  // };
+      if (isNaN(start) || isNaN(end) || end <= start) return;
 
-  // Live updating time ago
+      incidentCount += 1;
+      totalDowntimeMs += end - start;
+    });
 
-const get24hStat = (incidents) => {
-  const now = Date.now();
-  const last24HoursStart = now - 24 * 60 * 60 * 1000;
-  const totalTimeMs = 24 * 60 * 60 * 1000;
+    const downtimeMinutes = Math.round(totalDowntimeMs / (1000 * 60));
+    const cappedDowntimeMs = Math.min(totalDowntimeMs, totalTimeMs);
+    const uptimePercentage = ((totalTimeMs - cappedDowntimeMs) / totalTimeMs) * 100;
 
-  let totalDowntimeMs = 0;
-  let incidentCount = 0;
-
-  incidents.forEach((incident) => {
-    if (!incident.incidentStartTime) return;
-
-    const start = new Date(incident.incidentStartTime).getTime();
-    if (isNaN(start)) return;
-
-    const hasValidEnd =
-      incident.incidentEndTime &&
-      !isNaN(new Date(incident.incidentEndTime).getTime());
-
-    // If no valid end time, check if monitor is currently DOWN
-    // If monitor is UP, this is an orphaned incident — skip it
-    // If monitor is DOWN, treat it as ongoing (end = now)
-    let end;
-    if (hasValidEnd) {
-      end = new Date(incident.incidentEndTime).getTime();
-    } else {
-      // Orphaned: only count if monitor is currently down
-      if (monitor?.lastStatus === "UP") return; // skip orphaned
-      end = now; // ongoing, monitor is still down
-    }
-
-    if (end <= start) return; // skip zero/negative duration
-
-    // Check overlap with last 24h window
-    if (end <= last24HoursStart || start >= now) return; // no overlap
-
-    incidentCount++;
-
-    const effectiveStart = Math.max(start, last24HoursStart);
-    const effectiveEnd = Math.min(end, now);
-    totalDowntimeMs += effectiveEnd - effectiveStart;
-  });
-
-  // Cap to 24h max
-  totalDowntimeMs = Math.min(totalDowntimeMs, totalTimeMs);
-
-  const downtimeMinutes = Math.ceil(totalDowntimeMs / (1000 * 60));
-
-  let uptimePercentage =
-    ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
-
-  // Clamp between 0–100
-  uptimePercentage = Math.max(0, Math.min(100, uptimePercentage));
-
-  setStat({
-    incidentCount,
-    downtimeMinutes,
-    uptime: Math.max(0, Math.min(100, uptimePercentage)).toFixed(2),
-  });
-};
+    setStat({
+      incidentCount,
+      downtimeMinutes,
+      uptime: Math.max(0, Math.min(100, uptimePercentage)).toFixed(2),
+    });
+  };
 
   const updateTimeAgo = () => {
     if (!monitor?.lastCheckedAt) {
@@ -308,7 +247,7 @@ const get24hStat = (incidents) => {
   //update time ago every second
   useEffect(() => {
     updateUpDownTime();
-    get24hStat(incidents);
+    calculateOverallStats(incidents);
     updateTimeAgo(); // Initial update
     const interval = setInterval(updateTimeAgo, 1000); // Update every second
 
@@ -471,13 +410,13 @@ const get24hStat = (incidents) => {
 
           <div className="bg-[#131e30] border border-gray-800 rounded-xl p-4">
             <p className="text-gray-400 text-xs sm:text-sm mb-1">
-              Last 24 hours
+              Performance Data
             </p>
             <p className="font-semibold text-sm sm:text-base">
               <p className="text-green-500">UP {stat?.uptime}%</p>
             </p>
             <p className="text-gray-400 text-xs mt-1">
-              {monitor?.totalDown} incidents , {stat?.downtimeMinutes} min down
+              {stat?.incidentCount ?? 0} incidents , {stat?.downtimeMinutes ?? 0} min down
             </p>
           </div>
         </div>

@@ -16,7 +16,10 @@ router.get("/getAll", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const monitorID = req.params.id;
-    const incidents = await incidentModel.find({ monitorId: monitorID });
+    const user = req.user;
+    const incidents = await incidentModel
+      .find({ monitorId: monitorID, userID: user._id })
+      .sort({ incidentStartTime: -1 });
     // console.log(">>> "+incidents);
     res.status(200).json({ success: true, incidents });
   } catch (error) {

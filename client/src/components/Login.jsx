@@ -126,12 +126,12 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if (!notificationsEnabled) {
-    //   toast.error(
-    //     "in order to create monitor and receive alerts, please enable notifications.",
-    //   );
-    //   return;
-    // }
+    if (!notificationsEnabled) {
+      toast.error(
+        "in order to create monitor and receive alerts, please enable notifications.",
+      );
+      return;
+    }
 
     setIsLoading(true);
     const finalOtp = otp.join("");
