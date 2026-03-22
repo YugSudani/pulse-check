@@ -107,25 +107,6 @@ export default function ViewMonitor() {
     }
   };
 
-  // useEffect(() => {
-  //   fetchMonitor();
-
-  //   const interval = setInterval(fetchMonitor, 30000);
-  //   return () => clearInterval(interval);
-  // }, [id]);
-
-  // useEffect(() => {
-  //   if (!monitor?.isActive) return;
-
-  //   fetchLogData(range);
-  //   fetchIncidents();
-  //   const interval2 = setInterval(
-  //     () => fetchLogData(range) && fetchIncidents(),
-  //     30000,
-  //   );
-  //   return () => clearInterval(interval2);
-  // }, [monitor?.isActive, range]);
-
   const handlePause = async (monitorId) => {
     try {
       setLoading(true);
@@ -163,55 +144,55 @@ export default function ViewMonitor() {
   };
 
 
-const get24hStat = (incidents) => {
-  const now = Date.now();
-  const last24HoursStart = now - 24 * 60 * 60 * 1000;
-  const totalTimeMs = 24 * 60 * 60 * 1000;
+  const get24hStat = (incidents) => {
+    const now = Date.now();
+    const last24HoursStart = now - 24 * 60 * 60 * 1000;
+    const totalTimeMs = 24 * 60 * 60 * 1000;
 
-  let totalDowntimeMs = 0;
-  let incidentCount = 0;
+    let totalDowntimeMs = 0;
+    let incidentCount = 0;
 
-  incidents.forEach((incident) => {
-    if (!incident.incidentStartTime) return;
+    incidents.forEach((incident) => {
+      if (!incident.incidentStartTime) return;
 
-    const start = new Date(incident.incidentStartTime).getTime();
-    const end = incident.incidentEndTime
-      ? new Date(incident.incidentEndTime).getTime()
-      : now;
+      const start = new Date(incident.incidentStartTime).getTime();
+      const end = incident.incidentEndTime
+        ? new Date(incident.incidentEndTime).getTime()
+        : now;
 
-    // Skip invalid dates
-    if (isNaN(start) || isNaN(end)) return;
+      // Skip invalid dates
+      if (isNaN(start) || isNaN(end)) return;
 
-    // Check if incident overlaps last 24h window
-    if (end > last24HoursStart && start < now) {
-      incidentCount++;
+      // Check if incident overlaps last 24h window
+      if (end > last24HoursStart && start < now) {
+        incidentCount++;
 
-      const effectiveStart = Math.max(start, last24HoursStart);
-      const effectiveEnd = Math.min(end, now);
+        const effectiveStart = Math.max(start, last24HoursStart);
+        const effectiveEnd = Math.min(end, now);
 
-      if (effectiveEnd > effectiveStart) {
-        totalDowntimeMs += effectiveEnd - effectiveStart;
+        if (effectiveEnd > effectiveStart) {
+          totalDowntimeMs += effectiveEnd - effectiveStart;
+        }
       }
-    }
-  });
+    });
 
-  // Prevent negative or overflow
-  totalDowntimeMs = Math.max(0, Math.min(totalDowntimeMs, totalTimeMs));
+    // Prevent negative or overflow
+    totalDowntimeMs = Math.max(0, Math.min(totalDowntimeMs, totalTimeMs));
 
-  const downtimeMinutes = Math.round(totalDowntimeMs / (1000 * 60));
+    const downtimeMinutes = Math.round(totalDowntimeMs / (1000 * 60));
 
-  let uptimePercentage =
-    ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
+    let uptimePercentage =
+      ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
 
-  // Clamp between 0–100
-  uptimePercentage = Math.max(0, Math.min(100, uptimePercentage));
+    // Clamp between 0–100
+    uptimePercentage = Math.max(0, Math.min(100, uptimePercentage));
 
-  setStat({
-    incidentCount,
-    downtimeMinutes,
-    uptime: uptimePercentage.toFixed(2),
-  });
-};
+    setStat({
+      incidentCount,
+      downtimeMinutes,
+      uptime: uptimePercentage.toFixed(2),
+    });
+  };
 
   const updateTimeAgo = () => {
     if (!monitor?.lastCheckedAt) {
@@ -283,12 +264,17 @@ const get24hStat = (incidents) => {
   //update time ago every second
   useEffect(() => {
     updateUpDownTime();
-    get24hStat(incidents);
     updateTimeAgo(); // Initial update
     const interval = setInterval(updateTimeAgo, 1000); // Update every second
 
     return () => clearInterval(interval); // Cleanup
-  }, [monitor, incidents]);
+  }, [monitor]);
+
+  useEffect(() => {
+    get24hStat(incidents);
+  }, [incidents]);
+
+
 
   return (
     <div className="overflow-x-hidden overflow-y-auto flex-1 min-h-0 h-full bg-[#101724] text-white p-4 sm:p-6 md:p-8 lg:p-12 flex gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -322,11 +308,10 @@ const get24hStat = (incidents) => {
               {/* Notification Status Icons */}
               <div className="flex gap-3 mt-2">
                 <div
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
-                    monitor?.alert?.push
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-gray-700/50 text-gray-500"
-                  }`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${monitor?.alert?.push
+                    ? "bg-green-500/20 text-green-400"
+                    : "bg-gray-700/50 text-gray-500"
+                    }`}
                   title={
                     monitor?.alert?.push
                       ? "Push notifications enabled"
@@ -336,11 +321,10 @@ const get24hStat = (incidents) => {
                   <Bell className="w-4 h-4" />
                 </div>
                 <div
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
-                    monitor?.alert?.email
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-gray-700/50 text-gray-500"
-                  }`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${monitor?.alert?.email
+                    ? "bg-green-500/20 text-green-400"
+                    : "bg-gray-700/50 text-gray-500"
+                    }`}
                   title={
                     monitor?.alert?.email
                       ? "Email notifications enabled"
@@ -350,11 +334,10 @@ const get24hStat = (incidents) => {
                   <Mail className="w-4 h-4" />
                 </div>
                 <div
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
-                    monitor?.alert?.call
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-gray-700/50 text-gray-500"
-                  }`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${monitor?.alert?.call
+                    ? "bg-green-500/20 text-green-400"
+                    : "bg-gray-700/50 text-gray-500"
+                    }`}
                   title={
                     monitor?.alert?.call
                       ? "Voice call alerts enabled"
@@ -412,9 +395,8 @@ const get24hStat = (incidents) => {
             <p className="font-bold text-lg sm:text-xl leading-tight tracking-wider">
               {monitor?.lastStatus ? (
                 <p
-                  className={`text-${
-                    monitor?.lastStatus === "UP" ? "green-400" : "red-400"
-                  }`}
+                  className={`text-${monitor?.lastStatus === "UP" ? "green-400" : "red-400"
+                    }`}
                 >
                   {monitor?.lastStatus}
                 </p>
@@ -452,7 +434,7 @@ const get24hStat = (incidents) => {
               <p className="text-green-500">UP {stat?.uptime}%</p>
             </p>
             <p className="text-gray-400 text-xs mt-1">
-              {monitor?.totalDown} incidents , {stat?.downtimeMinutes} min down
+              {stat?.incidentCount ?? "--"} incidents , {stat?.downtimeMinutes ?? "--"} min down
             </p>
           </div>
         </div>
