@@ -55,3 +55,7 @@
 2026-03-20T11:56:27.947Z [info]: => MongoDB connected from worker 
 2026-03-20T11:56:28.251Z [info]: MongoDB connected 
 2026-03-20T11:56:28.436Z [info]: Monitor Worker started 
+2026-03-22T08:27:24.746Z [info]: Server is running on port 6001 
+2026-03-22T08:27:24.756Z [info]: => MongoDB connected from worker 
+2026-03-22T08:27:25.379Z [info]: MongoDB connected 
+2026-03-22T08:27:25.607Z [info]: Monitor Worker started 

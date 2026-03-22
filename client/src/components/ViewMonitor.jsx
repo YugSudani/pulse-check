@@ -143,6 +143,40 @@ export default function ViewMonitor() {
     setUpDownTime(diffHoursTime.trim());
   };
 
+  // const get24hStat = (incidents) => {
+  //   const now = Date.now();
+  //   const last24HoursStart = now - 24 * 60 * 60 * 1000; // 24h ago
+  //   const incidentCount = incidents.length;
+  //   let totalDowntimeMs = 0;
+
+  //   incidents.forEach((incident) => {
+  //     const start = new Date(incident.incidentStartTime).getTime();
+  //     const end = incident.incidentEndTime
+  //       ? new Date(incident.incidentEndTime).getTime()
+  //       : now;
+
+  //     // Clamp to 24h range
+  //     const effectiveStart = Math.max(start, last24HoursStart);
+  //     const effectiveEnd = Math.min(end, now);
+
+  //     if (effectiveEnd > effectiveStart) {
+  //       totalDowntimeMs += effectiveEnd - effectiveStart;
+  //     }
+  //   });
+  //   const downtimeMinutes = Math.round(totalDowntimeMs / (1000 * 60));
+  //   const totalTimeMs = 24 * 60 * 60 * 1000;
+  //   const uptimePercentage =
+  //     ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
+  //   const uptime = uptimePercentage.toFixed(2);
+
+  //   setStat({
+  //     incidentCount,
+  //     downtimeMinutes,
+  //     uptime,
+  //   });
+  // };
+
+  // Live updating time ago
 
 const get24hStat = (incidents) => {
   const now = Date.now();
@@ -189,8 +223,13 @@ const get24hStat = (incidents) => {
   // Cap to 24h max
   totalDowntimeMs = Math.min(totalDowntimeMs, totalTimeMs);
 
-  const downtimeMinutes = Math.round(totalDowntimeMs / (1000 * 60));
-  const uptimePercentage = ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
+  const downtimeMinutes = Math.ceil(totalDowntimeMs / (1000 * 60));
+
+  let uptimePercentage =
+    ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
+
+  // Clamp between 0–100
+  uptimePercentage = Math.max(0, Math.min(100, uptimePercentage));
 
   setStat({
     incidentCount,
@@ -274,7 +313,7 @@ const get24hStat = (incidents) => {
     const interval = setInterval(updateTimeAgo, 1000); // Update every second
 
     return () => clearInterval(interval); // Cleanup
-  }, [monitor, incidents]);
+  }, [monitor]);
 
   return (
     <div className="overflow-x-hidden overflow-y-auto flex-1 min-h-0 h-full bg-[#101724] text-white p-4 sm:p-6 md:p-8 lg:p-12 flex gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
