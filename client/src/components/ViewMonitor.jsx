@@ -144,55 +144,60 @@ export default function ViewMonitor() {
   };
 
 
-  const get24hStat = (incidents) => {
-    const now = Date.now();
-    const last24HoursStart = now - 24 * 60 * 60 * 1000;
-    const totalTimeMs = 24 * 60 * 60 * 1000;
+const get24hStat = (incidents) => {
+  const now = Date.now();
+  const last24HoursStart = now - 24 * 60 * 60 * 1000;
+  const totalTimeMs = 24 * 60 * 60 * 1000;
 
-    let totalDowntimeMs = 0;
-    let incidentCount = 0;
+  let totalDowntimeMs = 0;
+  let incidentCount = 0;
 
-    incidents.forEach((incident) => {
-      if (!incident.incidentStartTime) return;
+  incidents.forEach((incident) => {
+    if (!incident.incidentStartTime) return;
 
-      const start = new Date(incident.incidentStartTime).getTime();
-      const end = incident.incidentEndTime
-        ? new Date(incident.incidentEndTime).getTime()
-        : now;
+    const start = new Date(incident.incidentStartTime).getTime();
+    if (isNaN(start)) return;
 
-      // Skip invalid dates
-      if (isNaN(start) || isNaN(end)) return;
+    const hasValidEnd =
+      incident.incidentEndTime &&
+      !isNaN(new Date(incident.incidentEndTime).getTime());
 
-      // Check if incident overlaps last 24h window
-      if (end > last24HoursStart && start < now) {
-        incidentCount++;
+    // If no valid end time, check if monitor is currently DOWN
+    // If monitor is UP, this is an orphaned incident — skip it
+    // If monitor is DOWN, treat it as ongoing (end = now)
+    let end;
+    if (hasValidEnd) {
+      end = new Date(incident.incidentEndTime).getTime();
+    } else {
+      // Orphaned: only count if monitor is currently down
+      if (monitor?.lastStatus === "UP") return; // skip orphaned
+      end = now; // ongoing, monitor is still down
+    }
 
-        const effectiveStart = Math.max(start, last24HoursStart);
-        const effectiveEnd = Math.min(end, now);
+    if (end <= start) return; // skip zero/negative duration
 
-        if (effectiveEnd > effectiveStart) {
-          totalDowntimeMs += effectiveEnd - effectiveStart;
-        }
-      }
-    });
+    // Check overlap with last 24h window
+    if (end <= last24HoursStart || start >= now) return; // no overlap
 
-    // Prevent negative or overflow
-    totalDowntimeMs = Math.max(0, Math.min(totalDowntimeMs, totalTimeMs));
+    incidentCount++;
 
-    const downtimeMinutes = Math.round(totalDowntimeMs / (1000 * 60));
+    const effectiveStart = Math.max(start, last24HoursStart);
+    const effectiveEnd = Math.min(end, now);
+    totalDowntimeMs += effectiveEnd - effectiveStart;
+  });
 
-    let uptimePercentage =
-      ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
+  // Cap to 24h max
+  totalDowntimeMs = Math.min(totalDowntimeMs, totalTimeMs);
 
-    // Clamp between 0–100
-    uptimePercentage = Math.max(0, Math.min(100, uptimePercentage));
+  const downtimeMinutes = Math.round(totalDowntimeMs / (1000 * 60));
+  const uptimePercentage = ((totalTimeMs - totalDowntimeMs) / totalTimeMs) * 100;
 
-    setStat({
-      incidentCount,
-      downtimeMinutes,
-      uptime: uptimePercentage.toFixed(2),
-    });
-  };
+  setStat({
+    incidentCount,
+    downtimeMinutes,
+    uptime: Math.max(0, Math.min(100, uptimePercentage)).toFixed(2),
+  });
+};
 
   const updateTimeAgo = () => {
     if (!monitor?.lastCheckedAt) {
@@ -264,17 +269,12 @@ export default function ViewMonitor() {
   //update time ago every second
   useEffect(() => {
     updateUpDownTime();
+    get24hStat(incidents);
     updateTimeAgo(); // Initial update
     const interval = setInterval(updateTimeAgo, 1000); // Update every second
 
     return () => clearInterval(interval); // Cleanup
-  }, [monitor]);
-
-  useEffect(() => {
-    get24hStat(incidents);
-  }, [incidents]);
-
-
+  }, [monitor, incidents]);
 
   return (
     <div className="overflow-x-hidden overflow-y-auto flex-1 min-h-0 h-full bg-[#101724] text-white p-4 sm:p-6 md:p-8 lg:p-12 flex gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -308,10 +308,11 @@ export default function ViewMonitor() {
               {/* Notification Status Icons */}
               <div className="flex gap-3 mt-2">
                 <div
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${monitor?.alert?.push
-                    ? "bg-green-500/20 text-green-400"
-                    : "bg-gray-700/50 text-gray-500"
-                    }`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
+                    monitor?.alert?.push
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-gray-700/50 text-gray-500"
+                  }`}
                   title={
                     monitor?.alert?.push
                       ? "Push notifications enabled"
@@ -321,10 +322,11 @@ export default function ViewMonitor() {
                   <Bell className="w-4 h-4" />
                 </div>
                 <div
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${monitor?.alert?.email
-                    ? "bg-green-500/20 text-green-400"
-                    : "bg-gray-700/50 text-gray-500"
-                    }`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
+                    monitor?.alert?.email
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-gray-700/50 text-gray-500"
+                  }`}
                   title={
                     monitor?.alert?.email
                       ? "Email notifications enabled"
@@ -334,10 +336,11 @@ export default function ViewMonitor() {
                   <Mail className="w-4 h-4" />
                 </div>
                 <div
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${monitor?.alert?.call
-                    ? "bg-green-500/20 text-green-400"
-                    : "bg-gray-700/50 text-gray-500"
-                    }`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
+                    monitor?.alert?.call
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-gray-700/50 text-gray-500"
+                  }`}
                   title={
                     monitor?.alert?.call
                       ? "Voice call alerts enabled"
@@ -395,8 +398,9 @@ export default function ViewMonitor() {
             <p className="font-bold text-lg sm:text-xl leading-tight tracking-wider">
               {monitor?.lastStatus ? (
                 <p
-                  className={`text-${monitor?.lastStatus === "UP" ? "green-400" : "red-400"
-                    }`}
+                  className={`text-${
+                    monitor?.lastStatus === "UP" ? "green-400" : "red-400"
+                  }`}
                 >
                   {monitor?.lastStatus}
                 </p>
@@ -434,7 +438,7 @@ export default function ViewMonitor() {
               <p className="text-green-500">UP {stat?.uptime}%</p>
             </p>
             <p className="text-gray-400 text-xs mt-1">
-              {stat?.incidentCount ?? "--"} incidents , {stat?.downtimeMinutes ?? "--"} min down
+              {monitor?.totalDown} incidents , {stat?.downtimeMinutes} min down
             </p>
           </div>
         </div>
