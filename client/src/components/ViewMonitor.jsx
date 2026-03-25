@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import exportLogs from "./helpers/Logs_csv_generator";
 import { toast } from "sonner";
 import TextToSpeech from "./helpers/TextToSpeech";
-import { Bell, Mail, Phone } from "lucide-react";
+import { Bell, Mail, Phone, Wand2, Loader2 } from "lucide-react";
 
 export default function ViewMonitor() {
   const navigate = useNavigate();
@@ -459,11 +459,12 @@ export default function ViewMonitor() {
                 {aiLoading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <Loader2 className="w-4 h-4 animate-spin" />
                     Generating...
                   </>
                 ) : (
                   <>
-                    <span>✨</span>
+                     <Wand2 className="w-4 h-4" />
                     AI Summary
                   </>
                 )}

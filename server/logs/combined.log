@@ -55,6 +55,7 @@
 2026-03-20T11:56:27.947Z [info]: => MongoDB connected from worker 
 2026-03-20T11:56:28.251Z [info]: MongoDB connected 
 2026-03-20T11:56:28.436Z [info]: Monitor Worker started 
+<<<<<<< Updated upstream
 2026-03-22T03:18:53.543Z [info]: Server is running on port 6001 
 2026-03-22T03:18:53.551Z [info]: => MongoDB connected from worker 
 2026-03-22T03:18:54.207Z [info]: MongoDB connected 
@@ -112,3 +113,52 @@
 2026-03-22T08:22:39.458Z [info]: => MongoDB connected from worker 
 2026-03-22T08:22:42.024Z [info]: MongoDB connected 
 2026-03-22T08:22:42.252Z [info]: Monitor Worker started 
+=======
+2026-03-21T03:27:48.700Z [info]: Server is running on port 6001 
+2026-03-21T03:27:48.703Z [info]: => MongoDB connected from worker 
+2026-03-21T03:27:49.124Z [info]: MongoDB connected 
+2026-03-21T03:27:49.266Z [info]: Monitor Worker started 
+2026-03-21T03:28:22.094Z [info]: 📤 Sending notification to players: fb30d499-53a5-4868-ab02-b8ab0eb90bb7 
+2026-03-21T03:28:22.105Z [info]: 📋 Monitor: yug - Status: DOWN 
+2026-03-21T03:28:23.219Z [info]: Notification sent successfully: {"data":{"id":"44458dfc-9f81-49d8-a574-1ec28ddb659e","external_id":null}}
+2026-03-21T03:35:06.711Z [error]: JWT error: {"error":{"name":"JsonWebTokenError","message":"invalid signature"}}
+2026-03-21T03:35:06.819Z [error]: JWT error: {"error":{"name":"JsonWebTokenError","message":"invalid signature"}}
+2026-03-21T03:35:52.191Z [info]: 📤 Sending notification to players: fb30d499-53a5-4868-ab02-b8ab0eb90bb7 
+2026-03-21T03:35:52.191Z [info]: 📋 Monitor: yug - Status: DOWN 
+2026-03-21T03:35:52.863Z [info]: Notification sent successfully: {"data":{"id":"f53b10b9-dac4-4dd4-9593-64ac12f1cd50","external_id":null}}
+2026-03-21T03:38:33.101Z [error]: Failed to get user :  {"error":{"name":"JsonWebTokenError","message":"invalid signature"}}
+2026-03-21T03:38:53.998Z [error]: Failed to get user :  {"error":{"name":"JsonWebTokenError","message":"invalid signature"}}
+2026-03-21T03:39:16.608Z [info]: Server is running on port 6001 
+2026-03-21T03:39:16.612Z [info]: => MongoDB connected from worker 
+2026-03-21T03:39:17.537Z [info]: MongoDB connected 
+2026-03-21T03:39:17.657Z [info]: Monitor Worker started 
+2026-03-21T03:40:04.166Z [error]: Failed to get user :  {"error":{"name":"JsonWebTokenError","message":"invalid signature"}}
+2026-03-21T03:40:22.407Z [error]: JWT error: {"error":{"name":"JsonWebTokenError","message":"invalid signature"}}
+2026-03-21T03:40:22.424Z [info]: Login request received: {"body":{"phone":"","email":"aitoolsyug@gmail.com","pwd":"123@Aa","otp":""}}
+2026-03-21T03:40:22.455Z [info]: User found: {"user":{"phoneNumber":{"number":null,"isVerified":false},"_id":"69997756b8a88f3197537ef4","name":"karan","email":"aitoolsyug@gmail.com","pwd":"$2b$11$/i.T0Pgp88lj3UTIz2qhy.xuhJR4.K7JO6NQKWPaWztDFuX.Vvvk.","role":"user","isBlocked":false,"googleId":null,"avatar":null,"provider":"local","lastEmailSentAt":null,"isVerified":true,"subscriptionPlan":"business","__v":0,"playerIds":["eb100562-c4cd-4b62-855a-1e9c80e8f9d8"]}}
+2026-03-21T03:40:42.094Z [info]: Server is running on port 6001 
+2026-03-21T03:40:42.097Z [info]: => MongoDB connected from worker 
+2026-03-21T03:40:42.384Z [info]: MongoDB connected 
+2026-03-21T03:40:42.537Z [info]: Monitor Worker started 
+2026-03-21T03:40:47.623Z [error]: Failed to get user :  {"error":{"name":"JsonWebTokenError","message":"jwt must be provided"}}
+2026-03-21T03:41:12.812Z [info]: Login request received: {"body":{"phone":"","email":"admin@timscrew.com","pwd":"123@Aa","otp":""}}
+2026-03-21T03:41:12.826Z [info]: User found: {"user":null}
+2026-03-21T03:41:18.475Z [info]: Login request received: {"body":{"phone":"","email":"aitoolsyug@gmail.com","pwd":"123@Aa","otp":""}}
+2026-03-21T03:41:18.488Z [info]: User found: {"user":{"phoneNumber":{"number":null,"isVerified":false},"_id":"69997756b8a88f3197537ef4","name":"karan","email":"aitoolsyug@gmail.com","pwd":"$2b$11$/i.T0Pgp88lj3UTIz2qhy.xuhJR4.K7JO6NQKWPaWztDFuX.Vvvk.","role":"user","isBlocked":false,"googleId":null,"avatar":null,"provider":"local","lastEmailSentAt":null,"isVerified":true,"subscriptionPlan":"business","__v":0,"playerIds":["eb100562-c4cd-4b62-855a-1e9c80e8f9d8"]}}
+2026-03-21T03:55:15.215Z [info]: 📤 Sending notification to players: fb30d499-53a5-4868-ab02-b8ab0eb90bb7 
+2026-03-21T03:55:15.216Z [info]: 📋 Monitor: yug - Status: DOWN 
+2026-03-21T03:55:15.880Z [info]: Notification sent successfully: {"data":{"id":"cd14e7aa-efff-446d-b6cb-4f697cb27456","external_id":null}}
+2026-03-21T04:02:45.261Z [info]: 📤 Sending notification to players: fb30d499-53a5-4868-ab02-b8ab0eb90bb7 
+2026-03-21T04:02:45.262Z [info]: 📋 Monitor: yug - Status: DOWN 
+2026-03-21T04:02:45.929Z [info]: Notification sent successfully: {"data":{"id":"1ba6b3bb-87d5-423e-a4bd-2d7717402877","external_id":null}}
+2026-03-21T04:10:15.288Z [info]: 📤 Sending notification to players: 687eec92-8956-463e-87d3-dde14e9eed94 
+2026-03-21T04:10:15.288Z [info]: 📋 Monitor: Copilot - Status: DOWN 
+2026-03-21T04:10:15.951Z [info]: Notification sent successfully: {"data":{"id":"d96fcc56-e271-490c-819f-f166926f0da7","external_id":null}}
+2026-03-21T04:34:15.484Z [info]: 📤 Sending notification to players: fb30d499-53a5-4868-ab02-b8ab0eb90bb7 
+2026-03-21T04:34:15.485Z [info]: 📋 Monitor: yug - Status: DOWN 
+2026-03-21T04:34:17.020Z [info]: Notification sent successfully: {"data":{"id":"526428ae-9ab5-4b87-a2c9-0e8b068c15b9","external_id":null}}
+2026-03-21T04:44:30.570Z [info]: Server is running on port 6001 
+2026-03-21T04:44:30.574Z [info]: => MongoDB connected from worker 
+2026-03-21T04:44:30.877Z [info]: MongoDB connected 
+2026-03-21T04:44:31.088Z [info]: Monitor Worker started 
+>>>>>>> Stashed changes
