@@ -137,7 +137,7 @@ function ResponseTimeChart({ data, range }) {
             type="monotone"
             dataKey="responseTime"
             stroke="#22c55e"
-            strokeWidth={2}
+            strokeWidth={3}
             dot={false}
             isAnimationActive={false}
           />
