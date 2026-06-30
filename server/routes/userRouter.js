@@ -239,7 +239,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/saveOneSignalPlayerId", async (req, res) => {
+router.post("/saveOneSignalPlayerId", auth, async (req, res) => {
   try {
     const { playerIds } = req.body;
     //console.log(playerIds);
